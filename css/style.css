@@ -108,7 +108,7 @@ h1, h2, h3, p { margin: 0; }
 
 /* ── Mark ───────────────────────────────────────────────── */
 .mark {
-  position: fixed; top: var(--gutter); right: var(--gutter); z-index: 40; /* same margin above and to the side */
+  position: fixed; top: var(--gutter); right: var(--gutter); z-index: 46; /* same margin above and to the side; above the pages */
   width: clamp(36px, 2.6vw, 48px); height: auto;
   border-radius: 4px;
   pointer-events: none;

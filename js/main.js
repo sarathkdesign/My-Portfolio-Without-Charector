@@ -1,5 +1,7 @@
 import { content } from './content.js';
 import { createSurface } from './surface.js';
+import { categories } from './work/index.js';
+import { createPages, countLabel } from './pages.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -45,29 +47,26 @@ function bindContent() {
 }
 
 /* ── Tile markup ───────────────────────────────────────── */
-function buildProjects() {
+// One tile per category; each opens that category's page (see js/pages.js)
+function buildTiles() {
   $('[data-strip-set]').replaceChildren(
-    ...content.projects.map((p) => {
-      // A tile links out only when the project has a URL; otherwise it still takes
-      // focus so keyboard users can reveal its label
-      const card = p.url
-        ? el('a', { class: 'card', href: p.url, target: '_blank', rel: 'noopener', draggable: 'false' })
-        : el('div', { class: 'card', tabindex: '0', role: 'group', 'aria-label': `${p.title}, ${p.discipline}, ${p.year}` });
-      card.append(
-        el('span', { class: 'card__media' }, [
-          el('img', { src: p.image, alt: p.alt, draggable: 'false', decoding: 'async' }),
-          ...(p.url ? [el('span', { class: 'card__cue', 'aria-hidden': 'true', text: 'View project' })] : []),
-        ]),
-        el('span', { class: 'card__label' }, [
-          el('span', { class: 'card__title' }, [
-            el('span', { class: 'sr-only', text: p.title }),
-            el('span', { 'aria-hidden': 'true', 'data-scramble': '', text: p.title }),
+    ...categories.map((c) =>
+      el('li', { class: 'strip__item' }, [
+        el('a', { class: 'card', href: `work/${c.slug}`, 'data-route': '', 'data-category': c.slug, draggable: 'false' }, [
+          el('span', { class: 'card__media' }, [
+            el('img', { src: c.cover.src, alt: c.cover.alt, draggable: 'false', decoding: 'async' }),
+            el('span', { class: 'card__cue', 'aria-hidden': 'true', text: 'Explore' }),
           ]),
-          el('span', { class: 'card__meta', text: `${p.discipline} — ${p.year}` }),
-        ])
-      );
-      return el('li', { class: 'strip__item' }, [card]);
-    })
+          el('span', { class: 'card__label' }, [
+            el('span', { class: 'card__title' }, [
+              el('span', { class: 'sr-only', text: c.name }),
+              el('span', { 'aria-hidden': 'true', 'data-scramble': '', text: c.name }),
+            ]),
+            el('span', { class: 'card__meta', text: countLabel(c.projects.length) }),
+          ]),
+        ]),
+      ])
+    )
   );
 }
 
@@ -334,7 +333,7 @@ function setupStrip() {
 
   const state = {
     x: 0, v: 0, impulse: 0, W: 1, travel: 0, velocity: 0,
-    hovering: false, restingSince: 0, lastPointer: null, focusX: null, userPaused: false, visible: true,
+    hovering: false, restingSince: 0, lastPointer: null, focusX: null, userPaused: false, visible: true, held: false,
     drag: null, suppressClick: false, raf: 0, last: 0,
     wheel: 0, wheelAt: -1e9,
     step: 0, stepIndex: null, stepAt: 0,
@@ -438,7 +437,7 @@ function setupStrip() {
   };
 
   const start = () => {
-    if (state.raf || reduced || !state.visible || document.hidden) return;
+    if (state.raf || reduced || state.held || !state.visible || document.hidden) return;
     state.last = performance.now();
     state.raf = requestAnimationFrame(tick);
   };
@@ -609,13 +608,18 @@ function setupStrip() {
 
   applyMode();
   reducedQuery.addEventListener('change', applyMode);
-  return { velocity: () => state.velocity, paused: () => state.userPaused };
+  return {
+    velocity: () => state.velocity,
+    paused: () => state.userPaused,
+    // Freeze the band exactly where it is while a page is open, so the way back lands on the same tile
+    hold: () => { state.held = true; stop(); state.hovering = false; state.drag = null; },
+    release: () => { state.held = false; start(); },
+  };
 }
 
 /* ── Cursor chip ───────────────────────────────────────── */
 function setupChip() {
   const chip = $('[data-chip]');
-  const chipText = $('span', chip);
   const strip = $('[data-strip]');
   let x = -100, y = -100, tx = -100, ty = -100, raf = 0, active = false;
 
@@ -631,7 +635,6 @@ function setupChip() {
     if (!hoverQuery.matches || e.pointerType !== 'mouse') return;
     const card = e.target.closest('.card');
     const overCard = !!card && !strip.classList.contains('is-dragging');
-    if (card) chipText.textContent = card.matches('a') ? 'View project' : 'Coming soon';
     tx = e.clientX + 14;
     ty = e.clientY + 16;
     if (overCard && !active) { x = tx; y = ty; }
@@ -689,9 +692,13 @@ function setupMenu() {
     if (action !== 'work' && action !== 'about') return close(false);
     e.preventDefault();
     close(false);
-    if (action === 'work') return $('[data-strip-set] .card').focus({ preventScroll: true });
-    $('#about').focus({ preventScroll: true });
-    flashRole();
+    const go = () => {
+      if (action === 'work') return $('[data-strip-set] .card').focus({ preventScroll: true });
+      $('#about').focus({ preventScroll: true });
+      flashRole();
+    };
+    // From a category or project page, head back to the homepage first
+    pages?.depth() ? pages.home().then(go) : go();
   }));
 
   document.addEventListener('keydown', (e) => {
@@ -731,11 +738,11 @@ function flashRole() {
 let surface = null;
 function setupSurface(strip) {
   const canvas = $('[data-surface]');
-  let failed = false, keyboard = false;
+  let failed = false, keyboard = false, away = false;
   surface = createSurface({ canvas, tileSpeed: strip.velocity, onFail: () => { failed = true; update(); } });
-  if (!surface) return;
+  if (!surface) return null;
   const update = () => {
-    const ok = !failed && !reduced && !keyboard && !strip.paused() && hoverQuery.matches;
+    const ok = !failed && !reduced && !keyboard && !away && !strip.paused() && hoverQuery.matches;
     ok ? surface.start() : surface.stop();
   };
   window.addEventListener('keydown', (e) => {
@@ -754,6 +761,8 @@ function setupSurface(strip) {
   reducedQuery.addEventListener('change', update);
   hoverQuery.addEventListener('change', update);
   document.fonts?.ready.then(update);
+  // Off while a category or project page covers the homepage
+  return { setAway: (v) => { away = v; update(); } };
 }
 
 /* ── Font check ────────────────────────────────────────── */
@@ -769,12 +778,17 @@ function checkFont() {
 /* ── Boot ──────────────────────────────────────────────── */
 bindContent();
 checkFont();
-buildProjects();
+buildTiles();
 setupWordmark();
 const strip = setupStrip();
 setupChip();
 setupMenu();
 setupEyebrow();
-setupSurface(strip);
+const surfaceCtl = setupSurface(strip);
+const pages = createPages({
+  sound,
+  leaveHome: () => { strip.hold(); surfaceCtl?.setAway(true); },
+  returnHome: () => { strip.release(); surfaceCtl?.setAway(false); },
+});
 
 requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('is-loaded')));

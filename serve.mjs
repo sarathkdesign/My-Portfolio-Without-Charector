@@ -23,6 +23,10 @@ createServer(async (req, res) => {
     res.writeHead(200, { 'Content-Type': types[extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
     res.end(body);
   } catch {
-    res.writeHead(404).end('Not found');
+    // Page addresses (/work/branding, /work/branding/aakara) are drawn by the app, so
+    // anything without a file extension gets the homepage
+    if (extname(path)) return res.writeHead(404).end('Not found');
+    res.writeHead(200, { 'Content-Type': types['.html'], 'Cache-Control': 'no-cache' });
+    res.end(await readFile(join(root, 'index.html')));
   }
 }).listen(port, () => console.log(`http://localhost:${port}`));
