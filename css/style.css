@@ -1,0 +1,474 @@
+/* ── PP Neue Montreal (Pangram Pangram), served from public/fonts ── */
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('../public/fonts/NeueMontreal-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('../public/fonts/NeueMontreal-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'PP Neue Montreal';
+  src: url('../public/fonts/NeueMontreal-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Tokens ─────────────────────────────────────────────── */
+:root {
+  --cream: #eeebe1;
+  --cream-2: #e4e0d3;
+  --ink: #0f0f0d;
+  --ink-soft: #3b3a35;
+  --yellow: #ffe83d;
+  --gutter: max(16px, 2.0833vw); /* page margin, as in the reference: 30px at 1440 */
+  --grid-gap: max(10px, 1.0417vw);
+  --bar-size: max(12px, 0.875vw); /* footer text */
+  --bar-pad: var(--gutter); /* footer sits one page margin above the bottom edge */
+  --strip-h: min(61svh, 50vw);
+  --card-w: clamp(220px, 29vw, 640px);
+  --display: 'PP Neue Montreal', 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
+  --label: var(--display);
+  --text: var(--display);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+/* A single screen: nothing scrolls vertically. Very short windows (landscape phones)
+   fall back to scrolling so nothing becomes unreachable. */
+html { -webkit-text-size-adjust: 100%; height: 100%; overflow: hidden; overscroll-behavior: none; }
+body {
+  margin: 0;
+  background: var(--cream);
+  color: var(--ink);
+  font: 400 clamp(15px, 1.05vw, 18px) / 1.4 var(--text);
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+  overflow: hidden;
+}
+/* Fallback when the content genuinely cannot fit (set from main.js) */
+html.is-overflowing, html.is-overflowing body { overflow-y: auto; height: auto; }
+html.is-overflowing .hero { height: auto; min-height: 100svh; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+h1, h2, h3, p { margin: 0; }
+[tabindex='-1']:focus { outline: none; box-shadow: none; }
+
+::selection { background: var(--yellow); color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--yellow);
+  border-radius: 2px;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip {
+  position: fixed; top: 12px; left: 12px; z-index: 100;
+  padding: 10px 14px; background: var(--yellow); color: var(--ink);
+  font-weight: 600; text-decoration: none; border-radius: 4px;
+  transform: translateY(-150%);
+  transition: transform 0.3s var(--ease);
+}
+.skip:focus { transform: none; }
+
+/* ── Links ──────────────────────────────────────────────── */
+/* Underline sweep for text links */
+.socials a {
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) no-repeat 100% 100% / 0 1px;
+  transition: background-size 0.45s var(--ease);
+}
+.socials a:hover, .socials a:focus-visible {
+  background-position: 0 100%;
+  background-size: 100% 1px;
+}
+
+.socials { display: flex; align-items: center; gap: 0.7em; text-transform: uppercase; }
+.socials li + li::before { content: '|'; margin-right: 0.7em; }
+
+/* ── Mark ───────────────────────────────────────────────── */
+.mark {
+  position: fixed; top: var(--gutter); right: var(--gutter); z-index: 40; /* same margin above and to the side */
+  width: clamp(36px, 2.6vw, 48px); height: auto;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+/* ── Hero ───────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  display: grid;
+  grid-template-rows: var(--strip-h) 1fr auto;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+}
+
+/* Strip: equal-width cards whose visible height is set per frame (--f)
+   from their position, stepping up from left to right */
+.strip {
+  position: relative;
+  height: var(--strip-h);
+  touch-action: none; /* the page itself never scrolls, so drags belong to the tiles */
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+.strip.is-dragging { cursor: grabbing; }
+.strip__track {
+  display: flex;
+  height: 100%;
+  width: max-content;
+  will-change: transform;
+}
+.strip__set { display: flex; height: 100%; }
+.strip__item {
+  --f: 0.8;
+  position: relative;
+  flex: none;
+  width: var(--card-w);
+  height: 100%;
+}
+.strip__item:hover, .strip__item:focus-within { z-index: 3; }
+
+/* Only the visible part of the image is interactive */
+.card { display: block; height: 100%; text-decoration: none; color: inherit; pointer-events: none; -webkit-user-drag: none; }
+.card:focus-visible { outline: none; box-shadow: none; }
+div.card { cursor: inherit; }
+.card__media {
+  position: relative; display: block;
+  height: 100%; overflow: hidden;
+  background: var(--cream-2);
+  clip-path: inset(0 0 calc((1 - var(--f)) * 100%) 0);
+  pointer-events: auto;
+}
+.card__media img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 35%;
+  transform: translate3d(var(--px, 0), 0, 0) scale(1.1);
+  pointer-events: none;
+}
+.card:focus-visible .card__media::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 calc((1 - var(--f)) * 100%) 0;
+  box-shadow: inset 0 0 0 4px var(--yellow), inset 0 0 0 6px var(--ink);
+}
+.card__label {
+  position: absolute; left: 0;
+  top: calc(var(--f) * 100% + 10px);
+  min-width: 100%;
+  opacity: 0; transform: translateY(-6px);
+  transition: opacity 0.4s var(--ease), transform 0.57s var(--ease);
+  pointer-events: none;
+}
+.card__title {
+  display: block;
+  font: 700 clamp(14px, 1.3vw, 26px)/0.95 var(--label);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  max-width: 13ch;
+}
+.card__meta {
+  display: block; margin-top: 5px;
+  font: 500 clamp(10px, 0.72vw, 13px)/1.2 var(--text); letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.card:hover .card__label, .card:focus-visible .card__label { opacity: 1; transform: none; }
+/* Keyboard cue; the floating chip plays this role for the mouse */
+.card__cue {
+  position: absolute; right: 14px;
+  top: calc(var(--f) * 100% - 14px);
+  padding: 6px 10px;
+  background: var(--yellow); color: var(--ink);
+  font: 500 15px/1 var(--text); border-radius: 3px;
+  opacity: 0; transform: translateY(-80%);
+  transition: opacity 0.34s var(--ease), transform 0.46s var(--ease);
+}
+.card:focus-visible .card__cue { opacity: 1; transform: translateY(-100%); }
+
+@media (hover: none) {
+  .card__label { opacity: 1; transform: none; }
+}
+
+/* Floating "View project" chip: unfolds from a thin bar, then the words appear */
+.chip {
+  position: fixed; left: 0; top: 0; z-index: 30;
+  padding: 7px 11px;
+  background: var(--yellow); color: var(--ink);
+  font: 500 clamp(14px, 1.1vw, 19px)/1 var(--text);
+  border-radius: 3px;
+  pointer-events: none;
+  opacity: 0;
+  clip-path: inset(42% 0 42% 0 round 3px);
+  transform: translate3d(-100px, -100px, 0);
+  transition: opacity 0.17s linear, clip-path 0.44s var(--ease);
+  white-space: nowrap;
+}
+.chip > span { opacity: 0; transition: opacity 0.21s linear; }
+.chip.is-on { opacity: 1; clip-path: inset(0 0 0 0 round 3px); }
+.chip.is-on > span { opacity: 1; transition-delay: 0.16s; }
+
+/* WebGL paint layer: above the page, below the footer, menu and chip */
+.surface {
+  position: fixed; inset: 0; z-index: 20;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s linear;
+}
+.surface.is-on { opacity: 1; }
+
+/* Intro */
+.hero__intro {
+  /* The name fills the left of the screen; the introduction is a narrow column starting
+     69% across, its top level with the name's cap height and its last line on the baseline */
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 19vw;
+  column-gap: 4.4vw;
+  align-items: end;
+  padding: clamp(56px, 7vh, 100px) 12vw clamp(20px, 3vh, 40px) var(--gutter);
+}
+@media (min-width: 1025px) {
+  /* Cards on the left are short, so the name can rise into the space beneath them */
+  .hero__intro { margin-top: calc(var(--strip-h) * -0.2); }
+  /* Role line on the name's cap height, bio on its baseline (offset measured in main.js) */
+  .hero__intro > .hero__copy {
+    align-self: stretch;
+    justify-content: space-between;
+    padding-top: var(--role-shift, 0px);
+  }
+  .strip { z-index: 2; }
+}
+.wordmark {
+  font: 700 clamp(64px, 15vw, 300px)/0.8 var(--display);
+  letter-spacing: -0.06em;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0.05em 0.04em 0 0;
+  margin-left: -0.05em;
+}
+.wordmark__text { display: inline-block; }
+.wordmark__word { display: inline-block; }
+.wordmark.is-stacked .wordmark__word { display: block; }
+.wordmark.is-stacked .wordmark__space { display: none; }
+.wordmark__char { display: inline-block; }
+.wordmark__char > span { display: inline-block; }
+
+/* Right padding keeps the bio clear of the menu button */
+.hero__copy {
+  /* Role line (bold) and bio share one size, with 1.25 leading */
+  --intro-size: max(15px, 1.08vw);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  font-size: var(--intro-size);
+}
+.eyebrow {
+  font: 700 calc(var(--intro-size) * 1.4)/1.15 var(--label);
+  text-transform: uppercase;
+  /* Scrambled letters can run wider than the real ones; never let them rewrap the line */
+  white-space: nowrap;
+  min-height: 1.15em;
+  margin-bottom: calc(var(--intro-size) * 0.6);
+}
+.eyebrow.is-flash > span:not(.sr-only) {
+  animation: flash 1.4s var(--ease);
+}
+@keyframes flash {
+  0%, 60% { background: var(--yellow); }
+  100% { background: transparent; }
+}
+.hero__para {
+  font: 400 var(--intro-size)/1.25 var(--text);
+  max-width: 17em;
+}
+/* Inter Tight reads lighter than PP Neue Montreal at the same weight, so while the
+   fallback is showing, step it up one weight to keep the same colour on the page */
+.uses-fallback-font .hero__para { font-weight: 500; }
+
+/* Bottom bar */
+.bar {
+  position: relative; z-index: 25;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+  gap: 10px 24px;
+  padding: 0 var(--gutter) var(--bar-pad);
+  font-size: var(--bar-size); text-transform: uppercase; letter-spacing: 0.01em;
+}
+.bar__group { display: flex; align-items: center; gap: 0.7em; flex-wrap: wrap; }
+.bar__sep { color: var(--ink-soft); }
+.toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 6px; margin: -4px -6px;
+  text-transform: uppercase; letter-spacing: 0.01em;
+  border-radius: 3px;
+  transition: background-color 0.25s var(--ease);
+}
+.toggle:hover { background: var(--yellow); }
+.toggle__icon { width: 1.35em; height: 1.35em; }
+.toggle .i-on { display: none; }
+.toggle[aria-pressed='true'] .i-on { display: inline; }
+.toggle[aria-pressed='true'] .i-off { display: none; }
+.toggle[data-sound][aria-pressed='true'] { background: var(--yellow); }
+
+/* ── Menu ───────────────────────────────────────────────── */
+.menu-btn {
+  position: fixed; z-index: 60;
+  right: var(--gutter); bottom: calc(var(--bar-pad) + 2.4em + 12px);
+  width: 40px; height: 28px;
+  display: grid; place-items: center;
+  background: var(--ink); border-radius: 3px;
+  font-size: var(--bar-size);
+  transition: transform 0.4s var(--ease), background-color 0.3s;
+}
+.menu-btn:hover { transform: scale(1.08); }
+.menu-btn__lines { position: relative; width: 18px; height: 8px; }
+.menu-btn__lines i {
+  position: absolute; left: 0; width: 100%; height: 1.5px;
+  background: var(--yellow); border-radius: 1px;
+  transition: transform 0.4s var(--ease), top 0.4s var(--ease), background-color 0.3s;
+}
+.menu-btn__lines i:first-child { top: 0; }
+.menu-btn__lines i:last-child { top: calc(100% - 1.5px); }
+.menu-btn[aria-expanded='true'] .menu-btn__lines i { top: calc(50% - 0.75px); }
+.menu-btn[aria-expanded='true'] .menu-btn__lines i:first-child { transform: rotate(45deg); }
+.menu-btn[aria-expanded='true'] .menu-btn__lines i:last-child { transform: rotate(-45deg); }
+.menu-btn:focus-visible { box-shadow: 0 0 0 6px var(--yellow); }
+.menu { position: fixed; inset: 0; z-index: 50; }
+.menu[hidden] { display: none; }
+.menu__scrim {
+  position: absolute; inset: 0;
+  background: color-mix(in srgb, var(--cream) 94%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.46s var(--ease);
+}
+.menu__panel {
+  position: absolute;
+  right: var(--gutter); bottom: calc(var(--bar-pad) + 2.4em + 12px + 28px + 14px);
+  font-size: var(--bar-size);
+  display: flex; flex-direction: column; align-items: flex-end; gap: 22px;
+}
+.menu__list {
+  background: var(--ink); color: #fff;
+  border-radius: 12px;
+  padding: 22px;
+  min-width: min(320px, calc(100vw - 2 * var(--gutter)));
+  display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+  clip-path: inset(100% 0 0 calc(100% - 40px) round 12px);
+  transition: clip-path 0.63s var(--ease);
+}
+.menu__list a {
+  display: block; text-align: right;
+  padding: 6px 18px;
+  font: 500 clamp(40px, 4.4vw, 72px)/1.05 var(--text);
+  letter-spacing: -0.035em;
+  text-decoration: none;
+  border-radius: 4px;
+  opacity: 0; transform: translateY(14px);
+  transition: opacity 0.46s var(--ease), transform 0.63s var(--ease), background-color 0.29s, color 0.29s;
+}
+.menu__list a:hover, .menu__list a:focus-visible, .menu__list a.is-accent {
+  background: var(--yellow); color: var(--ink);
+}
+.menu__list a.is-accent:hover { background: #fff; }
+.menu__list a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; box-shadow: none; }
+.menu__socials { font-size: clamp(18px, 1.8vw, 28px); opacity: 0; transition: opacity 0.46s var(--ease); }
+
+.menu.is-open .menu__scrim { opacity: 1; }
+.menu.is-open .menu__list { clip-path: inset(0 0 0 0 round 12px); }
+.menu.is-open .menu__list a { opacity: 1; transform: none; }
+.menu.is-open .menu__list li:nth-child(1) a { transition-delay: 0.11s, 0.11s, 0s, 0s; }
+.menu.is-open .menu__list li:nth-child(2) a { transition-delay: 0.17s, 0.17s, 0s, 0s; }
+.menu.is-open .menu__list li:nth-child(3) a { transition-delay: 0.23s, 0.23s, 0s, 0s; }
+.menu.is-open .menu__socials { opacity: 1; transition-delay: 0.29s; }
+/* Closing is quicker than opening and runs everything at once */
+.menu.is-closing .menu__scrim,
+.menu.is-closing .menu__socials,
+.menu.is-closing .menu__list a { transition-duration: 0.23s; transition-delay: 0s; }
+.menu.is-closing .menu__list { transition: clip-path 0.34s var(--ease-in-out); }
+
+/* Opening sequence: the strip glides in while the name rises */
+.js .wordmark__char > span { transform: translateY(105%); }
+.js .is-loaded .wordmark__char > span {
+  transform: none;
+  transition: transform 1.15s var(--ease);
+  transition-delay: calc(0.17s + var(--i) * 0.05s);
+}
+.js .strip__track { opacity: 0; }
+.js .is-loaded .strip__track { opacity: 1; transition: opacity 0.92s var(--ease); }
+.js .hero__copy > *, .js .bar { opacity: 0; transform: translateY(14px); }
+.js .is-loaded .hero__copy > *, .js .is-loaded .bar {
+  opacity: 1; transform: none;
+  transition: opacity 0.92s var(--ease), transform 1.15s var(--ease);
+}
+.js .is-loaded .hero__copy > :nth-child(1) { transition-delay: 0.52s; }
+.js .is-loaded .hero__copy > :nth-child(2) { transition-delay: 0.6s; }
+.js .is-loaded .hero__copy > :nth-child(3) { transition-delay: 0.68s; }
+.js .is-loaded .bar { transition-delay: 0.8s; }
+
+/* Reduced motion: the strip becomes a plain horizontal scroller */
+.strip.is-static { overflow-x: auto; overflow-y: hidden; cursor: auto; scrollbar-width: thin; touch-action: auto; }
+.strip.is-static .card__label { opacity: 1; transform: none; }
+
+/* Short laptop screens: a slightly lower tile band leaves the bio its own space */
+@media (min-width: 1025px) and (max-height: 780px) {
+  :root { --strip-h: min(55svh, 50vw); }
+}
+
+/* ── Tablet ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  :root { --card-w: 38vw; --strip-h: min(50svh, 72vw); }
+  .hero__intro { grid-template-columns: 1fr; align-items: start; align-content: end; gap: 40px; padding-right: var(--gutter); }
+  .hero__copy { max-width: 36rem; --intro-size: 17px; }
+  .hero__para { max-width: 26em; }
+}
+
+/* ── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  :root { --strip-h: 34svh; --card-w: 52vw; }
+  .hero { grid-template-rows: var(--strip-h) 1fr auto; }
+  .hero__intro { padding-top: 36px; padding-bottom: 14px; gap: 26px; }
+  .hero__copy { padding-right: 0; }
+  .hero__copy { --intro-size: 16px; }
+  .card__title { font-size: 14px; }
+  .card__meta { font-size: 10px; }
+  .bar { padding-right: calc(var(--gutter) + 52px); gap: 8px 24px; }
+  .bar .bar__copy { display: none; } /* repeated in the contact footer */
+  .menu-btn { bottom: 16px; width: 44px; height: 32px; }
+  .menu__panel { bottom: calc(16px + 32px + 14px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    animation-duration: 0.01ms !important;
+  }
+  .js .hero__copy > *, .js .bar { opacity: 1; transform: none; }
+  .js .wordmark__char > span { transform: none; }
+  .js .strip__track { opacity: 1; }
+  .card__media img { transform: none; }
+}
