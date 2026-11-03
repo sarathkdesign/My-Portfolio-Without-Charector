@@ -10,7 +10,7 @@ export default {
   slug: 'motion-design',
   name: 'Motion Design',
   intro: '[A line about your motion work.]',
-  cover: { src: 'assets/work/placeholder-04.svg', alt: 'Placeholder artwork: sweeping cyan light trails on black' },
+  cover: { src: 'assets/work/motion-design/cover.jpg', alt: 'Inspire: neon type framed by nested white outlines on black' },
 
   projects: [
     placeholderProject(14),

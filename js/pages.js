@@ -11,6 +11,7 @@
 */
 
 import { categories } from './work/index.js';
+import { content } from './content.js';
 
 const MOTION = {
   grow: 1100, // ms: a tile or thumbnail growing into a page
@@ -18,6 +19,9 @@ const MOTION = {
   ease: 'cubic-bezier(0.76, 0, 0.24, 1)', // slow start, long glide, soft landing
   reveal: 0.45, // share of the growth after which the page's text starts to rise in
   fade: 520, // ms: page changes that have no image to carry across
+  switch: 1050, // ms: one category page wiping across another
+  wallDelay: 450, // ms: the cover holds its single image this long before the moving wall fades in
+  wallPace: 11, // seconds per unit of image width (relative to row height): higher is slower
 };
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -46,6 +50,8 @@ const BASE = pathOf('./');
 
 function resolve(pathname) {
   const route = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : '';
+  const page = route.replace(/\/+$/, '');
+  if (page === 'experience' || page === 'contact') return { depth: 1, info: page };
   const [, a, b] = route.replace(/\/+$/, '').match(/^work\/([^/]+)(?:\/([^/]+))?$/) || [];
   const category = categories.find((c) => c.slug === a);
   if (!category) return { depth: 0 };
@@ -72,10 +78,14 @@ const arrow = () => {
 const backLink = (href, label) =>
   el('a', { class: 'page__back', href, 'data-route': true, 'data-back': true }, [arrow(), el('span', { text: label })]);
 
-const nextLink = (href, label, title, image) =>
+// The link at the foot of a page: label, name and an optional line of detail, with an optional thumbnail
+const nextLink = (href, label, title, image, meta) =>
   el('a', { class: 'page__next', href, 'data-route': true }, [
-    el('span', { class: 'page__next-label', text: label }),
-    el('span', { class: 'page__next-title', text: title }),
+    el('span', { class: 'page__next-text' }, [
+      el('span', { class: 'page__next-label', text: label }),
+      el('span', { class: 'page__next-title', text: title }),
+      meta && el('span', { class: 'page__next-meta', text: meta }),
+    ]),
     image && el('span', { class: 'page__next-media' }, [picture(image, { loading: 'lazy' })]),
   ]);
 
@@ -108,6 +118,82 @@ function module(m) {
   }
 }
 
+/* ── Category cover: a wall of the category's work in two rows that glide continuously
+   in opposite directions, like the tile band on the homepage ───────────────────── */
+// A category's `wall` images (or else each project's thumbnail), always including the
+// category's own tile image, so the tile can fly straight into its place in the wall
+function wallImages(category) {
+  const list = category.wall?.length ? [...category.wall] : category.projects.map((p) => p.thumb || p.cover);
+  if (!list.some((img) => img.src === category.cover.src)) list.unshift(category.cover);
+  return list;
+}
+
+// Runs itself: it fades in once its page is open and settled, glides while the cover is
+// in view, and holds still while the page is covered, scrolled away or changing
+function mountWall(page, hero, category) {
+  const images = wallImages(category);
+  if (images.length < 2) return null;
+  const rows = [images.filter((_, i) => i % 2 === 0), images.filter((_, i) => i % 2 === 1)];
+  const wall = el('div', { class: 'cat__wall', 'aria-hidden': 'true' }, rows.map((row, r) => {
+    const ratio = (img) => (img.w && img.h ? img.w / img.h : 4 / 3);
+    const span = row.reduce((sum, img) => sum + ratio(img), 0); // the set's width, in row heights
+    const set = () => row.map((img) =>
+      el('img', { src: img.src, alt: '', decoding: 'async', 'data-src': img.src, style: `aspect-ratio:${ratio(img)}` }));
+    // Three copies: the row moves by one copy and starts again, with no seam
+    return el('div', { class: 'cat__wall-row' }, [
+      el('div', { class: 'cat__wall-track', style: `--dur:${(span * MOTION.wallPace * (r ? 1.15 : 1)).toFixed(1)}s` },
+        [...set(), ...set(), ...set()]),
+    ]);
+  }));
+  hero.append(wall);
+  let inView = true, settledSince = 0, timer = 0;
+  const settled = () => !page.hidden && !page.inert && !document.hidden && inView &&
+    !['is-before', 'is-after', 'is-morphing', 'is-entering'].some((c) => page.classList.contains(c));
+  const io = new IntersectionObserver(([e]) => (inView = e.isIntersecting), { root: page });
+  io.observe(hero);
+  const tick = () => {
+    const ok = settled();
+    if (!ok) settledSince = 0;
+    else if (!settledSince) settledSince = performance.now();
+    else if (performance.now() - settledSince > MOTION.wallDelay) hero.classList.add('is-live');
+    hero.classList.toggle('is-playing', ok && hero.classList.contains('is-live'));
+    timer = setTimeout(tick, 150);
+  };
+  tick();
+
+  const instances = (src) => $$('img', wall).filter((img) => img.dataset.src === src);
+  return {
+    destroy: () => { clearTimeout(timer); io.disconnect(); },
+    // Line the wall up so this image sits centred in its row, show the wall, and return the image
+    // (the tile on the homepage flies into it)
+    land(src) {
+      const all = instances(src);
+      if (!all.length) return null;
+      const track = all[0].parentElement;
+      const reverse = !!track.closest('.cat__wall-row + .cat__wall-row');
+      const loop = all[1].offsetLeft - all[0].offsetLeft; // one copy of the row
+      const dur = parseFloat(track.style.getPropertyValue('--dur'));
+      const shift = (((all[0].offsetLeft + all[0].offsetWidth / 2 - hero.clientWidth / 2) % loop) + loop) % loop;
+      const progress = reverse ? 1 - shift / loop : shift / loop;
+      track.style.animationDelay = `-${(progress * dur).toFixed(3)}s`;
+      hero.classList.add('is-live');
+      return all.reduce((best, img) => {
+        const r = img.getBoundingClientRect(), mid = Math.abs(r.left + r.width / 2 - innerWidth / 2);
+        return !best || mid < best.mid ? { img, mid } : best;
+      }, null).img;
+    },
+    // Where that image is now, if it is on screen (for the trip back to the tile)
+    find(src) {
+      const box = hero.getBoundingClientRect();
+      if (!hero.classList.contains('is-live') || box.bottom <= 0) return null;
+      return instances(src).find((img) => {
+        const r = img.getBoundingClientRect();
+        return r.right > box.left && r.left < box.right && r.width > 0;
+      }) || null;
+    },
+  };
+}
+
 function renderCategory(page, category) {
   const next = categories[(categories.indexOf(category) + 1) % categories.length];
   page.dataset.slug = category.slug;
@@ -123,7 +209,7 @@ function renderCategory(page, category) {
     el('ul', { class: 'cat__grid' }, category.projects.map((p, i) =>
       el('li', { 'data-reveal': true, style: `--d:${i % 3}` }, [
         el('a', { class: 'thumb', href: hrefOf(category, p), 'data-route': true, 'data-project': p.slug }, [
-          el('span', { class: 'thumb__media' }, [picture(p.cover, { loading: i < 6 ? 'eager' : 'lazy' })]),
+          el('span', { class: 'thumb__media' }, [picture(p.thumb || p.cover, { loading: i < 6 ? 'eager' : 'lazy' })]),
           el('span', { class: 'thumb__title', text: p.title }),
           el('span', { class: 'thumb__meta', text: [p.subtitle, p.year].filter(Boolean).join(' — ') }),
         ]),
@@ -132,6 +218,145 @@ function renderCategory(page, category) {
     nextLink(hrefOf(next), 'Next category', next.name)
   );
   page.scrollTop = 0;
+  page._wall?.destroy();
+  page._wall = mountWall(page, $('.cat__hero', page), category);
+}
+
+/* Experience, built to be read at a glance: each role with when, where and what the
+   work involved. The competencies drift in two rows, echoing the tile band on the
+   homepage. (Earlier layout: /experience?layout=classic) */
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+// "Mar 2021 — Present" → [start, end] in months; a bare year counts from January
+function spanOf(years) {
+  const now = new Date();
+  const parse = (txt, isEnd) => {
+    if (/present|now/i.test(txt)) return now.getFullYear() * 12 + now.getMonth();
+    const y = +(txt.match(/\d{4}/) || [0])[0];
+    const m = MONTHS.indexOf((txt.match(/[a-z]{3}/i) || [''])[0].toLowerCase());
+    return y * 12 + (m >= 0 ? m : isEnd ? 0 : 0);
+  };
+  const [a, b = a] = years.split(/[—–-]/).map((t) => t.trim());
+  return [parse(a, false), parse(b, true)];
+}
+const durationOf = (months) => {
+  const y = Math.floor(months / 12), m = months % 12;
+  return [y && `${y} yr${y > 1 ? 's' : ''}`, m && `${m} mo${m > 1 ? 's' : ''}`].filter(Boolean).join(' ');
+};
+
+// The curtain page shows Experience or Contact
+const INFO_TITLES = { experience: 'Experience', contact: 'Contact' };
+function renderInfo(page, kind) {
+  page.dataset.page = kind;
+  return kind === 'contact' ? renderContact(page) : renderExperience(page);
+}
+
+/* Contact: a bold green page with each way to reach Sarath as a large row */
+function renderContact(page) {
+  page.classList.remove('is-dark');
+  page.classList.add('is-accent');
+  page.setAttribute('aria-labelledby', 'page-contact-title');
+  const handle = (url) => {
+    const u = new URL(url), parts = u.pathname.split('/').filter(Boolean);
+    return u.hostname.includes('instagram') ? `@${parts.at(-1)}` : `${u.hostname.replace('www.', '')}/${parts.join('/')}`;
+  };
+  const row = (label, href, value, action, external) =>
+    el('li', { class: 'ct__row', 'data-reveal': true }, [
+      el('span', { class: 'ct__label', text: label }),
+      el('a', { class: 'ct__value', href, ...(external ? { target: '_blank', rel: 'noopener' } : {}) }, [value, el('span', { class: 'ct__arrow', 'aria-hidden': 'true', text: external ? '↗' : '→' })]),
+      action,
+    ]);
+  page.replaceChildren(
+    backLink('./', 'Index'),
+    el('header', { class: 'ct__head' }, [
+      el('p', { class: 'ct__kicker', 'data-reveal': true, text: 'Contact' }),
+      el('h1', { class: 'ct__title', id: 'page-contact-title', tabindex: '-1', 'data-reveal': true, style: '--d:1', text: 'Let’s talk' }),
+      el('p', { class: 'ct__lede', 'data-reveal': true, style: '--d:2', text: 'Available for new projects.' }),
+    ]),
+    el('ul', { class: 'ct__list' }, [
+      row('Email', `mailto:${content.email}`, content.email,
+        el('button', { class: 'ct__copy', type: 'button', 'data-copy': content.email, text: 'Copy' })),
+      content.phone && row('Phone', `tel:${content.phone.replace(/[^\d+]/g, '')}`, content.phone),
+      ...content.socials.map((s) => row(s.label, s.url, handle(s.url), null, true)),
+    ])
+  );
+}
+
+function renderExperience(page) {
+  page.classList.remove('is-accent');
+  if (new URLSearchParams(location.search).get('layout') === 'classic') {
+    page.classList.remove('is-dark');
+    return renderExperienceClassic(page);
+  }
+  page.classList.add('is-dark');
+  page.setAttribute('aria-labelledby', 'page-experience-title');
+  const jobs = content.experience;
+  const pad = (n) => String(n).padStart(2, '0');
+  const spans = jobs.map((j) => spanOf(j.years));
+  const skills = content.competencies || [];
+  const half = Math.ceil(skills.length / 2);
+  const tickerRow = (words, dir) =>
+    el('div', { class: 'xp2__ticker', style: `--dir:${dir}`, 'aria-hidden': 'true' }, [
+      el('div', { class: 'xp2__track' }, [...words, ...words].map((w, i) =>
+        el('span', { class: 'xp2__word' + (i % 2 ? ' is-outline' : '') }, [w, el('i', { class: 'xp2__dot' })]))),
+    ]);
+
+  page.replaceChildren(
+    backLink('./', 'Index'),
+    el('header', { class: 'xp4__head' }, [
+      el('h1', { class: 'xp4__title', id: 'page-experience-title', tabindex: '-1', 'data-reveal': true, text: 'Experience' }),
+      el('p', { class: 'xp4__lede', 'data-reveal': true, style: '--d:1', text: content.intro }),
+    ]),
+    el('ol', { class: 'xp4__roles' }, jobs.map((job, i) => {
+      const [a, b] = spans[i];
+      return el('li', { class: 'xp4__role', id: `xp-role-${i}` }, [
+        el('div', { class: 'xp4__info', 'data-reveal': true }, [
+          el('span', { class: 'xp4__index', text: pad(i + 1) }),
+          el('p', { class: 'xp4__when' }, [el('span', { text: job.years }), el('span', { text: durationOf(b - a) })]),
+          el('h2', { class: 'xp4__role-title', text: job.role }),
+          el('p', { class: 'xp4__org' }, [el('strong', { text: job.company }), el('span', { text: job.location })]),
+        ]),
+        el('ol', { class: 'xp4__points' }, (job.points || []).map((t, k) =>
+          el('li', { 'data-reveal': true, style: `--d:${Math.min(k, 4)}` }, [el('span', { class: 'xp4__n', text: pad(k + 1) }), el('p', { text: t })]))),
+      ]);
+    })),
+
+    skills.length && el('section', { class: 'xp2__skills', 'aria-labelledby': 'xp-skills-title' }, [
+      el('h2', { class: 'xp2__label', id: 'xp-skills-title', 'data-reveal': true, text: 'Core competencies' }),
+      el('ul', { class: 'sr-only' }, skills.map((t) => el('li', { text: t }))),
+      tickerRow(skills.slice(0, half), -1),
+      tickerRow(skills.slice(half), 1),
+    ]),
+    nextLink(hrefOf(categories[0]), 'Selected work', 'View work')
+  );
+}
+
+function renderExperienceClassic(page) {
+  page.setAttribute('aria-labelledby', 'page-experience-title');
+  page.replaceChildren(
+    backLink('./', 'Index'),
+    el('header', { class: 'xp__head' }, [
+      el('h1', { class: 'xp__title', id: 'page-experience-title', tabindex: '-1', 'data-reveal': true, text: 'Experience' }),
+      el('p', { class: 'xp__lede', 'data-reveal': true, style: '--d:1', text: content.intro }),
+    ]),
+    el('ol', { class: 'xp__list' }, content.experience.map((job, i) =>
+      el('li', { class: 'xp__row', 'data-reveal': true }, [
+        el('p', { class: 'xp__when' }, [
+          el('span', { class: 'xp__index', text: String(i + 1).padStart(2, '0') }),
+          el('span', { class: 'xp__years', text: job.years }),
+        ]),
+        el('div', { class: 'xp__what' }, [
+          el('h2', { class: 'xp__role', text: job.role }),
+          el('p', { class: 'xp__company', text: [job.company, job.location].filter(Boolean).join(' — ') }),
+        ]),
+        job.points?.length && el('ul', { class: 'xp__points' }, job.points.map((t) => el('li', { text: t }))),
+      ])
+    )),
+    content.competencies?.length && el('section', { class: 'xp__skills', 'data-reveal': true }, [
+      el('h2', { class: 'xp__role', text: 'Core competencies' }),
+      el('ul', {}, content.competencies.map((t) => el('li', { text: t }))),
+    ]),
+    nextLink(hrefOf(categories[0]), 'Selected work', 'View work')
+  );
 }
 
 function renderProject(page, category, project) {
@@ -163,7 +388,7 @@ function renderProject(page, category, project) {
       (project.modules || []).map(module)),
     el('footer', { class: 'proj__foot' }, [
       project.link && el('a', { class: 'proj__link', href: project.link, target: '_blank', rel: 'noopener', text: `${linkLabel} ↗` }),
-      list.length > 1 && nextLink(hrefOf(category, next), 'Next project', next.title, next.cover),
+      list.length > 1 && nextLink(hrefOf(category, next), 'Next project', next.title, next.thumb || next.cover, next.subtitle),
     ])
   );
   page.scrollTop = 0;
@@ -175,6 +400,27 @@ export function createPages({ sound, leaveHome, returnHome }) {
   const home = $('#main');
   const menu = $('[data-menu]');
   const categoryPage = $('[data-page="category"]');
+  const infoPage = el('section', { class: 'page page--info', 'data-page': 'experience', hidden: true });
+  categoryPage.before(infoPage);
+  // Contact: copy the email address
+  infoPage.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-copy]');
+    if (!btn) return;
+    try {
+      await navigator.clipboard.writeText(btn.dataset.copy);
+      btn.textContent = 'Copied';
+    } catch {
+      // Older or locked-down browsers: copy through a hidden text field instead
+      const field = el('textarea', { readonly: true, style: 'position:fixed;opacity:0' });
+      field.value = btn.dataset.copy;
+      document.body.append(field);
+      field.select();
+      btn.textContent = document.execCommand('copy') ? 'Copied' : 'Press Ctrl/Cmd + C';
+      field.remove();
+    }
+    sound.play('click');
+    setTimeout(() => (btn.textContent = 'Copy'), 1800);
+  });
   const projectPage = $('[data-page="project"]');
   const morphLayer = $('[data-morph-layer]');
   const siteName = document.title.split(' — ')[0];
@@ -215,10 +461,15 @@ export function createPages({ sound, leaveHome, returnHome }) {
     if (state) page.classList.add(state);
     page.hidden = false;
     page.inert = false;
+    // Every page opens at its top (a scroll set while it was hidden doesn't stick)
+    page.scrollTop = 0;
+    fitTitle(page);
     observe(page);
   };
   const hide = (page) => {
     page._io?.disconnect();
+    page._wall?.destroy();
+    page._wall = null;
     page.hidden = true;
     page.classList.remove('is-before', 'is-after', 'is-morphing');
     page.replaceChildren(); // also stops any video
@@ -235,25 +486,83 @@ export function createPages({ sound, leaveHome, returnHome }) {
     await wait(MOTION.fade * 0.7);
     hide(page);
   };
+  // A project name never runs into the details beside it: when it is wider than its
+  // column the details drop below, and a name wider than the page is scaled to fit
+  const fitTitle = (page) => {
+    const head = $('.proj__head', page), title = $('.proj__title', page);
+    if (!head || !title || page.hidden) return;
+    head.classList.remove('is-stacked');
+    title.style.fontSize = '';
+    if (title.scrollWidth > title.clientWidth + 1) head.classList.add('is-stacked');
+    if (title.scrollWidth > title.clientWidth + 1) {
+      title.style.fontSize = `${Math.floor(parseFloat(getComputedStyle(title).fontSize) * title.clientWidth / title.scrollWidth)}px`;
+    }
+  };
+  const refit = () => fitTitle(projectPage);
+  window.addEventListener('resize', refit);
+  document.fonts?.ready.then(refit);
   const focusTitle = (page) => $('h1', page)?.focus({ preventScroll: true });
 
+  /* Category bar: every category, over the category pages.
+     One bar for all of them, so its marker can glide from the old category to the new one. */
+  // Short names, in the bar's own order
+  const NAV = [
+    ['branding', 'Branding'], ['poster-design', 'Posters'], ['package-design', 'Package'],
+    ['brochure-design', 'Brochure'], ['motion-design', 'Motion'], ['video', 'Video'], ['iconography', 'Iconography'],
+  ].filter(([slug]) => categories.some((c) => c.slug === slug));
+  const navOrder = (c) => NAV.findIndex(([slug]) => slug === c.slug);
+  const mark = el('span', { class: 'cat-nav__mark', 'aria-hidden': 'true' });
+  const nav = el('nav', { class: 'cat-nav', 'aria-label': 'Work categories' }, [
+    el('ul', {}, [
+      ...NAV.map(([slug, label]) => el('li', {}, [el('a', { href: `work/${slug}`, 'data-route': true, 'data-nav': slug, text: label })])),
+    ]),
+    mark,
+  ]);
+  nav.inert = true;
+  categoryPage.before(nav);
+  const setNav = (at, glide = false) => {
+    const on = at.depth === 1 && !!at.category;
+    nav.classList.toggle('is-on', on);
+    nav.inert = !on;
+    if (!on) return;
+    const link = $(`[data-nav="${at.category.slug}"]`, nav);
+    $$('a', nav).forEach((a) => (a === link ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
+    nav.classList.toggle('is-instant', !glide || reduced());
+    const pad = parseFloat(getComputedStyle(link).paddingLeft); // underline the word, not its padding
+    mark.style.width = `${link.offsetWidth - 2 * pad}px`;
+    mark.style.transform = `translate3d(${link.offsetLeft + pad}px, 0, 0)`;
+    void mark.offsetWidth;
+    nav.classList.remove('is-instant');
+    // On narrow screens the bar scrolls; keep the current category in view
+    nav.scrollTo({ left: link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2, behavior: glide ? 'smooth' : 'auto' });
+  };
+  // Label widths change once the typeface arrives and with the window, so measure again
+  document.fonts?.ready.then(() => setNav(current));
+  window.addEventListener('resize', () => setNav(current));
+
   /* The shared image: a copy of the source picture that travels from one box to the other.
-     `clip` hides the bottom of a box (the tiles show only part of their height). */
-  async function morph({ src, from, to, fromClip = 0, toClip = 0, fromTransform = 'none', toTransform = 'none', position, duration, onReveal }) {
+     `clip` hides the bottom of a box (the tiles show only part of their height).
+     When the two ends show different pictures (a thumbnail and its project's cover),
+     `toSrc` fades in over the journey. */
+  async function morph({ src, toSrc, from, to, fromClip = 0, toClip = 0, fromTransform = 'none', toTransform = 'none', position, duration, onReveal }) {
     const img = el('img', { src, alt: '' });
     img.style.objectPosition = position;
-    const box = el('div', { class: 'morph' }, [img]);
-    morphLayer.append(box);
-    await img.decode().catch(() => {});
+    const next = toSrc && toSrc !== src ? el('img', { src: toSrc, alt: '' }) : null;
+    if (next) Object.assign(next.style, { objectPosition: position, opacity: 0 });
     const frame = (r, clip) => ({
       transform: `translate3d(${r.left}px, ${r.top}px, 0)`,
       width: `${r.width}px`,
       height: `${r.height}px`,
       clipPath: `inset(0 0 ${Math.max(0, clip)}px 0)`,
     });
+    const box = el('div', { class: 'morph' }, [img, next]);
+    Object.assign(box.style, frame(from, fromClip)); // already in place while the picture decodes
+    morphLayer.append(box);
+    await Promise.all([img, next].filter(Boolean).map((i) => i.decode().catch(() => {})));
     const timing = { duration, easing: MOTION.ease, fill: 'both' };
     const anim = box.animate([frame(from, fromClip), frame(to, toClip)], timing);
     img.animate([{ transform: fromTransform }, { transform: toTransform }], timing);
+    next?.animate([{ opacity: 0, offset: 0 }, { opacity: 0, offset: 0.25 }, { opacity: 1, offset: 0.8 }, { opacity: 1 }], { ...timing, easing: 'linear' });
     if (onReveal) setTimeout(onReveal, duration * MOTION.reveal);
     await anim.finished.catch(() => {});
     return box;
@@ -293,13 +602,17 @@ export function createPages({ sound, leaveHome, returnHome }) {
       const t = tileBox(tile);
       tile.classList.add('is-source');
       categoryPage.classList.add('is-morphing');
+      // The tile lands on its own image in the moving wall, which fades in around it
+      const slot = categoryPage._wall?.land(category.cover.src);
+      slot?.classList.add('is-landing');
       const box = await morph({
         src: t.img.currentSrc || t.img.src,
         from: t.rect, fromClip: t.clip, fromTransform: t.transform,
-        to: $('[data-hero]', categoryPage).getBoundingClientRect(),
+        to: (slot || $('[data-hero]', categoryPage)).getBoundingClientRect(),
         position: '50% 35%', duration: MOTION.grow,
         onReveal: () => categoryPage.classList.remove('is-before'),
       });
+      slot?.classList.remove('is-landing');
       categoryPage.classList.remove('is-morphing');
       box.remove();
     } else {
@@ -316,10 +629,14 @@ export function createPages({ sound, leaveHome, returnHome }) {
     if (tile && !reduced()) {
       const t = tileBox(tile);
       tile.classList.add('is-source');
+      // Leave from wherever the tile's image now is in the moving wall
+      const slot = categoryPage._wall?.find(category.cover.src);
+      const from = (slot || $('[data-hero]', categoryPage)).getBoundingClientRect();
+      slot?.classList.add('is-landing');
       categoryPage.classList.add('is-after', 'is-morphing');
       const box = await morph({
         src: t.img.currentSrc || t.img.src,
-        from: $('[data-hero]', categoryPage).getBoundingClientRect(),
+        from,
         to: t.rect, toClip: t.clip, toTransform: t.transform,
         position: '50% 35%', duration: MOTION.shrink,
       });
@@ -347,6 +664,7 @@ export function createPages({ sound, leaveHome, returnHome }) {
       projectPage.classList.add('is-morphing');
       const box = await morph({
         src: img.currentSrc || img.src,
+        toSrc: $('[data-hero]', projectPage).currentSrc || $('[data-hero]', projectPage).src,
         from: $('.thumb__media', thumb).getBoundingClientRect(), fromTransform: getComputedStyle(img).transform,
         to: $('[data-hero]', projectPage).getBoundingClientRect(),
         position: '50% 50%', duration: MOTION.grow,
@@ -372,9 +690,11 @@ export function createPages({ sound, leaveHome, returnHome }) {
       const img = $('img', thumb);
       thumb.classList.add('is-source');
       projectPage.classList.add('is-after', 'is-morphing');
+      const hero = $('[data-hero]', projectPage);
       const box = await morph({
-        src: img.currentSrc || img.src,
-        from: $('[data-hero]', projectPage).getBoundingClientRect(),
+        src: hero.currentSrc || hero.src,
+        toSrc: img.currentSrc || img.src,
+        from: hero.getBoundingClientRect(),
         to: $('.thumb__media', thumb).getBoundingClientRect(),
         position: '50% 50%', duration: MOTION.shrink,
       });
@@ -387,7 +707,41 @@ export function createPages({ sound, leaveHome, returnHome }) {
     viaKeyboard && thumb ? thumb.focus({ preventScroll: true }) : focusTitle(categoryPage);
   }
 
-  // Any other change (next project, next category, deep links, skipping levels): a soft fade
+  // One category to another: the new page wipes across in the direction of travel,
+  // its banner gliding in against the motion while the old page slides away beneath
+  async function switchCategory(from, to) {
+    if (reduced()) return swap(current);
+    const dir = navOrder(to) > navOrder(from) ? 1 : -1;
+    const ghost = categoryPage.cloneNode(true);
+    ghost.removeAttribute('data-page');
+    $$('[id]', ghost).forEach((n) => n.removeAttribute('id'));
+    ghost.setAttribute('aria-hidden', 'true');
+    ghost.inert = true;
+    categoryPage.before(ghost);
+    ghost.scrollTop = categoryPage.scrollTop;
+    renderCategory(categoryPage, to);
+    show(categoryPage, 'is-entering');
+    sound.play('menuOpen');
+    const timing = { duration: MOTION.switch, easing: MOTION.ease };
+    const wipe = categoryPage.animate([
+      { clipPath: dir > 0 ? 'inset(0 0 0 100%)' : 'inset(0 100% 0 0)' },
+      { clipPath: 'inset(0 0 0 0)' },
+    ], timing);
+    $('[data-hero]', categoryPage).animate([
+      { transform: `translate3d(${dir * 18}%, 0, 0) scale(1.15)` },
+      { transform: 'none' },
+    ], timing);
+    ghost.animate([
+      { transform: 'none', opacity: 1 },
+      { transform: `translate3d(${-dir * 30}%, 0, 0)`, opacity: 0.35 },
+    ], { ...timing, fill: 'forwards' });
+    setTimeout(() => categoryPage.classList.remove('is-entering'), MOTION.switch * MOTION.reveal);
+    await wipe.finished.catch(() => {});
+    ghost.remove();
+    focusTitle(categoryPage);
+  }
+
+  // Any other change (next project, deep links, skipping levels): a soft fade
   async function swap(next) {
     if (next.depth === 0) {
       setAway(false);
@@ -421,19 +775,59 @@ export function createPages({ sound, leaveHome, returnHome }) {
     focusTitle(projectPage);
   }
 
+  // Experience and Contact: rise over the screen like a curtain, and drop away again
+  async function switchInfo(prev, next) {
+    const timing = { duration: MOTION.switch, easing: MOTION.ease };
+    if (next.info) {
+      const open = [projectPage, categoryPage].filter((p) => !p.hidden);
+      setAway(true);
+      renderInfo(infoPage, next.info);
+      show(infoPage, 'is-entering');
+      sound.play('menuOpen');
+      if (!reduced()) {
+        const rise = infoPage.animate([{ clipPath: 'inset(100% 0 0 0)' }, { clipPath: 'inset(0 0 0 0)' }], timing);
+        // The page's own header (whichever layout is showing) rises a little further
+        $('header', infoPage)?.animate([{ transform: 'translate3d(0, 14vh, 0)' }, { transform: 'none' }], timing);
+        setTimeout(() => infoPage.classList.remove('is-entering'), MOTION.switch * MOTION.reveal);
+        await rise.finished.catch(() => {});
+      } else {
+        infoPage.classList.remove('is-entering');
+        await wait(MOTION.fade);
+      }
+      open.forEach(hide);
+      $$('.card.is-source').forEach((c) => c.classList.remove('is-source'));
+      homeTile = null;
+      return focusTitle(infoPage);
+    }
+    if (next.depth === 0) setAway(false);
+    if (!reduced()) {
+      infoPage.classList.add('is-after');
+      await infoPage.animate([{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(100% 0 0 0)' }], timing).finished.catch(() => {});
+    } else {
+      await fadeOut(infoPage);
+    }
+    hide(infoPage);
+    if (next.depth === 0) return returnHome();
+    return swap(next);
+  }
+
   const titleFor = (at) =>
-    at.project ? `${at.project.title} — ${at.category.name} — ${siteName}`
+    at.info ? `${INFO_TITLES[at.info]} — ${siteName}`
+      : at.project ? `${at.project.title} — ${at.category.name} — ${siteName}`
       : at.category ? `${at.category.name} — ${siteName}` : homeTitle;
 
   function transition(next, source) {
     const prev = current;
     current = next;
     document.title = titleFor(next);
+    setNav(next, prev.depth === 1);
+    if (prev.info || next.info) return switchInfo(prev, next);
     const same = prev.category === next.category;
     if (prev.depth === 0 && next.depth === 1) return openCategory(next.category, source);
     if (prev.depth === 1 && next.depth === 0) return closeCategory(prev.category);
     if (same && prev.depth === 1 && next.depth === 2) return openProject(next.category, next.project, source);
     if (same && prev.depth === 2 && next.depth === 1) return closeProject(prev.project);
+    if (prev.depth === 1 && next.depth === 1) return switchCategory(prev.category, next.category);
     return swap(next);
   }
   const render = (next, source) => (queue = queue.then(() => transition(next, source)).catch((err) => console.error(err)));
@@ -475,17 +869,25 @@ export function createPages({ sound, leaveHome, returnHome }) {
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape' || !current.depth || !menu.hidden) return;
     viaKeyboard = true;
-    $('.page__back', current.depth === 2 ? projectPage : categoryPage)?.click();
+    $('.page__back', current.info ? infoPage : current.depth === 2 ? projectPage : categoryPage)?.click();
   });
 
   /* ── First visit ──────────────────────────────────────── */
   history.scrollRestoration = 'manual';
   const first = resolve(location.pathname);
-  const canonical = pathOf(hrefOf(first.category, first.project));
+  const canonical = pathOf(first.info || hrefOf(first.category, first.project));
   if (canonical !== location.pathname) history.replaceState(history.state, '', canonical);
-  if (first.depth) {
+  if (first.info) {
+    current = first;
+    setAway(true, true);
+    renderInfo(infoPage, first.info);
+    show(infoPage);
+    document.title = titleFor(first);
+    focusTitle(infoPage);
+  } else if (first.depth) {
     // Arriving on a page directly: no growth to show, so it's simply there
     current = first;
+    setNav(first);
     setAway(true, true);
     renderCategory(categoryPage, first.category);
     show(categoryPage);

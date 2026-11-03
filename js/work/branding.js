@@ -16,7 +16,8 @@
      { type: 'video', src: 'assets/work/branding/aakara/reel.mp4', poster: '…/reel.jpg' }        // plays silently on a loop
      { type: 'embed', src: 'https://player.vimeo.com/video/123456789', title: 'Brand film' }       // Vimeo / YouTube
 
-  `cover` is the thumbnail on the category page and the first image on the project page.
+  `thumb` is the thumbnail on the category page (falls back to `cover`);
+  `cover` is the first image on the project page.
   Anything in [square brackets] is a placeholder to replace.
 */
 
@@ -24,8 +25,26 @@ export default {
   slug: 'branding',
   name: 'Branding',
   intro: '[A line about your branding work.]',
-  // The tile on the homepage and the banner at the top of this category's page
-  cover: { src: 'assets/work/placeholder-06.svg', alt: 'Placeholder artwork: stacked brown, cream and black rectangles on ochre' },
+  // The tile on the homepage. It is also one of the wall images below: opening the page,
+  // the tile flies into its place in the moving wall.
+  cover: { src: 'assets/work/branding/wall/07.jpg', alt: 'Red ZIO tote bag carried over a dark coat' },
+  // The moving wall at the top of this page: two rows gliding in opposite directions.
+  // Add or remove images here; w and h are each image's pixel size.
+  wall: [
+    { src: 'assets/work/branding/wall/01.jpg', w: 666, h: 1000 },
+    { src: 'assets/work/branding/wall/02.jpg', w: 1333, h: 1000 },
+    { src: 'assets/work/branding/wall/03.jpg', w: 1500, h: 1000 },
+    { src: 'assets/work/branding/wall/04.jpg', w: 1428, h: 1000 },
+    { src: 'assets/work/branding/wall/05.jpg', w: 1333, h: 1000 },
+    { src: 'assets/work/branding/wall/06.jpg', w: 1500, h: 1000 },
+    { src: 'assets/work/branding/wall/07.jpg', w: 1050, h: 1500 },
+    { src: 'assets/work/branding/wall/08.jpg', w: 1595, h: 1000 },
+    { src: 'assets/work/branding/wall/09.jpg', w: 1500, h: 1000 },
+    { src: 'assets/work/branding/wall/10.jpg', w: 777, h: 1000 },
+    { src: 'assets/work/branding/wall/11.jpg', w: 1330, h: 1000 },
+    { src: 'assets/work/branding/wall/12.jpg', w: 1500, h: 1000 },
+    { src: 'assets/work/branding/wall/13.jpg', w: 1500, h: 1000 },
+  ],
 
   projects: [
     {
@@ -36,6 +55,7 @@ export default {
       year: '2024–25',
       services: ['Art direction', 'Branding', 'Logo design'],
       summary: 'Aakara is a pottery studio in Wayanad, Kerala, making handcrafted ceramics that celebrate simplicity, authenticity and mindful living. The identity draws on craftsmanship, organic forms and the studio\'s philosophy of slow living — from logotype and symbol to colour, typography, packaging and studio applications.',
+      thumb: { src: 'assets/work/branding/aakara/thumb.jpg', alt: 'Aakara banner hanging in a timber-lattice space' }, // Behance thumbnail
       cover: { src: 'assets/work/branding/aakara/01.webp', alt: 'Aakara banner hanging in a timber-lattice space' },
       link: 'https://www.behance.net/gallery/253598323/Aakara-Brand-Identity-Design-for-a-Pottery-Studio',
       modules: [
@@ -76,6 +96,7 @@ export default {
       year: '2026',
       services: ['Branding', 'Graphic design', 'Logo design'],
       summary: 'ZIO is a premium fashion and lifestyle brand offering apparel, accessories and gym wear for men and women. The brief called for a timeless identity that communicates confidence, quality and modern elegance, and adapts across retail, packaging, digital and brand communications.',
+      thumb: { src: 'assets/work/branding/zio-fashion/thumb.jpg', alt: 'Red ZIO tote bag carried over a dark coat' }, // Behance thumbnail
       cover: { src: 'assets/work/branding/zio-fashion/05.webp', alt: 'White ZIO tote bag on concrete steps' },
       link: 'https://www.behance.net/gallery/253292477/ZIO-FASHION-Premium-Fashion-Brand-Identity',
       modules: [
@@ -112,6 +133,7 @@ export default {
       year: '2025',
       services: ['Art direction', 'Brand identity', 'Logo design'],
       summary: 'Form & Flow designs commercial interiors. Its identity is built on a mark that brings together power, precision and vision, set in a confident electric blue and carried across print, digital, signage and workwear.',
+      thumb: { src: 'assets/work/branding/form-and-flow/thumb.jpg', alt: 'Form & Flow logo over rippling blue light' }, // Behance thumbnail
       cover: { src: 'assets/work/branding/form-and-flow/26.webp', alt: 'Form & Flow billboard on a building: Designing Spaces with Strategic Flow' },
       link: 'https://www.behance.net/gallery/235380971/Form-Flow-Brand-Identity-Design',
       modules: [
@@ -160,6 +182,7 @@ export default {
       year: '',
       services: ['Brand identity', 'Logo design'],
       summary: 'Consciousness Sound Healing Studio is a wellness space in Chennai offering sound-healing therapies that combine ancient instruments with modern practice. The identity turns calm, resonance and renewal into a single mark and a warm, quiet visual language.',
+      thumb: { src: 'assets/work/branding/consciousness/thumb.jpg', alt: 'Consciousness logo on a teal-to-orange gradient' }, // Behance thumbnail
       cover: { src: 'assets/work/branding/consciousness/04.webp', alt: 'Consciousness logo with flowing teal waves on black' },
       link: 'https://www.behance.net/gallery/232087527/Brand-Identity_Consciousness-Sound-Healing-Studio',
       modules: [
@@ -196,6 +219,7 @@ export default {
       year: '',
       services: ['Branding', 'Logo design', 'Typography'],
       summary: 'EVA Design Group helps homeowners transform their interiors — from kitchen countertops and bathroom remodels to a fresh coat of paint — with quality materials and attentive service at good value. The identity is minimal and refined, with a premium feel suited to the homes it serves.',
+      thumb: { src: 'assets/work/branding/eva-design-group/thumb.jpg', alt: 'EVA Design Group sign on a lakeside house in autumn' }, // Behance thumbnail
       cover: { src: 'assets/work/branding/eva-design-group/01.webp', alt: 'EVA Design Group storefront signage at dusk' },
       link: 'https://www.behance.net/gallery/229518285/Minimal-Brand-Identity_EVA-Design-Group',
       modules: [
@@ -218,6 +242,7 @@ export default {
       year: '',
       services: ['Brand identity', 'Logo design', 'Visual identity'],
       summary: 'taras is Sarath Bhaskar’s own design studio. The name is “Sarat(h)” spelled backwards — a reminder to look, think and design differently — and the identity stands for original thinking, bold expression and identity-driven design.',
+      thumb: { src: 'assets/work/branding/taras/thumb.jpg', alt: 'Lime and black taras business cards' }, // Behance thumbnail
       cover: { src: 'assets/work/branding/taras/05.webp', alt: 'Lime and black taras business cards' },
       link: 'https://www.behance.net/gallery/227790961/Minimal-Logo-Identity_taras-design-studio',
       modules: [
@@ -245,6 +270,7 @@ export default {
       year: '',
       services: ['Brand strategy', 'Logo design', 'Visual identity', 'Brand guidelines', 'Signage system', 'Packaging design', 'Social media branding'],
       summary: '40 Feet is a multi-cuisine café in Trivandrum, Kerala, built from repurposed shipping containers. Its identity captures that industrial architecture while staying warm, creative and welcoming.',
+      thumb: { src: 'assets/work/branding/40-feet/thumb.jpg', alt: '40 Feet branded shipping container lifted against the sky' }, // Behance thumbnail
       cover: { src: 'assets/work/branding/40-feet/13.webp', alt: '40 Feet branded shipping container lifted against the sky' },
       link: 'https://www.behance.net/gallery/205643747/40-Feet-Cafe-Restaurant-Branding',
       modules: [
@@ -278,6 +304,7 @@ export default {
       year: '',
       services: ['Branding', 'Logo design', 'Visual identity'],
       summary: 'Initium World organises international conferences and professional training in Bangalore, bringing industry leaders and professionals together to share ideas, build connections and grow. The identity presents it as a premium, forward-looking platform for learning and collaboration.',
+      thumb: { src: 'assets/work/branding/initium-world/thumb.jpg', alt: 'Initium World stickers and app icons' }, // Behance thumbnail
       cover: { src: 'assets/work/branding/initium-world/05.webp', alt: 'Initium World logo on a green gradient, white and black' },
       link: 'https://www.behance.net/gallery/205207613/Brand-Identity-Design_Initium-World',
       modules: [
@@ -312,6 +339,7 @@ export default {
       year: '',
       services: ['Branding', 'Logo design', 'Visual identity'],
       summary: 'Debarro Interiors creates bespoke interiors that balance luxury with function. The identity borrows from nature’s master builders — the honeybee and its honeycomb — to express precision, structure and collaborative craft.',
+      thumb: { src: 'assets/work/branding/debarro-interiors/thumb.jpg', alt: 'Debarro Interiors logo over fluted glass' }, // Behance thumbnail
       cover: { src: 'assets/work/branding/debarro-interiors/07.webp', alt: 'Debarro Interiors logo on black and orange panels' },
       link: 'https://www.behance.net/gallery/204263485/Branding_Debarro-Interiors',
       modules: [
@@ -345,6 +373,7 @@ export default {
       year: '',
       services: ['Brand identity', 'Logo design', 'Packaging design'],
       summary: 'Sidhi Advanced Life Science grew from a traditional Ayurvedic lineage, with the aim of bringing restorative remedies drawn from ancient texts to modern life. The identity pairs that heritage with clarity across skincare packaging.',
+      thumb: { src: 'assets/work/branding/sidhi/thumb.jpg', alt: 'Sidhi poster in a glass-roofed atrium' }, // Behance thumbnail
       cover: { src: 'assets/work/branding/sidhi/02.webp', alt: 'Sidhi logo with a skincare tube and a mortar of herbs' },
       link: 'https://www.behance.net/gallery/97752159/Branding_Sidhi-Advanced-Life-Science',
       modules: [

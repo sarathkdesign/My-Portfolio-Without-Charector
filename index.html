@@ -20,7 +20,10 @@
 <body>
   <a class="skip" href="#about">Skip to introduction</a>
 
-  <img class="mark" src="public/logo/taraslogo.svg" alt="" width="44" height="44" aria-hidden="true">
+  <!-- The logo leads home from any page -->
+  <a class="mark-link" href="./" data-route aria-label="Home">
+    <img class="mark" src="public/logo/taraslogo.svg" alt="" width="44" height="44">
+  </a>
 
   <!-- Sits early in the tab order so keyboard users reach the menu first -->
   <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu" data-menu-btn>
@@ -52,8 +55,6 @@
 
     <footer class="bar">
       <div class="bar__group">
-        <span class="bar__copy">© <span data-year>2026</span> <span data-content="name">SARATH</span></span>
-        <span class="bar__sep bar__copy" aria-hidden="true">|</span>
         <button class="toggle" type="button" data-sound aria-pressed="false" aria-label="Sound">
           <svg class="toggle__icon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/>
@@ -85,8 +86,8 @@
     <nav class="menu__panel" aria-label="Main">
       <ul class="menu__list">
         <li><a href="#work" data-menu-link="work">Work</a></li>
-        <li><a href="#about" data-menu-link="about">About</a></li>
-        <li><a href="mailto:you@example.com" data-menu-link data-email-link class="is-accent">Let’s talk</a></li>
+        <li><a href="experience" data-route data-menu-link>Experience</a></li>
+        <li><a href="contact" data-route data-menu-link class="is-accent">Let’s talk</a></li>
       </ul>
       <ul class="socials menu__socials" data-socials>
         <li><a href="#">LinkedIn</a></li>
