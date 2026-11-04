@@ -11,7 +11,8 @@ export default {
   name: 'Poster Design',
   intro: '[A line about your posters.]',
   // The tile on the homepage
-  cover: { src: 'assets/work/poster-design/tcsl-diwali/poster.webp', alt: 'TCSL Diwali poster: a glowing parcel rising from a diya flame' },
+  // whole: the poster shows uncropped in its tile, on the `bg` colour
+  cover: { src: 'assets/work/poster-design/tcsl-diwali/poster.webp', alt: 'TCSL Diwali poster: a glowing parcel rising from a diya flame', whole: true, bg: '#000000' },
 
   projects: [
     {

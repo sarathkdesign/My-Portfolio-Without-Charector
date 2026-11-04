@@ -212,6 +212,20 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
     return entry;
   };
 
+  // A one-pixel texture of a flat colour (behind a tile's picture shown whole)
+  const colours = new Map();
+  const colourTexture = (css) => {
+    let tex = colours.get(css);
+    if (tex) return tex;
+    const [r, g, b] = (css.match(/[\d.]+/g) || [0, 0, 0]).map(Number);
+    tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([r, g, b, 255]));
+    setTexParams(tex, false);
+    colours.set(css, tex);
+    return tex;
+  };
+
   /* ── Text: painted glyph by glyph at the exact spot the page lays it out ── */
   const ascents = new Map();
   const ascentFor = (font, size) => {
@@ -297,6 +311,18 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
     if (!entry) return r;
     const f = parseFloat(item.style.getPropertyValue('--f')) || 0.8;
     const w = r.width, box = r.height, visible = box * f;
+    if (media.hasAttribute('data-whole')) {
+      gl.uniform4f(quad.uniforms.uRect, r.left, r.top, w, visible);
+      gl.uniform4f(quad.uniforms.uUv, 0, 0, 1, 1);
+      gl.bindTexture(gl.TEXTURE_2D, colourTexture(getComputedStyle(media).backgroundColor));
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      const s = Math.min(w / entry.w, visible / entry.h);
+      const dw = entry.w * s, dh = entry.h * s;
+      gl.uniform4f(quad.uniforms.uRect, r.left + (w - dw) / 2, r.top + (visible - dh) / 2, dw, dh);
+      gl.bindTexture(gl.TEXTURE_2D, entry.tex);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      return r;
+    }
     const s = Math.max(w / entry.w, box / entry.h);
     const dw = entry.w * s, dh = entry.h * s;
     const ox = (w - dw) * 0.5, oy = (box - dh) * 0.35;

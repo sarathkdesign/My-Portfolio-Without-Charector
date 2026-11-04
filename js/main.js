@@ -82,7 +82,7 @@ function buildTiles() {
     ...categories.map((c) =>
       el('li', { class: 'strip__item' }, [
         el('a', { class: 'card', href: `work/${c.slug}`, 'data-route': '', 'data-category': c.slug, draggable: 'false' }, [
-          el('span', { class: 'card__media' }, [
+          el('span', { class: 'card__media', ...(c.cover.whole && { 'data-whole': '', style: `--tile-bg:${c.cover.bg || '#000'}` }) }, [
             el('img', { src: c.cover.src, alt: c.cover.alt, draggable: 'false', decoding: 'async' }),
             el('span', { class: 'card__cue', 'aria-hidden': 'true', text: 'Explore' }),
           ]),
