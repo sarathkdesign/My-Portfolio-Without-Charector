@@ -473,9 +473,11 @@ div.card { cursor: inherit; }
   .bar__end .socials { gap: 0.5em; }
   .bar__end .socials li + li::before { margin-right: 0.5em; }
   .social-icons { gap: 6px; }
-  .social-icons svg { width: 18px; height: 18px; }
-  .menu-btn { bottom: 16px; width: 44px; height: 32px; }
-  .menu__panel { bottom: calc(16px + 32px + 14px); }
+  .social-icons svg { width: 16px; height: 16px; }
+  .bar__group { font-size: 10px; } /* sound and motion, smaller */
+  .bar__group .toggle__icon { width: 1.25em; height: 1.25em; }
+  .menu-btn { bottom: calc(var(--bar-pad) + 3px); width: 44px; height: 32px; } /* its foot on the links' baseline */
+  .menu__panel { bottom: calc(var(--bar-pad) + 3px + 32px + 14px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
