@@ -590,6 +590,41 @@ export function createPages({ sound, leaveHome, returnHome }) {
     return { img, rect, clip: rect.height * (1 - f), transform: getComputedStyle(img).transform };
   };
 
+  /* The shutter: a full-screen picture of the category, cut into vertical strips that
+     lift away one after another (or fall back into place on the way out). Each strip
+     holds the whole picture shifted into line, so together they read as one image. */
+  const shutterCount = () => (innerWidth < 700 ? 4 : innerWidth < 1200 ? 6 : 8);
+  const shutterName = (category) => el('div', { class: 'shutter__name' }, [
+    el('span', { class: 'shutter__count', text: countLabel(category.projects.length) }),
+    el('span', { class: 'shutter__title' }, [el('span', { text: category.name })]),
+  ]);
+  function shutter(src, category) {
+    const w = morphLayer.clientWidth, n = shutterCount();
+    const strips = Array.from({ length: n }, (_, i) => {
+      const face = el('div', { class: 'shutter__face', style: `width:${w}px; left:${(-i * w) / n}px` }, [
+        el('img', { src, alt: '' }), shutterName(category),
+      ]);
+      return el('div', { class: 'shutter__strip', style: `left:${(i * 100) / n}%; width:calc(${100 / n}% + 1px)` }, [face]);
+    });
+    const layer = el('div', { class: 'shutter' }, strips);
+    morphLayer.append(layer);
+    return { layer, strips };
+  }
+  // Lift the strips away (open) or drop them back over the screen (close)
+  async function runShutter({ strips }, opening) {
+    const n = strips.length, step = 70, duration = 950;
+    const up = 'translate3d(0, -101%, 0)', drift = 'translate3d(0, 55%, 0)';
+    const anims = strips.flatMap((strip, i) => {
+      const timing = { duration, delay: (opening ? i : n - 1 - i) * step, easing: MOTION.ease, fill: 'both' };
+      const there = opening ? [{ transform: 'none' }, { transform: up }] : [{ transform: up }, { transform: 'none' }];
+      const inner = opening ? [{ transform: 'none' }, { transform: drift }] : [{ transform: drift }, { transform: 'none' }];
+      return [strip.animate(there, timing), strip.firstChild.animate(inner, timing)];
+    });
+    await Promise.all(anims.map((a) => a.finished.catch(() => {})));
+  }
+  const fullScreen = () => ({ left: 0, top: 0, width: morphLayer.clientWidth, height: morphLayer.clientHeight });
+  const decoded = (root) => Promise.all($$('img', root).map((i) => i.decode().catch(() => {})));
+
   /* ── Transitions ──────────────────────────────────────── */
   async function openCategory(category, source) {
     const tile = source?.closest('.card') || findTile(category.slug);
@@ -600,21 +635,26 @@ export function createPages({ sound, leaveHome, returnHome }) {
     if (tile && !reduced()) {
       homeTile = tile;
       const t = tileBox(tile);
+      const src = t.img.currentSrc || t.img.src;
       tile.classList.add('is-source');
-      categoryPage.classList.add('is-morphing');
-      // The tile lands on its own image in the moving wall, which fades in around it
-      const slot = categoryPage._wall?.land(category.cover.src);
-      slot?.classList.add('is-landing');
+      // 1. The tile opens out to fill the screen, the category's name rising over it
+      const over = el('div', { class: 'shutter__over' }, [shutterName(category)]);
+      const showName = setTimeout(() => morphLayer.append(over), MOTION.grow * 0.45);
       const box = await morph({
-        src: t.img.currentSrc || t.img.src,
-        from: t.rect, fromClip: t.clip, fromTransform: t.transform,
-        to: (slot || $('[data-hero]', categoryPage)).getBoundingClientRect(),
-        position: '50% 35%', duration: MOTION.grow,
-        onReveal: () => categoryPage.classList.remove('is-before'),
+        src, from: t.rect, fromClip: t.clip, fromTransform: t.transform,
+        to: fullScreen(), position: '50% 35%', duration: MOTION.grow,
       });
-      slot?.classList.remove('is-landing');
-      categoryPage.classList.remove('is-morphing');
+      clearTimeout(showName);
+      // 2. The picture is swapped for the same picture cut into strips, with the page set beneath
+      const cut = shutter(src, category);
+      await decoded(cut.layer);
       box.remove();
+      over.remove();
+      categoryPage.classList.remove('is-before');
+      await wait(260);
+      // 3. The strips lift away one by one, uncovering the page
+      await runShutter(cut, true);
+      cut.layer.remove();
     } else {
       categoryPage.classList.remove('is-before');
       await nextFrame();
@@ -625,25 +665,33 @@ export function createPages({ sound, leaveHome, returnHome }) {
 
   async function closeCategory(category) {
     const tile = homeTile?.isConnected && inView(homeTile) ? homeTile : findTile(category.slug);
-    setAway(false);
     if (tile && !reduced()) {
       const t = tileBox(tile);
+      const src = t.img.currentSrc || t.img.src;
       tile.classList.add('is-source');
-      // Leave from wherever the tile's image now is in the moving wall
-      const slot = categoryPage._wall?.find(category.cover.src);
-      const from = (slot || $('[data-hero]', categoryPage)).getBoundingClientRect();
-      slot?.classList.add('is-landing');
-      categoryPage.classList.add('is-after', 'is-morphing');
-      const box = await morph({
-        src: t.img.currentSrc || t.img.src,
-        from,
+      // 1. The strips drop back over the page
+      const cut = shutter(src, category);
+      cut.strips.forEach((strip) => (strip.style.transform = 'translate3d(0, -101%, 0)'));
+      await decoded(cut.layer);
+      sound.play('menuOpen');
+      await runShutter(cut, false);
+      // 2. Behind them the page goes and the homepage returns; the name fades
+      hide(categoryPage);
+      setAway(false);
+      await Promise.all($$('.shutter__name', cut.layer).map((name) =>
+        name.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, fill: 'forwards' }).finished.catch(() => {})));
+      // 3. The full-screen picture closes back down into its tile
+      const shrinking = morph({
+        src, from: fullScreen(),
         to: t.rect, toClip: t.clip, toTransform: t.transform,
         position: '50% 35%', duration: MOTION.shrink,
       });
-      hide(categoryPage);
+      nextFrame().then(() => cut.layer.remove());
+      const box = await shrinking;
       tile.classList.remove('is-source');
       box.remove();
     } else {
+      setAway(false);
       await fadeOut(categoryPage);
     }
     $$('.card.is-source').forEach((c) => c.classList.remove('is-source'));

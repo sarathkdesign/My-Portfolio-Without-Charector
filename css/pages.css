@@ -93,6 +93,36 @@
 }
 .morph img { width: 100%; height: 100%; max-width: none; object-fit: cover; }
 .morph img + img { position: absolute; inset: 0; } /* the picture it arrives as, fading in on top */
+/* The shutter: the category's picture in full-screen strips that lift away */
+.shutter, .shutter__over { position: absolute; inset: 0; overflow: hidden; }
+.shutter__strip { position: absolute; top: 0; height: 100%; overflow: hidden; will-change: transform; }
+.shutter__face { position: absolute; top: 0; height: 100%; will-change: transform; }
+.shutter__face > img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 50% 35%; }
+.shutter__name {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 0.9em;
+  padding: var(--gutter);
+  color: var(--cream);
+  background: linear-gradient(to top, rgb(0 0 0 / 0.55), rgb(0 0 0 / 0) 55%);
+}
+.shutter__count {
+  font: 500 clamp(12px, 0.9vw, 16px) / 1 var(--label);
+  letter-spacing: 0.08em; text-transform: uppercase;
+}
+.shutter__title { display: block; overflow: hidden; padding-bottom: 0.04em; }
+.shutter__title > span {
+  display: block; margin-left: -0.04em;
+  font: 700 clamp(56px, 13vw, 280px) / 0.82 var(--display);
+  letter-spacing: -0.055em; text-transform: uppercase;
+}
+/* Over the growing picture the name rises into view */
+.shutter__over .shutter__name { animation: shutter-fade 0.5s var(--ease) both; }
+.shutter__over .shutter__title > span { animation: shutter-rise 0.75s var(--ease) both; }
+.shutter__over .shutter__count { animation: shutter-rise-small 0.6s var(--ease) 0.08s both; }
+@keyframes shutter-fade { from { background-color: transparent; opacity: 0.001; } to { opacity: 1; } }
+@keyframes shutter-rise { from { transform: translate3d(0, 105%, 0); } to { transform: none; } }
+@keyframes shutter-rise-small { from { opacity: 0; transform: translate3d(0, 12px, 0); } to { opacity: 1; transform: none; } }
+
 /* The tile or thumbnail it left from stays empty until it returns */
 .card.is-source .card__media img, .thumb.is-source .thumb__media img { visibility: hidden; }
 

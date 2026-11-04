@@ -468,6 +468,12 @@ div.card { cursor: inherit; }
   .card__meta { font-size: 10px; }
   .bar { padding-right: calc(var(--gutter) + 52px); gap: 8px 24px; }
   .bar .bar__copy { display: none; } /* repeated in the contact footer */
+  /* Phones: the icons sit at the left edge, on the same line as the links */
+  .bar__end { flex: 1 0 100%; justify-content: space-between; gap: 8px 10px; }
+  .bar__end .socials { gap: 0.5em; }
+  .bar__end .socials li + li::before { margin-right: 0.5em; }
+  .social-icons { gap: 6px; }
+  .social-icons svg { width: 18px; height: 18px; }
   .menu-btn { bottom: 16px; width: 44px; height: 32px; }
   .menu__panel { bottom: calc(16px + 32px + 14px); }
 }
