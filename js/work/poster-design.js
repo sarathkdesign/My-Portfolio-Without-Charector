@@ -13,6 +13,23 @@ export default {
   // whole: the poster shows uncropped in its tile, on the `bg` colour
   cover: { src: 'assets/work/poster-design/tcsl-gandhi-jayanti/poster.jpg', alt: 'TCSL Gandhi Jayanti poster: a charkha wheel of planes, ships and trucks on red', whole: true, bg: '#df2027' },
 
+  // The moving wall at the top of the page: posters at their own shapes, so none is cropped
+  wall: [
+    { src: 'assets/work/poster-design/tcsl-gandhi-jayanti/poster.jpg', w: 1600, h: 2000 },
+    { src: 'assets/work/poster-design/kadalas-cafe/meaty-tales.jpg', w: 904, h: 1280 },
+    { src: 'assets/work/poster-design/other-posters/native-touch.jpg', w: 1414, h: 2000 },
+    { src: 'assets/work/poster-design/tcsl/international-courier.jpg', w: 1600, h: 2000 },
+    { src: 'assets/work/poster-design/kadalas-cafe/landing-soon.jpg', w: 1066, h: 1280 },
+    { src: 'assets/work/poster-design/other-posters/thala-vazhai-virunthu.jpg', w: 1409, h: 2000 },
+    { src: 'assets/work/poster-design/tcsl/india-new-zealand-fta.jpg', w: 1600, h: 2000 },
+    { src: 'assets/work/poster-design/kadalas-cafe/chicken-tales.jpg', w: 904, h: 1280 },
+    { src: 'assets/work/poster-design/other-posters/vishu-2026.jpg', w: 1600, h: 2000 },
+    { src: 'assets/work/poster-design/tcsl/diwali.jpg', w: 1600, h: 2000 },
+    { src: 'assets/work/poster-design/kadalas-cafe/key-to-tasty-tales.jpg', w: 1066, h: 1280 },
+    { src: 'assets/work/poster-design/other-posters/new-year-celebration.jpg', w: 1414, h: 2000 },
+    { src: 'assets/work/poster-design/tcsl/worldwide.jpg', w: 1600, h: 2000 },
+    { src: 'assets/work/poster-design/other-posters/earthi-face-wash.jpg', w: 904, h: 1280 },
+  ],
   // Three collections, each a tile on the category page with a gallery page of its own (js/designs.js)
   projects: [
     {
@@ -22,8 +39,9 @@ export default {
       client: 'TCSL',
       year: '',
       services: ['Poster design'],
-      design: 'redwall', // red-and-white staggered gallery
-      theme: { bg: '#f4f0ea', ink: '#141414', accent: '#e01f26', soft: 'rgba(20,20,20,0.66)', line: 'rgba(20,20,20,0.14)' },
+      design: 'carousel', // same interface as every poster page, in TCSL's red
+      hideCover: true,
+      theme: { bg: '#f7dedb', ink: '#3b1212', accent: '#f2a59e', soft: 'rgba(59,18,18,0.7)', line: 'rgba(59,18,18,0.14)' },
       thumb: { src: 'assets/work/poster-design/tcsl/international-courier.jpg', alt: 'TCSL International Courier poster' },
       cover: { src: 'assets/work/poster-design/tcsl/gandhi-jayanti.jpg', alt: 'TCSL Gandhi Jayanti poster' },
       whole: true,
@@ -41,7 +59,7 @@ export default {
       subtitle: 'Launch posters for Kadalas Cafe',
       client: 'Kadalas Cafe',
       year: '',
-      services: ['Poster design'],
+      location: 'Calicut, Kerala',
       design: 'carousel', // aqua page, posters gliding past sideways
       hideCover: true, // no large poster at the top: every poster is in the strip below
       theme: { bg: '#bfe9e4', ink: '#0f3b39', accent: '#f2b35b', soft: 'rgba(15,59,57,0.7)', line: 'rgba(15,59,57,0.16)' },
@@ -62,8 +80,9 @@ export default {
       client: '',
       year: '',
       services: ['Poster design'],
-      design: 'exhibit', // dark gallery wall, each poster under its own light
-      theme: { bg: '#121212', ink: '#f2efe9', accent: '#e8c27a', soft: 'rgba(242,239,233,0.66)', line: 'rgba(242,239,233,0.14)' },
+      design: 'carousel', // same interface as every poster page, in the posters' warm yellows and oranges
+      hideCover: true,
+      theme: { bg: '#f7e8c8', ink: '#3a2a10', accent: '#f0b44c', soft: 'rgba(58,42,16,0.7)', line: 'rgba(58,42,16,0.14)' },
       thumb: { src: 'assets/work/poster-design/other-posters/native-touch.jpg', alt: 'Native Touch Valentine’s Day poster' },
       cover: { src: 'assets/work/poster-design/other-posters/vishu-2026.jpg', alt: 'Happy Vishu 2026 poster' },
       whole: true,

@@ -501,11 +501,6 @@ DESIGNS.carousel = (p, h) => {
     h.el('section', { class: 'dz-hs kc-strip', 'data-hs': true }, [
       h.el('div', { class: 'dz-hs__pin' }, [
         h.el('div', { class: 'dz-hs__track' }, [
-          h.el('div', { class: 'kc-intro' }, [
-            h.el('p', { class: 'kc-kicker', text: `${posters.length} posters` }),
-            h.el('h2', { class: 'kc-title', text: p.title }),
-            h.el('p', { class: 'kc-sub', text: p.subtitle }),
-          ]),
           ...posters.map((m, i) => h.el('figure', { class: 'kc-card', tabindex: '0', style: `--tilt:${i % 2 ? 1.6 : -1.6}deg` }, [
             posterImg(h, m),
             h.el('figcaption', {}, [h.el('b', { text: m.title }), m.note && h.el('span', { text: m.note })]),

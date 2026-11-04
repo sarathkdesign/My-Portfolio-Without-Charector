@@ -498,3 +498,41 @@ div.card { cursor: inherit; }
   .js .strip__track { opacity: 1; }
   .card__media img { transform: none; }
 }
+
+/* ── Cursor (js/cursor.js): a dot and a trailing ring, mouse and trackpad only ── */
+@media (hover: hover) and (pointer: fine) {
+  .has-cursor, .has-cursor * { cursor: none !important; }
+}
+.cursor-dot, .cursor-ring, .cursor-glow {
+  position: fixed; left: 0; top: 0; z-index: 100;
+  pointer-events: none; opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.cursor-on .cursor-dot, .cursor-on .cursor-ring { opacity: 1; }
+.cursor-dot {
+  width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%;
+  background: #fff; mix-blend-mode: difference;
+}
+.cursor-ring { width: 0; height: 0; mix-blend-mode: difference; }
+.cursor-ring::before {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 34px; height: 34px; translate: -50% -50%;
+  border: 1.5px solid #fff; border-radius: 50%;
+  transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), height 0.45s cubic-bezier(0.22, 1, 0.36, 1), scale 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Over anything clickable: the ring opens a little and a faint white light fills it */
+.cursor-ring.is-hover::before { width: 46px; height: 46px; }
+.cursor-glow { z-index: 99; width: 0; height: 0; }
+.cursor-glow::before {
+  content: ''; position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.16) 60%, rgba(255, 255, 255, 0) 100%);
+  scale: 0.6; transition: scale 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cursor-on .cursor-glow.is-hover { opacity: 1; }
+.cursor-glow.is-hover::before { scale: 1; }
+/* A click: a quick pulse */
+.cursor-ring.is-down::before { scale: 0.8; }
+@media (prefers-reduced-motion: reduce) {
+  .cursor-ring::before, .cursor-glow::before { transition: none; }
+}

@@ -535,6 +535,7 @@ function renderProject(page, category, project) {
     ['Client', project.client],
     ['Year', project.year],
     ['Services', project.services?.join(', ')],
+    ['Location', project.location],
   ].filter(([, v]) => v);
   const linkLabel = /behance\.net/.test(project.link || '') ? 'View on Behance' : 'Visit project';
   page.dataset.slug = project.slug;
@@ -553,7 +554,7 @@ function renderProject(page, category, project) {
         project.summary && el('p', { class: 'proj__summary', text: project.summary }),
       ]),
     ]),
-    !project.hideCover && el('div', { class: project.whole ? 'proj__cover proj__cover--whole' : 'proj__cover' }, [picture(project.cover, { 'data-hero': true, fetchpriority: 'high' })]),
+    project.hideCover ? '' : el('div', { class: project.whole ? 'proj__cover proj__cover--whole' : 'proj__cover' }, [picture(project.cover, { 'data-hero': true, fetchpriority: 'high' })]),
     el('div', { class: 'proj__modules', style: project.gap ? `--gap:${project.gap}px` : null }, projectModules(project)),
     el('footer', { class: 'proj__foot' }, [
       project.link && el('a', { class: 'proj__link', href: project.link, target: '_blank', rel: 'noopener', text: `${linkLabel} ↗` }),

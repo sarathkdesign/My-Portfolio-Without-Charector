@@ -2,6 +2,7 @@ import { content } from './content.js';
 import { createSurface } from './surface.js';
 import { categories } from './work/index.js';
 import { createPages, countLabel } from './pages.js';
+import { createCursor } from './cursor.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -808,3 +809,5 @@ const pages = createPages({
 });
 
 requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('is-loaded')));
+
+createCursor(); // the site's own cursor (mouse and trackpad only)

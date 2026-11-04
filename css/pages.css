@@ -141,12 +141,12 @@
 .page__back svg { width: 1.15em; height: 1.15em; transition: transform 0.4s var(--ease); }
 .page__back:hover svg { transform: translateX(-3px); }
 .page.is-before .page__back { opacity: 0; transform: translateY(-8px); }
-/* Close (×) on a project: top right, just outside the edge of the work (in the margin),
-   and never over the logo when the work runs nearly edge to edge */
+/* Close (×) on a project: always in the same place on every page — top right,
+   level with the back button, the logo's size, just to the logo's left */
 .page__close {
   --size: clamp(36px, 2.6vw, 48px);
   position: fixed; z-index: 3; top: var(--gutter);
-  right: max(calc((100% - var(--col)) / 2 - var(--size) - 16px), calc(var(--gutter) + var(--size) + 12px));
+  right: calc(var(--gutter) + var(--size) + 10px);
   display: grid; place-items: center;
   width: var(--size); height: var(--size);
   background: var(--ink); color: var(--cream); border-radius: 4px;
