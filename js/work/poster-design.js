@@ -16,6 +16,18 @@ export default {
 
   projects: [
     {
+      slug: 'tcsl-gandhi-jayanti',
+      title: 'TCSL Gandhi Jayanti',
+      subtitle: 'Gandhi Jayanti poster',
+      client: 'TCSL',
+      year: '',
+      services: ['Poster design'],
+      whole: true, // the poster shows whole on its page
+      thumb: { src: 'assets/work/poster-design/tcsl-gandhi-jayanti/poster.jpg', alt: 'TCSL Gandhi Jayanti poster: a charkha wheel of planes, ships and trucks on red' },
+      cover: { src: 'assets/work/poster-design/tcsl-gandhi-jayanti/poster.jpg', alt: 'TCSL Gandhi Jayanti poster: a charkha wheel made of planes, ships and trucks, “Remembering Mahatma Gandhi and his timeless ideals of peace, truth and simplicity”' },
+      modules: [],
+    },
+    {
       slug: 'tcsl-diwali',
       title: 'TCSL Diwali',
       subtitle: 'Diwali greeting poster',
