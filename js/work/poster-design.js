@@ -12,7 +12,7 @@ export default {
   intro: '[A line about your posters.]',
   // The tile on the homepage
   // whole: the poster shows uncropped in its tile, on the `bg` colour
-  cover: { src: 'assets/work/poster-design/tcsl-diwali/poster.webp', alt: 'TCSL Diwali poster: a glowing parcel rising from a diya flame', whole: true, bg: '#000000' },
+  cover: { src: 'assets/work/poster-design/tcsl-gandhi-jayanti/poster.jpg', alt: 'TCSL Gandhi Jayanti poster: a charkha wheel of planes, ships and trucks on red', whole: true, bg: '#df2027' },
 
   projects: [
     {
