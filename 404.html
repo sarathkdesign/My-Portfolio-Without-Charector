@@ -2,15 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <!-- Page addresses (/work/branding/…) resolve every relative link from the site root.
+  <!-- GitHub Pages fallback for deep links (/work/branding/…): a copy of index.html with the base fixed.
+       Page addresses (/work/branding/…) resolve every relative link from the site root.
        On GitHub Pages the site lives in the repo's sub-folder, so the base follows it there. -->
-  <script>
-    (function () {
-      var base = document.createElement('base');
-      base.href = location.hostname.endsWith('github.io') ? '/My-Portfolio-Without-Charector/' : '/';
-      document.head.appendChild(base);
-    })();
-  </script>
+  <base href="/My-Portfolio-Without-Charector/">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>SARATH — Senior Designer</title>
   <meta name="description" content="Portfolio of SARATH, Senior Designer.">
