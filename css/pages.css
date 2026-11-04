@@ -141,6 +141,20 @@
 .page__back svg { width: 1.15em; height: 1.15em; transition: transform 0.4s var(--ease); }
 .page__back:hover svg { transform: translateX(-3px); }
 .page.is-before .page__back { opacity: 0; transform: translateY(-8px); }
+/* Close (×) on a project: top right, just outside the edge of the work (in the margin),
+   and never over the logo when the work runs nearly edge to edge */
+.page__close {
+  --size: clamp(36px, 2.6vw, 48px);
+  position: fixed; z-index: 3; top: var(--gutter);
+  right: max(calc((100% - var(--col)) / 2 - var(--size) - 16px), calc(var(--gutter) + var(--size) + 12px));
+  display: grid; place-items: center;
+  width: var(--size); height: var(--size);
+  background: var(--ink); color: var(--cream); border-radius: 4px;
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), background-color 0.3s;
+}
+.page__close svg { width: 46%; height: 46%; transition: transform 0.4s var(--ease); }
+.page__close:hover svg { transform: rotate(90deg); }
+.page.is-before .page__close { opacity: 0; transform: translateY(-8px); }
 
 .page img { width: 100%; }
 .page img:not(.is-loaded) { min-height: 30vh; background: var(--cream-2); }

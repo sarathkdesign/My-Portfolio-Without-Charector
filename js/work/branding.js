@@ -139,6 +139,7 @@ export default {
     // ── From public/workd for website 2/Branding — presented with the brand’s own colours (theme)
     {
       "slug": "jc-construction",
+      "design": "foundation",
       "title": "JC Construction",
       "subtitle": "Brand identity for a Philadelphia concrete and excavation company",
       "client": "JC Construction & Excavation",
@@ -155,337 +156,58 @@ export default {
         "ink": "#f3ede5",
         "accent": "#c4946f",
         "soft": "rgba(243,237,229,0.72)"
+      ,
+        "font": "'Poppins', var(--text)",
+        "fontHref": "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
       },
       "thumb": {
-        "src": "assets/work/branding/jc-construction/thumb.jpg",
-        "alt": "JC Construction hoarding wrapped around a building under construction"
+        "src": "assets/work/branding/jc-construction/behance/business-card.jpg",
+        "alt": "JC Construction business card on a studded steel plate"
       },
       "cover": {
         "src": "assets/work/branding/jc-construction/cover.jpg",
         "alt": "JC Construction & Excavation logo over a city skyline"
       },
       "modules": [
-        {
-          "type": "chapter",
-          "n": "01",
-          "label": "The brief",
-          "heading": "Make strength visible.",
-          "body": [
-            "JC Construction is a Philadelphia company specialising in concrete: excavation, footings, walls, slabs and concrete pumping. Its work is the part of a building nobody sees once it is finished, so the brand had to show what the concrete hides — strength, precision and trust.",
-            "The identity needed to read from across a site, on the side of a truck and on a helmet, and still feel modern enough for a company ready to grow beyond its city."
-          ]
-        },
-        {
-          "type": "split",
-          "n": "02",
-          "label": "Direction",
-          "heading": "Steel, concrete and clean geometry.",
-          "body": "The moodboard set the tone before any drawing: steel structures, raw concrete, the precision of modern architecture and the engineering of nature. Deep greys and warm earth tones gave a grounded base; a touch of blue pointed to vision and progress.",
-          "image": {
-            "src": "assets/work/branding/jc-construction/moodboard.jpg",
-            "alt": "Moodboard: leaf, glass tower, concrete and brick in angled frames",
-            "w": 860,
-            "h": 1095
-          }
-        },
-        {
-          "type": "split",
-          "n": "03",
-          "label": "The mark",
-          "heading": "Two letters, built like a structure.",
-          "reverse": true,
-          "fit": "contain",
-          "body": "The J and the C are reduced to simple geometric parts, placed together, then pushed out of line so their segments stack like beams. The initials become a structure: steady, balanced and rising, assembled piece by piece the way the company builds.",
-          "image": {
-            "src": "assets/work/branding/jc-construction/logic-steps.jpg",
-            "alt": "The mark in three steps: J and C, placement, pushed out",
-            "w": 1540,
-            "h": 610
-          }
-        },
-        {
-          "type": "cards",
-          "label": "Two references",
-          "heading": "Towers that rise. Leaves that carry load.",
-          "cols": 2,
-          "items": [
-            {
-              "src": "assets/work/branding/jc-construction/logic-tower.jpg",
-              "alt": "The mark beside the glass tower that inspired it",
-              "title": "Architecture",
-              "body": "The upward step of the mark comes from the silhouettes of modern towers: clean edges, a confident stance, a building on its way up.",
-              "w": 1160,
-              "h": 622
-            },
-            {
-              "src": "assets/work/branding/jc-construction/logic-leaf.jpg",
-              "alt": "Leaf veins: nature’s structural engineering",
-              "title": "Nature",
-              "body": "The angled segments echo the veins of a leaf, where every line carries load and purpose: efficient, strong and balanced.",
-              "w": 700,
-              "h": 989
-            }
-          ]
-        },
-        {
-          "type": "image",
-          "src": "assets/work/branding/jc-construction/brandmark.jpg",
-          "alt": "JC Construction brandmark in copper on deep green",
-          "w": 2000,
-          "h": 1045
-        },
-        {
-          "type": "palette",
-          "n": "04",
-          "label": "Colour and type",
-          "heading": "Grounded green, warm copper.",
-          "body": "Deep construction green is serious and steady; copper brings warmth and material — clay, timber, weathered metal. Aileron, a clean geometric sans in four weights, carries every message.",
-          "colours": [
-            {
-              "hex": "#023A31",
-              "name": "Construction green"
-            },
-            {
-              "hex": "#C4946F",
-              "name": "Copper"
-            },
-            {
-              "hex": "#F3EDE5",
-              "name": "Concrete white"
-            }
-          ]
-        },
-        {
-          "type": "image",
-          "src": "assets/work/branding/jc-construction/typography.jpg",
-          "alt": "Aileron typeface in four weights",
-          "w": 2000,
-          "h": 1045
-        },
-        {
-          "type": "duo",
-          "images": [
-            {
-              "src": "assets/work/branding/jc-construction/construction.jpg",
-              "alt": "Logo construction grid",
-              "w": 2000,
-              "h": 1045
-            },
-            {
-              "src": "assets/work/branding/jc-construction/clearspace.jpg",
-              "alt": "Wordmark clear space",
-              "w": 2000,
-              "h": 1045
-            }
-          ]
-        },
-        {
-          "type": "section",
-          "n": "05",
-          "label": "On paper",
-          "line": "Bold copper segments, cropped across every piece, so a single card still reads as JC."
-        },
-        {
-          "type": "image",
-          "src": "assets/work/branding/jc-construction/business-card.jpg",
-          "alt": "Business card on a studded steel plate",
-          "w": 2000,
-          "h": 1333
-        },
-        {
-          "type": "duo",
-          "images": [
-            {
-              "src": "assets/work/branding/jc-construction/stationery.jpg",
-              "alt": "Letterhead, business cards and folder",
-              "w": 2000,
-              "h": 1045
-            },
-            {
-              "src": "assets/work/branding/jc-construction/id-card.jpg",
-              "alt": "ID card and lanyard",
-              "w": 2000,
-              "h": 1045
-            }
-          ]
-        },
-        {
-          "type": "section",
-          "n": "06",
-          "label": "On site",
-          "line": "Where the brand is seen every day: helmets, vests and workwear."
-        },
-        {
-          "type": "image",
-          "src": "assets/work/branding/jc-construction/worker.jpg",
-          "alt": "Worker in a branded helmet and T-shirt on site",
-          "w": 2000,
-          "h": 1333
-        },
-        {
-          "type": "duo",
-          "images": [
-            {
-              "src": "assets/work/branding/jc-construction/worker-back.jpg",
-              "alt": "Branded T-shirt from behind on site",
-              "w": 2000,
-              "h": 1333
-            },
-            {
-              "src": "assets/work/branding/jc-construction/helmets.jpg",
-              "alt": "Branded green and white safety helmets",
-              "w": 2000,
-              "h": 1045
-            }
-          ]
-        },
-        {
-          "type": "section",
-          "n": "07",
-          "label": "Fleet and equipment",
-          "line": "The largest canvas a construction company owns, carrying the brand across the city."
-        },
-        {
-          "type": "image",
-          "src": "assets/work/branding/jc-construction/excavator.jpg",
-          "alt": "Branded excavator in front of towers under construction",
-          "w": 2000,
-          "h": 1400
-        },
-        {
-          "type": "duo",
-          "images": [
-            {
-              "src": "assets/work/branding/jc-construction/truck.jpg",
-              "alt": "Branded truck: we shape the world that shapes you",
-              "w": 2000,
-              "h": 1400
-            },
-            {
-              "src": "assets/work/branding/jc-construction/crane-hook.jpg",
-              "alt": "Branded crane hook against a blue sky",
-              "w": 2000,
-              "h": 1400
-            }
-          ]
-        },
-        {
-          "type": "image",
-          "src": "assets/work/branding/jc-construction/forklift.jpg",
-          "alt": "Forklift carrying a branded container",
-          "w": 2000,
-          "h": 1400
-        },
-        {
-          "type": "section",
-          "n": "08",
-          "label": "Merchandise",
-          "line": "For the team and for clients, from tees and totes to caps and badges."
-        },
-        {
-          "type": "duo",
-          "images": [
-            {
-              "src": "assets/work/branding/jc-construction/tshirt.jpg",
-              "alt": "Green branded T-shirt",
-              "w": 2000,
-              "h": 1333
-            },
-            {
-              "src": "assets/work/branding/jc-construction/tote.jpg",
-              "alt": "Green branded tote bag",
-              "w": 2000,
-              "h": 1333
-            }
-          ]
-        },
-        {
-          "type": "duo",
-          "images": [
-            {
-              "src": "assets/work/branding/jc-construction/cap.jpg",
-              "alt": "Branded cap on paving",
-              "w": 2000,
-              "h": 1045
-            },
-            {
-              "src": "assets/work/branding/jc-construction/badges.jpg",
-              "alt": "Branded badges",
-              "w": 2000,
-              "h": 1045
-            }
-          ]
-        },
-        {
-          "type": "section",
-          "n": "09",
-          "label": "The city",
-          "line": "“We shape the world that shapes you.” Hoardings, gantries and site fences carry the brand lines."
-        },
-        {
-          "type": "image",
-          "src": "assets/work/branding/jc-construction/hoarding.jpg",
-          "alt": "Hoarding wrapped around a building under construction",
-          "w": 2000,
-          "h": 1500
-        },
-        {
-          "type": "image",
-          "src": "assets/work/branding/jc-construction/gantry.jpg",
-          "alt": "Highway gantry billboard: solid foundations, stronger futures",
-          "w": 2000,
-          "h": 1400
-        },
-        {
-          "type": "duo",
-          "images": [
-            {
-              "src": "assets/work/branding/jc-construction/fence.jpg",
-              "alt": "Site fencing board",
-              "w": 2000,
-              "h": 1400
-            },
-            {
-              "src": "assets/work/branding/jc-construction/street-boards.jpg",
-              "alt": "Street boards",
-              "w": 2000,
-              "h": 1045
-            }
-          ]
-        },
-        {
-          "type": "section",
-          "n": "10",
-          "label": "Spaces",
-          "line": "Indoors, the symbol becomes a quiet, confident presence."
-        },
-        {
-          "type": "duo",
-          "images": [
-            {
-              "src": "assets/work/branding/jc-construction/signage.jpg",
-              "alt": "Dimensional building signage",
-              "w": 2000,
-              "h": 1045
-            },
-            {
-              "src": "assets/work/branding/jc-construction/reception.jpg",
-              "alt": "Reception desk with the logo",
-              "w": 2000,
-              "h": 1045
-            }
-          ]
-        },
-        {
-          "type": "text",
-          "heading": "Credits",
-          "body": "Designed by Sarath Bhaskar."
-        }
+        { type: 'film', src: 'reveal.mp4', poster: 'reveal-poster.jpg' },
+        { type: 'plate', src: 'truck.jpg', alt: 'JC Construction truck: we shape the world that shapes you', labels: ['Brand Identity | © 2025', '.taras'], enter: 'curtain' },
+        { type: 'intro', meta: ['Brand Identity | © 2025', 'Client: JC Construction & Excavation | USA'], title: 'JC Construction & Excavation | USA', quote: '“We shape the world that shapes you.”',
+          body: 'At JC Construction, concrete isn’t just a material it’s the foundation of everything we build, stand for, and believe in. Based in Philadelphia, we’ve grown into one of the city’s most trusted concrete specialists by doing one thing consistently: delivering work that lasts. From the first cut into the ground to the final, smooth finish, our team handles every stage of concrete construction with precision. Our reputation as “The Concrete Company in Philadelphia” is built on reliability, craftsmanship, and a commitment to doing the job right, not just fast.' },
+        { type: 'mood', body: ['The mood board for JC Constructions captures the essence of strength, trust, and timeless craftsmanship. It blends modern architectural precision with raw construction authenticity, symbolizing the company’s balance between innovation and reliability.', 'The visual language draws inspiration from steel structures, concrete textures, and clean geometric forms, representing stability and integrity. Warm earthy tones and deep grays emphasize a grounded, professional identity while subtle accents of blue suggest vision, progress, and trust.'] },
+        { type: 'concept', body: ['From the simple forms of J and C emerges a structure steady, balanced, and ascending. Each segment aligns like beams in construction, reflecting the precision and discipline behind every project.', 'This union of letters becomes more than initials; it becomes a symbol of strength, order, and craftsmanship a mark built brick by brick, just as JC Constructions builds trust through every foundation it lays.'] },
+        { type: 'inspired', body: ['The logo draws its form from the towering silhouettes of modern architecture clean lines, confident stance, and a sense of upward momentum.', 'Like sunlight catching the edges of a skyscraper, the symbol embodies growth, stability, and ambition. It reflects how JC Constructions transforms inspiration from real structures into a timeless identity that stands tall a reflection of buildings that rise, and a brand that endures.'] },
+        { type: 'nature', body: ['The architecture of a leaf is nature’s engineering masterpiece an intricate network where every vein serves structure, purpose, and flow. This natural design achieves what every great construction strives for: efficiency, strength, and balance.', 'At JC Construction, we draw inspiration from this organic intelligence crafting structures that echo the same harmony found in nature. Every line, every joint, and every foundation is built with precision, shaped by purpose, and inspired by life itself.'] },
+        { type: 'film', src: 'intro-motion.mp4', poster: 'intro-motion-poster.jpg' },
+        { type: 'significance', body: ['The JC Constructions logo is built on the foundation of strength, structure, and trust the core pillars of the construction industry. The design integrates the initials ‘J’ and ‘C’ in a bold, geometric form, symbolizing architectural precision and engineering excellence.', 'The simplicity of the logo ensures it remains instantly recognizable across various mediums from on site signage to global digital platforms. Its distinctive form allows it to stand out in a crowded market.', 'The modern yet timeless style reflects JC Construction’s commitment to building not just structures, but lasting relationships and global trust.'] },
+        { type: 'benefits', items: [['Strong Visual Identity', 'The bold, minimal design ensures visibility and memorability in both print and digital media.'], ['Universal Appeal', 'The geometric form and clean typography transcend language barriers, giving the logo a global aesthetic.'], ['Professional Consistency', 'The cohesive visual structure builds trust and communicates expertise across every brand touchpoint.'], ['Scalability', 'Works effectively on any scale — from helmets and blueprints to billboards ensuring brand consistency worldwide.']] },
+        { type: 'plate', src: 'building.jpg', alt: 'A modern building beside a tall green sign: we shape the world that shapes you', enter: 'wipe' },
+        { type: 'clearspace', items: ['Clearspace is the term for a specific amount of space that a logo must have on all sides, no matter where it is used. The reason for clear space is to ensure that a logo maximizes visibility and impact.', 'When our mark is used alone, proper spatial margins ensure a strong presence and show confidence and respect for the brand.'] },
+        { type: 'plate', src: 'typography.jpg', alt: 'Typography: Aileron in Light, Regular, Semi Bold and Bold', enter: 'columns', still: true },
+        { type: 'tone', notes: [
+          { title: 'Deep Green', body: 'The deep green background conveys earthiness and connection to nature, aligning perfectly with excavation and construction industries rooted in the ground itself. It also gives a premium, trustworthy and modern feel.' },
+          { title: 'Muted Clay', body: 'This muted, earthy tone resembles natural soil and raw materials, capturing the tactile essence of construction. It symbolizes reliability, skill, and attention to detail while adding a human, approachable warmth to the otherwise strong and structured identity.' },
+          { title: 'Colour Relationship', body: ['The deep green and white form a crisp, trustworthy contrast, ideal for legibility and brand recognition.', 'The muted clay tone complements the deep green naturally, creating a visual dialogue between earth and structure a literal representation of construction and excavation.', 'Together, the palette evokes strength, warmth, and reliability, projecting JC Construction & Excavation as a company that builds with integrity and care.'] },
+        ] },
+        { type: 'film', src: 'shape-motion.mp4', poster: 'shape-motion-poster.jpg' },
+        { type: 'plate', src: 'business-card.jpg', alt: 'Business card on a studded steel plate', overlay: 'Solid Foundations. Stronger Futures.', at: 'top-left', enter: 'zoom' },
+        { type: 'plate', src: 'stationery.jpg', alt: 'Letterhead, business cards and folder on green', enter: 'drop' },
+        { type: 'plate', src: 'kit.jpg', alt: 'Helmets, T-shirt and tote in a copper frame around the badge', enter: 'tiles', still: true },
+        { type: 'plate', src: 'tote.jpg', alt: 'Green branded tote bag', enter: 'wipe' },
+        { type: 'plate', src: 'mug.jpg', alt: 'Branded mug in raking light', enter: 'light' },
+        { type: 'plate', src: 'keychain.jpg', alt: 'Branded keychain in a jeans pocket', overlay: 'Engineering the impossible.', at: 'bottom-right', enter: 'rise' },
+        { type: 'plate', src: 'cards.jpg', alt: 'Tape, hoarding, cap, excavator, brochure and container cards, and a billboard in an underpass', enter: 'tiles', still: true },
+        { type: 'film', src: 'impossible-motion.mp4', poster: 'impossible-motion-poster.jpg' },
+        { type: 'plate', src: 'precision.jpg', alt: 'Billboard in a concrete underpass', overlay: 'Precision built. Purpose driven.', at: 'bottom-left', enter: 'light' },
+        { type: 'plate', src: 'website.jpg', alt: 'Website: solid foundations, stronger futures', enter: 'zoom', still: true, tone: 'light' },
+        { type: 'plate', src: 'gantry.jpg', alt: 'Highway gantry billboard: solid foundations, stronger futures', enter: 'curtain' },
+        { type: 'closing' },
+        { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar.' },
       ]
     },
     // ── From public/workd for website 2/Branding — presented with the brand’s own colours (theme)
     {
       "slug": "optigrise",
+      "design": "cube",
       "title": "Optigrise",
       "subtitle": "Brand identity for a digital and technology consultancy",
       "client": "Optigrise",
@@ -504,8 +226,8 @@ export default {
         "soft": "rgba(255,255,255,0.74)"
       },
       "thumb": {
-        "src": "assets/work/branding/optigrise/thumb.jpg",
-        "alt": "Optigrise symbol as a colourful 3D metal sign"
+        "src": "assets/work/branding/optigrise/thumb-metro.jpg",
+        "alt": "Optigrise posters in a metro underpass"
       },
       "cover": {
         "src": "assets/work/branding/optigrise/cover.jpg",
@@ -830,6 +552,7 @@ export default {
     // ── From public/workd for website 2/Branding — presented with the brand’s own colours (theme)
     {
       "slug": "fresh-learning",
+      "design": "campus",
       "title": "Fresh Learning",
       "subtitle": "Brand identity for an online learning academy",
       "client": "Fresh Learning",
@@ -842,10 +565,11 @@ export default {
       ],
       "summary": "One symbol that tells the whole story of learning online: what you learn, where, who helps you, and where it takes you.",
       "theme": {
-        "bg": "#0c2953",
-        "ink": "#f6f1e7",
-        "accent": "#d9a043",
-        "soft": "rgba(246,241,231,0.74)"
+        "bg": "#f3ecdf",
+        "ink": "#0c2953",
+        "accent": "#c78d2b",
+        "soft": "rgba(12,41,83,0.74)",
+        "line": "rgba(12,41,83,0.16)"
       },
       "thumb": {
         "src": "assets/work/branding/fresh-learning/thumb.jpg",
@@ -1193,6 +917,8 @@ export default {
     },
     {
       slug: 'aakara',
+      design: 'earthen', // its own page design (js/designs.js), in the brand's colours
+      theme: { bg: '#f2e8d8', ink: '#3a1c12', accent: '#9b2a1e', soft: 'rgba(58,28,18,0.74)', line: 'rgba(58,28,18,0.18)', font: "'Cormorant Garamond', Georgia, serif", fontHref: 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap' },
       title: 'Aakara',
       subtitle: 'Brand identity design for a pottery studio',
       client: '',
@@ -1203,37 +929,39 @@ export default {
       cover: { src: 'assets/work/branding/aakara/01.webp', alt: 'Aakara banner hanging in a timber-lattice space' },
       link: 'https://www.behance.net/gallery/253598323/Aakara-Brand-Identity-Design-for-a-Pottery-Studio',
       modules: [
-        { type: 'image', src: 'assets/work/branding/aakara/01.webp', alt: 'Aakara banner hanging in a timber-lattice space' },
-        { type: 'image', src: 'assets/work/branding/aakara/02.webp', alt: 'Brand introduction board in terracotta red' },
+        { type: 'image', src: 'assets/work/branding/aakara/01.webp', alt: 'Aakara banner hanging in a timber-lattice space', w: 2800, h: 2100 },
+        { type: 'image', src: 'assets/work/branding/aakara/02.webp', alt: 'Brand introduction board in terracotta red', w: 2800, h: 1304 },
         { type: 'text', heading: 'Discovery', body: 'The work began with understanding the studio — its craft, its values and the story behind every handmade piece. Wayanad’s earthy landscapes and the organic beauty of ceramics set the direction: warm, minimal and enduring across physical and digital touchpoints.' },
-        { type: 'image', src: 'assets/work/branding/aakara/03.webp', alt: 'Moodboard of clay, landscapes and earthy textures' },
-        { type: 'image', src: 'assets/work/branding/aakara/04.webp', alt: 'Process board: hands at the potter’s wheel and early studies' },
+        { type: 'image', src: 'assets/work/branding/aakara/03.webp', alt: 'Moodboard of clay, landscapes and earthy textures', w: 2800, h: 3256 },
+        { type: 'image', src: 'assets/work/branding/aakara/04.webp', alt: 'Process board: hands at the potter’s wheel and early studies', w: 2800, h: 4412 },
         { type: 'text', heading: 'Challenge', body: 'Translate the tactile nature of pottery into a visual system that feels simple, timeless and premium without losing its human character — one that holds up across packaging, studio signage, merchandise and digital.' },
-        { type: 'image', src: 'assets/work/branding/aakara/05.webp', alt: 'Aakara logotype and symbol on black' },
-        { type: 'image', src: 'assets/work/branding/aakara/06.webp', alt: 'From clay to identity: the inspiration behind the symbol' },
+        { type: 'image', src: 'assets/work/branding/aakara/05.webp', alt: 'Aakara logotype and symbol on black', w: 2800, h: 2831 },
+        { type: 'image', src: 'assets/work/branding/aakara/06.webp', alt: 'From clay to identity: the inspiration behind the symbol', w: 2800, h: 3524 },
         { type: 'text', heading: 'Identity system', body: 'A balanced logotype, a memorable standalone symbol and a flexible system of earthy colour, refined typography and natural texture.' },
-        { type: 'image', src: 'assets/work/branding/aakara/07.webp', alt: 'Identity system: logo colourways and earthy palette' },
+        { type: 'image', src: 'assets/work/branding/aakara/07.webp', alt: 'Identity system: logo colourways and earthy palette', w: 2800, h: 3698 },
         { type: 'video', src: 'assets/work/branding/aakara/08.mp4', poster: 'assets/work/branding/aakara/08-poster.jpg' },
-        { type: 'image', src: 'assets/work/branding/aakara/09.webp', alt: 'Aakara symbol beside hands holding a clay bowl' },
-        { type: 'image', src: 'assets/work/branding/aakara/10.webp', alt: 'Social media designs over a potter’s wheel' },
-        { type: 'image', src: 'assets/work/branding/aakara/11.webp', alt: 'Terracotta vase and mirror in the studio' },
-        { type: 'image', src: 'assets/work/branding/aakara/12.webp', alt: 'Solution board in terracotta red' },
+        { type: 'image', src: 'assets/work/branding/aakara/09.webp', alt: 'Aakara symbol beside hands holding a clay bowl', w: 2800, h: 1564 },
+        { type: 'image', src: 'assets/work/branding/aakara/10.webp', alt: 'Social media designs over a potter’s wheel', w: 2800, h: 2129 },
+        { type: 'image', src: 'assets/work/branding/aakara/11.webp', alt: 'Terracotta vase and mirror in the studio', w: 2800, h: 3731 },
+        { type: 'image', src: 'assets/work/branding/aakara/12.webp', alt: 'Solution board in terracotta red', w: 2800, h: 2090 },
         { type: 'text', heading: 'Applications', body: 'Stationery, stickers, staff ID, a website, bookmarks and posters, apparel and the studio itself.' },
-        { type: 'image', src: 'assets/work/branding/aakara/13.webp', alt: 'Logo stickers and branded envelope' },
-        { type: 'image', src: 'assets/work/branding/aakara/14.webp', alt: 'Business cards and staff ID' },
-        { type: 'image', src: 'assets/work/branding/aakara/15.webp', alt: 'Aakara website on a tablet' },
-        { type: 'image', src: 'assets/work/branding/aakara/16.webp', alt: 'Bookmark and poster designs' },
-        { type: 'image', src: 'assets/work/branding/aakara/17.webp', alt: 'Quiet Luxury in Clay campaign visual' },
-        { type: 'image', src: 'assets/work/branding/aakara/18.webp', alt: 'Logo on a black T-shirt' },
+        { type: 'image', src: 'assets/work/branding/aakara/13.webp', alt: 'Logo stickers and branded envelope', w: 2800, h: 3967 },
+        { type: 'image', src: 'assets/work/branding/aakara/14.webp', alt: 'Business cards and staff ID', w: 2800, h: 2090 },
+        { type: 'image', src: 'assets/work/branding/aakara/15.webp', alt: 'Aakara website on a tablet', w: 2800, h: 2100 },
+        { type: 'image', src: 'assets/work/branding/aakara/16.webp', alt: 'Bookmark and poster designs', w: 2800, h: 2090 },
+        { type: 'image', src: 'assets/work/branding/aakara/17.webp', alt: 'Quiet Luxury in Clay campaign visual', w: 2800, h: 1804 },
+        { type: 'image', src: 'assets/work/branding/aakara/18.webp', alt: 'Logo on a black T-shirt', w: 2800, h: 1755 },
         { type: 'video', src: 'assets/work/branding/aakara/19.mp4', poster: 'assets/work/branding/aakara/19-poster.jpg' },
         { type: 'text', heading: 'Outcome', body: 'An identity that pairs minimalism with organic character — premium yet approachable — and positions Aakara as a modern artisan brand rooted in tradition.' },
-        { type: 'image', src: 'assets/work/branding/aakara/20.webp', alt: 'Studio interior with shelves of pottery' },
-        { type: 'image', src: 'assets/work/branding/aakara/21.webp', alt: 'Framed brand artwork on a sideboard' },
+        { type: 'image', src: 'assets/work/branding/aakara/20.webp', alt: 'Studio interior with shelves of pottery', w: 1200, h: 1600 },
+        { type: 'image', src: 'assets/work/branding/aakara/21.webp', alt: 'Framed brand artwork on a sideboard', w: 2800, h: 2105 },
         { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar.' },
       ],
     },
     {
       slug: 'zio-fashion',
+      design: 'runway', // its own page design (js/designs.js), in the brand's colours
+      theme: { bg: '#0b0b0b', ink: '#f3f1ee', accent: '#ff4a1c', soft: 'rgba(243,241,238,0.7)', line: 'rgba(243,241,238,0.16)' },
       title: 'ZIO Fashion',
       subtitle: 'Premium fashion brand identity',
       client: '',
@@ -1244,26 +972,26 @@ export default {
       cover: { src: 'assets/work/branding/zio-fashion/05.webp', alt: 'White ZIO tote bag on concrete steps' },
       link: 'https://www.behance.net/gallery/253292477/ZIO-FASHION-Premium-Fashion-Brand-Identity',
       modules: [
-        { type: 'image', src: 'assets/work/branding/zio-fashion/01.webp', alt: 'Black ZIO tote hanging on a mesh fence' },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/01.webp', alt: 'Black ZIO tote hanging on a mesh fence', w: 2800, h: 1867 },
         { type: 'text', heading: 'The brand', body: 'A premium label built on quality materials, refined craftsmanship and timeless design — from everyday essentials to performance gym wear that moves freely and still looks sharp.' },
         { type: 'video', src: 'assets/work/branding/zio-fashion/02.mp4', poster: 'assets/work/branding/zio-fashion/02-poster.jpg' },
         { type: 'text', heading: 'Challenge', body: 'Create a sophisticated, contemporary identity that communicates confidence, quality and modern elegance, and adapts across digital platforms, retail environments, packaging and brand communications.' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/03.webp', alt: 'Brand board: idea, logo and taglines' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/04.webp', alt: 'Move With Purpose campaign and logo' },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/03.webp', alt: 'Brand board: idea, logo and taglines', w: 2800, h: 6597 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/04.webp', alt: 'Move With Purpose campaign and logo', w: 2800, h: 3568 },
         { type: 'text', heading: 'Approach', body: 'A refined system built on simplicity and versatility: clean typography, balanced proportions and a minimal design language, made to stay consistent across print, digital, social, packaging, signage and future brand extensions.' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/05.webp', alt: 'White ZIO tote bag on concrete steps' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/06.webp', alt: 'Model in an orange ZIO hoodie' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/07.webp', alt: 'ZIO business cards' },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/05.webp', alt: 'White ZIO tote bag on concrete steps', w: 2800, h: 1960 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/06.webp', alt: 'Model in an orange ZIO hoodie', w: 2800, h: 2800 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/07.webp', alt: 'ZIO business cards', w: 1401, h: 966 },
         { type: 'text', heading: 'Wordmark', body: 'A custom wordmark of minimal forms and precise typography — highly legible, premium in tone, and at home on storefronts, labels, apparel, packaging and screens.' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/08.webp', alt: 'Orange ZIO tote carried in city light' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/09.webp', alt: 'ZIO campaign poster on a street display' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/10.webp', alt: 'Black ZIO shopping bag' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/11.webp', alt: 'Woven ZIO label on a denim jacket' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/12.webp', alt: 'ZIO neck label on a black hoodie' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/13.webp', alt: 'Your Style Is the Signature roll-up banner' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/14.webp', alt: 'Orange tote with the oversized ZIO wordmark' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/15.webp', alt: 'Street banner with the ZIO tagline' },
-        { type: 'image', src: 'assets/work/branding/zio-fashion/16.webp', alt: 'ZIO perfume bottle' },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/08.webp', alt: 'Orange ZIO tote carried in city light', w: 2800, h: 4000 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/09.webp', alt: 'ZIO campaign poster on a street display', w: 2800, h: 4200 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/10.webp', alt: 'Black ZIO shopping bag', w: 2800, h: 4000 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/11.webp', alt: 'Woven ZIO label on a denim jacket', w: 1400, h: 926 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/12.webp', alt: 'ZIO neck label on a black hoodie', w: 1400, h: 930 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/13.webp', alt: 'Your Style Is the Signature roll-up banner', w: 1400, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/14.webp', alt: 'Orange tote with the oversized ZIO wordmark', w: 1400, h: 2100 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/15.webp', alt: 'Street banner with the ZIO tagline', w: 1400, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/zio-fashion/16.webp', alt: 'ZIO perfume bottle', w: 2800, h: 1588 },
         { type: 'text', heading: 'Outcome', body: 'The identity positions ZIO as a modern premium fashion brand with a strong visual presence, and gives it a scalable foundation for retail, e-commerce and marketing.' },
         { type: 'video', src: 'assets/work/branding/zio-fashion/17.mp4', poster: 'assets/work/branding/zio-fashion/17-poster.jpg' },
         { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar with Sudeep Divakaran.' },
@@ -1271,6 +999,8 @@ export default {
     },
     {
       slug: 'form-and-flow',
+      design: 'flow', // its own page design (js/designs.js), in the brand's colours
+      theme: { bg: '#f3f4fb', ink: '#0b1040', accent: '#1f2bff', soft: 'rgba(11,16,64,0.72)', line: 'rgba(11,16,64,0.14)' },
       title: 'Form & Flow',
       subtitle: 'Brand identity for a commercial interior design firm',
       client: '',
@@ -1281,45 +1011,47 @@ export default {
       cover: { src: 'assets/work/branding/form-and-flow/26.webp', alt: 'Form & Flow billboard on a building: Designing Spaces with Strategic Flow' },
       link: 'https://www.behance.net/gallery/235380971/Form-Flow-Brand-Identity-Design',
       modules: [
-        { type: 'image', src: 'assets/work/branding/form-and-flow/01.webp', alt: 'Form & Flow logo over rippling blue light' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/02.webp', alt: 'Identity overview: logo, colours and lockups' },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/01.webp', alt: 'Form & Flow logo over rippling blue light', w: 1400, h: 832 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/02.webp', alt: 'Identity overview: logo, colours and lockups', w: 2800, h: 1908 },
         { type: 'text', heading: 'The mark', body: 'The symbol layers four ideas. A tiger for power — the authority and presence commercial spaces need. A diamond for precision, formed under pressure like great interiors born of careful planning. A pencil for vision, because every space starts with a sketch. And an F joined to its mirror image: the balance between form and flow, structure and movement.' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/03.webp', alt: 'Logo logic: tiger, diamond, pencil and mirrored F' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/04.webp', alt: 'Form & Flow logo on electric blue' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/05.webp', alt: 'Form & Flow logo on white' },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/03.webp', alt: 'Logo logic: tiger, diamond, pencil and mirrored F', w: 2800, h: 1742 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/04.webp', alt: 'Form & Flow logo on electric blue', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/05.webp', alt: 'Form & Flow logo on white', w: 2800, h: 1800 },
         { type: 'text', heading: 'Identity system', body: 'A triangle drawn from the mark sits quietly behind the logo and key content, never on its own. Poppins carries the typography, with a palette of electric blue, white and black and clear rules for clear space and misuse.' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/06.webp', alt: 'Brand element: the supporting triangle' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/07.webp', alt: 'Colour palette' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/08.webp', alt: 'Poppins type specimen' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/09.webp', alt: 'Logo misuse examples' },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/06.webp', alt: 'Brand element: the supporting triangle', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/07.webp', alt: 'Colour palette', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/08.webp', alt: 'Poppins type specimen', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/09.webp', alt: 'Logo misuse examples', w: 2800, h: 1800 },
         { type: 'text', heading: 'Applications', body: 'Business cards, stationery, staff ID, website and app, social media, billboards and building signage, caps, hard hats, totes and T-shirts.' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/10.webp', alt: 'Business card front and back' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/11.webp', alt: 'Business cards on blue' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/12.webp', alt: 'Stationery set' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/13.webp', alt: 'Staff ID card on a lanyard' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/14.webp', alt: 'Website on a tablet' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/15.webp', alt: 'Website on a laptop' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/16.webp', alt: 'Social media banner' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/17.webp', alt: 'Mobile app on a phone' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/18.webp', alt: 'Brand presentation on a phone' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/19.webp', alt: 'Mobile app icon' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/20.webp', alt: 'Billboards on a building wall' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/21.webp', alt: 'Social media posts' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/22.webp', alt: 'Poster series' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/23.webp', alt: 'Building facade signage' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/24.webp', alt: 'Billboard pair on a wall' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/25.webp', alt: 'Large-format display in a showroom' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/26.webp', alt: 'Billboard on a building' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/27.webp', alt: 'Illuminated Form & Flow sign on a concrete wall' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/28.webp', alt: 'Embroidered blue cap' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/29.webp', alt: 'Branded hard hat' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/30.webp', alt: 'Tote bag among foliage' },
-        { type: 'image', src: 'assets/work/branding/form-and-flow/31.webp', alt: 'Branded T-shirt' },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/10.webp', alt: 'Business card front and back', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/11.webp', alt: 'Business cards on blue', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/12.webp', alt: 'Stationery set', w: 1400, h: 901 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/13.webp', alt: 'Staff ID card on a lanyard', w: 1400, h: 1050 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/14.webp', alt: 'Website on a tablet', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/15.webp', alt: 'Website on a laptop', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/16.webp', alt: 'Social media banner', w: 2800, h: 1742 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/17.webp', alt: 'Mobile app on a phone', w: 1400, h: 2100 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/18.webp', alt: 'Brand presentation on a phone', w: 1400, h: 933 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/19.webp', alt: 'Mobile app icon', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/20.webp', alt: 'Billboards on a building wall', w: 1170, h: 780 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/21.webp', alt: 'Social media posts', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/22.webp', alt: 'Poster series', w: 1170, h: 780 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/23.webp', alt: 'Building facade signage', w: 1400, h: 933 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/24.webp', alt: 'Billboard pair on a wall', w: 1170, h: 780 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/25.webp', alt: 'Large-format display in a showroom', w: 2800, h: 2100 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/26.webp', alt: 'Billboard on a building', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/27.webp', alt: 'Illuminated Form & Flow sign on a concrete wall', w: 1400, h: 1050 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/28.webp', alt: 'Embroidered blue cap', w: 1400, h: 934 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/29.webp', alt: 'Branded hard hat', w: 1400, h: 933 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/30.webp', alt: 'Tote bag among foliage', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/form-and-flow/31.webp', alt: 'Branded T-shirt', w: 2800, h: 1867 },
         { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar. Made with Adobe Illustrator and Photoshop.' },
       ],
     },
     {
       slug: 'consciousness',
+      design: 'waves', // its own page design (js/designs.js), in the brand's colours
+      theme: { bg: '#061417', ink: '#e4f1ef', accent: '#39b7ab', soft: 'rgba(228,241,239,0.7)', line: 'rgba(228,241,239,0.14)', font: "'Jost', var(--text)", fontHref: 'https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap' },
       title: 'Consciousness',
       subtitle: 'Brand identity for a sound healing studio',
       client: '',
@@ -1330,33 +1062,35 @@ export default {
       cover: { src: 'assets/work/branding/consciousness/04.webp', alt: 'Consciousness logo with flowing teal waves on black' },
       link: 'https://www.behance.net/gallery/232087527/Brand-Identity_Consciousness-Sound-Healing-Studio',
       modules: [
-        { type: 'image', src: 'assets/work/branding/consciousness/01.webp', alt: 'Woman resting among singing bowls' },
+        { type: 'image', src: 'assets/work/branding/consciousness/01.webp', alt: 'Woman resting among singing bowls', w: 2800, h: 1800 },
         { type: 'video', src: 'assets/work/branding/consciousness/02.mp4', poster: 'assets/work/branding/consciousness/02-poster.jpg' },
-        { type: 'image', src: 'assets/work/branding/consciousness/03.webp', alt: 'About the studio' },
-        { type: 'image', src: 'assets/work/branding/consciousness/04.webp', alt: 'Consciousness logo with flowing teal waves on black' },
+        { type: 'image', src: 'assets/work/branding/consciousness/03.webp', alt: 'About the studio', w: 2800, h: 1235 },
+        { type: 'image', src: 'assets/work/branding/consciousness/04.webp', alt: 'Consciousness logo with flowing teal waves on black', w: 2800, h: 1800 },
         { type: 'text', heading: 'The mark', body: 'One symbol, several readings: the singing bowl and the layered acoustic waves it creates; a pared-down peacock feather; a figure in meditation; a rising sun for a fresh, stress-free day; and, in the curve of the waves, a smile of rejuvenation.' },
-        { type: 'image', src: 'assets/work/branding/consciousness/05.webp', alt: 'The logo concept: bowl, frequency, feather, meditation, sunrise and smile' },
-        { type: 'image', src: 'assets/work/branding/consciousness/06.webp', alt: 'Logo construction grid' },
+        { type: 'image', src: 'assets/work/branding/consciousness/05.webp', alt: 'The logo concept: bowl, frequency, feather, meditation, sunrise and smile', w: 2800, h: 6375 },
+        { type: 'image', src: 'assets/work/branding/consciousness/06.webp', alt: 'Logo construction grid', w: 2800, h: 1800 },
         { type: 'text', heading: 'Identity system', body: 'Primary and secondary lockups on black, white and saffron, Open Sans for type, and a palette of cool teals balanced by warm orange.' },
-        { type: 'image', src: 'assets/work/branding/consciousness/07.webp', alt: 'Logo variations and usage' },
-        { type: 'image', src: 'assets/work/branding/consciousness/08.webp', alt: 'Open Sans typeface' },
-        { type: 'image', src: 'assets/work/branding/consciousness/09.webp', alt: 'Colour palette' },
+        { type: 'image', src: 'assets/work/branding/consciousness/07.webp', alt: 'Logo variations and usage', w: 2800, h: 2277 },
+        { type: 'image', src: 'assets/work/branding/consciousness/08.webp', alt: 'Open Sans typeface', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/consciousness/09.webp', alt: 'Colour palette', w: 2800, h: 1800 },
         { type: 'text', heading: 'Applications', body: 'Building signage, posters, social media, a website and mobile screens.' },
-        { type: 'image', src: 'assets/work/branding/consciousness/10.webp', alt: 'Signage on a building' },
-        { type: 'image', src: 'assets/work/branding/consciousness/11.webp', alt: 'Poster series in a gallery' },
-        { type: 'image', src: 'assets/work/branding/consciousness/12.webp', alt: 'Let the Vibrations Heal Your Soul wall graphic' },
-        { type: 'image', src: 'assets/work/branding/consciousness/13.webp', alt: 'Brand messages in three colourways' },
-        { type: 'image', src: 'assets/work/branding/consciousness/14.webp', alt: 'Campaign poster beside a portrait' },
-        { type: 'image', src: 'assets/work/branding/consciousness/15.webp', alt: 'Website design' },
-        { type: 'image', src: 'assets/work/branding/consciousness/16.webp', alt: 'Social media stories' },
-        { type: 'image', src: 'assets/work/branding/consciousness/17.webp', alt: 'App on a phone' },
-        { type: 'image', src: 'assets/work/branding/consciousness/18.webp', alt: 'Mobile site in hand' },
+        { type: 'image', src: 'assets/work/branding/consciousness/10.webp', alt: 'Signage on a building', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/consciousness/11.webp', alt: 'Poster series in a gallery', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/consciousness/12.webp', alt: 'Let the Vibrations Heal Your Soul wall graphic', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/consciousness/13.webp', alt: 'Brand messages in three colourways', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/consciousness/14.webp', alt: 'Campaign poster beside a portrait', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/consciousness/15.webp', alt: 'Website design', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/consciousness/16.webp', alt: 'Social media stories', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/consciousness/17.webp', alt: 'App on a phone', w: 1975, h: 1278 },
+        { type: 'image', src: 'assets/work/branding/consciousness/18.webp', alt: 'Mobile site in hand', w: 2005, h: 1288 },
         { type: 'video', src: 'assets/work/branding/consciousness/19.mp4', poster: 'assets/work/branding/consciousness/19-poster.jpg' },
         { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar. Made with Adobe Illustrator and Photoshop.' },
       ],
     },
     {
       slug: 'eva-design-group',
+      design: 'noir', // its own page design (js/designs.js), in the brand's colours
+      theme: { bg: '#0a0a0a', ink: '#ece6da', accent: '#b49a6a', soft: 'rgba(236,230,218,0.68)', line: 'rgba(180,154,106,0.45)' },
       title: 'EVA Design Group',
       subtitle: 'Minimal brand identity for a home interiors company',
       client: '',
@@ -1367,19 +1101,21 @@ export default {
       cover: { src: 'assets/work/branding/eva-design-group/01.webp', alt: 'EVA Design Group storefront signage at dusk' },
       link: 'https://www.behance.net/gallery/229518285/Minimal-Brand-Identity_EVA-Design-Group',
       modules: [
-        { type: 'image', src: 'assets/work/branding/eva-design-group/01.webp', alt: 'EVA Design Group storefront signage at dusk' },
-        { type: 'image', src: 'assets/work/branding/eva-design-group/02.webp', alt: 'About board with storefront and branded merchandise' },
-        { type: 'image', src: 'assets/work/branding/eva-design-group/03.webp', alt: 'Taglines, logo and signage pylon' },
+        { type: 'image', src: 'assets/work/branding/eva-design-group/01.webp', alt: 'EVA Design Group storefront signage at dusk', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/eva-design-group/02.webp', alt: 'About board with storefront and branded merchandise', w: 2800, h: 5011 },
+        { type: 'image', src: 'assets/work/branding/eva-design-group/03.webp', alt: 'Taglines, logo and signage pylon', w: 2800, h: 5582 },
         { type: 'text', heading: 'Identity system', body: 'A restrained palette of black, white and a warm metallic accent, set in SF Pro Display.' },
-        { type: 'image', src: 'assets/work/branding/eva-design-group/04.webp', alt: 'SF Pro Display type, colours and app icons' },
+        { type: 'image', src: 'assets/work/branding/eva-design-group/04.webp', alt: 'SF Pro Display type, colours and app icons', w: 2800, h: 7543 },
         { type: 'text', heading: 'Applications', body: 'Storefront and wayfinding signage, merchandise, a website and social media.' },
-        { type: 'image', src: 'assets/work/branding/eva-design-group/05.webp', alt: 'Website on tablet and laptop' },
-        { type: 'image', src: 'assets/work/branding/eva-design-group/06.webp', alt: 'Apparel, framed art and social posts' },
+        { type: 'image', src: 'assets/work/branding/eva-design-group/05.webp', alt: 'Website on tablet and laptop', w: 2800, h: 6645 },
+        { type: 'image', src: 'assets/work/branding/eva-design-group/06.webp', alt: 'Apparel, framed art and social posts', w: 2800, h: 8069 },
         { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar. Made with Adobe Illustrator and Photoshop.' },
       ],
     },
     {
       slug: 'taras',
+      design: 'studio', // its own page design (js/designs.js), in the brand's colours
+      theme: { bg: '#0c0c0c', ink: '#f4f4f0', accent: '#c8f031', soft: 'rgba(244,244,240,0.7)', line: 'rgba(244,244,240,0.14)' },
       title: 'taras',
       subtitle: 'Personal brand identity for a design studio',
       client: 'Self-initiated',
@@ -1390,24 +1126,26 @@ export default {
       cover: { src: 'assets/work/branding/taras/05.webp', alt: 'Lime and black taras business cards' },
       link: 'https://www.behance.net/gallery/227790961/Minimal-Logo-Identity_taras-design-studio',
       modules: [
-        { type: 'image', src: 'assets/work/branding/taras/01.webp', alt: 'The taras name: a reflection of identity and creativity' },
+        { type: 'image', src: 'assets/work/branding/taras/01.webp', alt: 'The taras name: a reflection of identity and creativity', w: 2800, h: 5944 },
         { type: 'text', heading: 'The idea', body: '“Great design often comes from seeing things from the other side.” The square at the heart of the mark stands for structure, clarity and trust — the grids and systems of design — and for the creativity that comes from pushing thoughtfully against them.' },
-        { type: 'image', src: 'assets/work/branding/taras/02.webp', alt: 'The origin of taras and the meaning of the square' },
-        { type: 'image', src: 'assets/work/branding/taras/03.webp', alt: 'Logo, colours and Poppins type' },
+        { type: 'image', src: 'assets/work/branding/taras/02.webp', alt: 'The origin of taras and the meaning of the square', w: 2800, h: 4987 },
+        { type: 'image', src: 'assets/work/branding/taras/03.webp', alt: 'Logo, colours and Poppins type', w: 2800, h: 8755 },
         { type: 'video', src: 'assets/work/branding/taras/04.mp4', poster: 'assets/work/branding/taras/04-poster.jpg' },
         { type: 'text', heading: 'Applications', body: 'Business cards, cups, staff ID, site hoarding, motion pieces and a website, in a vivid lime-to-green gradient with black, set in Poppins.' },
-        { type: 'image', src: 'assets/work/branding/taras/05.webp', alt: 'Lime and black taras business cards' },
-        { type: 'image', src: 'assets/work/branding/taras/06.webp', alt: 'Branded paper cups' },
-        { type: 'image', src: 'assets/work/branding/taras/07.webp', alt: 'Staff ID card' },
-        { type: 'image', src: 'assets/work/branding/taras/08.webp', alt: 'Design Beyond Boundaries site hoarding' },
+        { type: 'image', src: 'assets/work/branding/taras/05.webp', alt: 'Lime and black taras business cards', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/taras/06.webp', alt: 'Branded paper cups', w: 2800, h: 2100 },
+        { type: 'image', src: 'assets/work/branding/taras/07.webp', alt: 'Staff ID card', w: 2800, h: 2100 },
+        { type: 'image', src: 'assets/work/branding/taras/08.webp', alt: 'Design Beyond Boundaries site hoarding', w: 2800, h: 1867 },
         { type: 'video', src: 'assets/work/branding/taras/09.mp4', poster: 'assets/work/branding/taras/09-poster.jpg' },
         { type: 'video', src: 'assets/work/branding/taras/10.mp4', poster: 'assets/work/branding/taras/10-poster.jpg' },
-        { type: 'image', src: 'assets/work/branding/taras/11.webp', alt: 'Website on a tablet' },
+        { type: 'image', src: 'assets/work/branding/taras/11.webp', alt: 'Website on a tablet', w: 2800, h: 1866 },
         { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar. Made with Adobe Illustrator, Photoshop and After Effects.' },
       ],
     },
     {
       slug: '40-feet',
+      design: 'manifest', // its own page design (js/designs.js), in the brand's colours
+      theme: { bg: '#121110', ink: '#f4efe9', accent: '#ff5a1f', soft: 'rgba(244,239,233,0.7)', line: 'rgba(244,239,233,0.14)' },
       title: '40 Feet',
       subtitle: 'The Container Cafe',
       client: '40 Feet Cafe & Restaurant',
@@ -1418,30 +1156,32 @@ export default {
       cover: { src: 'assets/work/branding/40-feet/13.webp', alt: '40 Feet branded shipping container lifted against the sky' },
       link: 'https://www.behance.net/gallery/205643747/40-Feet-Cafe-Restaurant-Branding',
       modules: [
-        { type: 'image', src: 'assets/work/branding/40-feet/01.webp', alt: 'Black-and-white café interior' },
-        { type: 'image', src: 'assets/work/branding/40-feet/02.webp', alt: 'Project introduction' },
-        { type: 'image', src: 'assets/work/branding/40-feet/03.webp', alt: 'The 40 Feet café, built from shipping containers' },
+        { type: 'image', src: 'assets/work/branding/40-feet/01.webp', alt: 'Black-and-white café interior', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/40-feet/02.webp', alt: 'Project introduction', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/03.webp', alt: 'The 40 Feet café, built from shipping containers', w: 2800, h: 1800 },
         { type: 'text', heading: 'Challenge', body: 'Create a bold, memorable identity for an unconventional concept — a vibrant café built from shipping containers — that reflects its industrial architecture yet feels warm and welcoming, stands out in Trivandrum’s growing café culture, and stays recognisable across signage, packaging, merchandise and digital.' },
-        { type: 'image', src: 'assets/work/branding/40-feet/04.webp', alt: 'Guests dining at the café' },
-        { type: 'image', src: 'assets/work/branding/40-feet/05.webp', alt: 'Logo on white and orange beside diners' },
+        { type: 'image', src: 'assets/work/branding/40-feet/04.webp', alt: 'Guests dining at the café', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/05.webp', alt: 'Logo on white and orange beside diners', w: 2800, h: 1800 },
         { type: 'text', heading: 'Approach', body: 'A modern, minimal identity drawn from the café’s container architecture. Bold typography and a structured logo echo the strength and modular form of a shipping container, while a vibrant orange brings energy, appetite and warmth. Nexa carries the type across environmental graphics, packaging, uniforms and social media.' },
-        { type: 'image', src: 'assets/work/branding/40-feet/06.webp', alt: '40 Feet logo on black' },
-        { type: 'image', src: 'assets/work/branding/40-feet/07.webp', alt: 'Nexa typeface and a branded delivery rider' },
-        { type: 'image', src: 'assets/work/branding/40-feet/08.webp', alt: '40 Feet of Deliciousness billboard' },
-        { type: 'image', src: 'assets/work/branding/40-feet/09.webp', alt: 'Food and coffee posters on the street' },
-        { type: 'image', src: 'assets/work/branding/40-feet/10.webp', alt: 'Cap, laptop and container interior' },
-        { type: 'image', src: 'assets/work/branding/40-feet/11.webp', alt: 'Social media profile' },
-        { type: 'image', src: 'assets/work/branding/40-feet/12.webp', alt: 'Social media post design' },
-        { type: 'image', src: 'assets/work/branding/40-feet/13.webp', alt: '40 Feet branded shipping container lifted against the sky' },
-        { type: 'image', src: 'assets/work/branding/40-feet/14.webp', alt: 'The container café among trees' },
-        { type: 'image', src: 'assets/work/branding/40-feet/15.webp', alt: 'Branded T-shirts' },
+        { type: 'image', src: 'assets/work/branding/40-feet/06.webp', alt: '40 Feet logo on black', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/07.webp', alt: 'Nexa typeface and a branded delivery rider', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/08.webp', alt: '40 Feet of Deliciousness billboard', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/09.webp', alt: 'Food and coffee posters on the street', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/10.webp', alt: 'Cap, laptop and container interior', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/11.webp', alt: 'Social media profile', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/12.webp', alt: 'Social media post design', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/13.webp', alt: '40 Feet branded shipping container lifted against the sky', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/14.webp', alt: 'The container café among trees', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/40-feet/15.webp', alt: 'Branded T-shirts', w: 2800, h: 1800 },
         { type: 'text', heading: 'Outcome', body: 'A distinctive destination brand that reinforces the café’s concept from the moment guests arrive, with a scalable system that keeps a bold, consistent presence on every platform.' },
-        { type: 'image', src: 'assets/work/branding/40-feet/16.webp', alt: 'Mango drink' },
+        { type: 'image', src: 'assets/work/branding/40-feet/16.webp', alt: 'Mango drink', w: 2800, h: 1800 },
         { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar.' },
       ],
     },
     {
       slug: 'initium-world',
+      design: 'split', // its own page design (js/designs.js), in the brand's colours
+      theme: { bg: '#f1f4f2', ink: '#0c1d15', accent: '#17b26a', soft: 'rgba(12,29,21,0.72)', line: 'rgba(12,29,21,0.12)' },
       title: 'Initium World',
       subtitle: 'Brand identity for an international conference organiser',
       client: '',
@@ -1452,31 +1192,33 @@ export default {
       cover: { src: 'assets/work/branding/initium-world/05.webp', alt: 'Initium World logo on a green gradient, white and black' },
       link: 'https://www.behance.net/gallery/205207613/Brand-Identity-Design_Initium-World',
       modules: [
-        { type: 'image', src: 'assets/work/branding/initium-world/01.webp', alt: 'Silhouette in front of a conference stage' },
-        { type: 'image', src: 'assets/work/branding/initium-world/02.webp', alt: 'Project introduction' },
-        { type: 'image', src: 'assets/work/branding/initium-world/03.webp', alt: 'Brand cards: Connecting minds, enhancing skills' },
-        { type: 'image', src: 'assets/work/branding/initium-world/04.webp', alt: 'Initium World logo' },
-        { type: 'image', src: 'assets/work/branding/initium-world/05.webp', alt: 'Initium World logo on a green gradient, white and black' },
+        { type: 'image', src: 'assets/work/branding/initium-world/01.webp', alt: 'Silhouette in front of a conference stage', w: 2800, h: 1862 },
+        { type: 'image', src: 'assets/work/branding/initium-world/02.webp', alt: 'Project introduction', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/03.webp', alt: 'Brand cards: Connecting minds, enhancing skills', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/04.webp', alt: 'Initium World logo', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/05.webp', alt: 'Initium World logo on a green gradient, white and black', w: 2800, h: 1662 },
         { type: 'text', heading: 'Identity system', body: 'The mark is set in green — for prosperity and growth — against a dark background that underlines the brand’s strength. Acumin carries the typography, with navy, green and white lockups for every context.' },
-        { type: 'image', src: 'assets/work/branding/initium-world/06.webp', alt: 'Brand tone' },
-        { type: 'image', src: 'assets/work/branding/initium-world/07.webp', alt: 'Logo construction' },
-        { type: 'image', src: 'assets/work/branding/initium-world/08.webp', alt: 'App icons' },
-        { type: 'image', src: 'assets/work/branding/initium-world/09.webp', alt: 'Logo lockups' },
-        { type: 'image', src: 'assets/work/branding/initium-world/10.webp', alt: 'Acumin typeface' },
-        { type: 'image', src: 'assets/work/branding/initium-world/11.webp', alt: 'Messaging layout' },
-        { type: 'image', src: 'assets/work/branding/initium-world/12.webp', alt: 'Social media grid' },
+        { type: 'image', src: 'assets/work/branding/initium-world/06.webp', alt: 'Brand tone', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/07.webp', alt: 'Logo construction', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/08.webp', alt: 'App icons', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/09.webp', alt: 'Logo lockups', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/10.webp', alt: 'Acumin typeface', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/11.webp', alt: 'Messaging layout', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/12.webp', alt: 'Social media grid', w: 2800, h: 1800 },
         { type: 'text', heading: 'Applications', body: 'Delegate passes and lanyards, branded merchandise, printed collateral, posters, apparel, a watch app and outdoor signage.' },
-        { type: 'image', src: 'assets/work/branding/initium-world/13.webp', alt: 'Delegate pass and lanyard' },
-        { type: 'image', src: 'assets/work/branding/initium-world/14.webp', alt: 'Logo pattern, bottle and tape' },
-        { type: 'image', src: 'assets/work/branding/initium-world/15.webp', alt: 'Printed collateral' },
-        { type: 'image', src: 'assets/work/branding/initium-world/16.webp', alt: 'Poster in a waiting area' },
-        { type: 'image', src: 'assets/work/branding/initium-world/17.webp', alt: 'T-shirt and smartwatch' },
-        { type: 'image', src: 'assets/work/branding/initium-world/18.webp', alt: 'Outdoor signage' },
+        { type: 'image', src: 'assets/work/branding/initium-world/13.webp', alt: 'Delegate pass and lanyard', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/14.webp', alt: 'Logo pattern, bottle and tape', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/15.webp', alt: 'Printed collateral', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/16.webp', alt: 'Poster in a waiting area', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/17.webp', alt: 'T-shirt and smartwatch', w: 2800, h: 1800 },
+        { type: 'image', src: 'assets/work/branding/initium-world/18.webp', alt: 'Outdoor signage', w: 2800, h: 1800 },
         { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar. Made with Adobe Illustrator, Photoshop and After Effects.' },
       ],
     },
     {
       slug: 'debarro-interiors',
+      design: 'architect', // its own page design (js/designs.js), in the brand's colours
+      theme: { bg: '#f7f6f2', ink: '#121212', accent: '#e07b1a', soft: 'rgba(18,18,18,0.68)', line: 'rgba(18,18,18,0.16)' },
       title: 'Debarro Interiors',
       subtitle: 'Brand identity for an interior design studio',
       client: '',
@@ -1487,30 +1229,32 @@ export default {
       cover: { src: 'assets/work/branding/debarro-interiors/07.webp', alt: 'Debarro Interiors logo on black and orange panels' },
       link: 'https://www.behance.net/gallery/204263485/Branding_Debarro-Interiors',
       modules: [
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/01.webp', alt: 'Debarro Interiors logo over fluted glass' },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/01.webp', alt: 'Debarro Interiors logo over fluted glass', w: 1536, h: 1024 },
         { type: 'text', heading: 'The mark', body: 'Inspired by the architect of the natural world: bees build honeycomb through cooperation and collective intelligence, each playing its part in the structure. The hexagon — symmetrical, efficient and strong — becomes the building block of the mark.' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/02.webp', alt: 'The hexagon concept' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/03.webp', alt: 'Brand introduction' },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/02.webp', alt: 'The hexagon concept', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/03.webp', alt: 'Brand introduction', w: 2800, h: 1867 },
         { type: 'video', src: 'assets/work/branding/debarro-interiors/04.mp4', poster: 'assets/work/branding/debarro-interiors/04-poster.jpg' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/05.webp', alt: 'Curved concrete interior' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/06.webp', alt: 'Logo concept: inspired by the architect' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/07.webp', alt: 'Debarro Interiors logo on black and orange panels' },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/05.webp', alt: 'Curved concrete interior', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/06.webp', alt: 'Logo concept: inspired by the architect', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/07.webp', alt: 'Debarro Interiors logo on black and orange panels', w: 2800, h: 1867 },
         { type: 'text', heading: 'Identity system', body: 'A clean wordmark with defined clear space, Aileron in weights from Thin to Black, and a palette of black, white and burnt orange.' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/08.webp', alt: 'Wordmark clear space' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/09.webp', alt: 'Aileron typeface' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/10.webp', alt: 'Colour palette' },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/08.webp', alt: 'Wordmark clear space', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/09.webp', alt: 'Aileron typeface', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/10.webp', alt: 'Colour palette', w: 2800, h: 1867 },
         { type: 'text', heading: 'Applications', body: 'Stationery, an app icon, a website, apparel and social media.' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/11.webp', alt: 'Business cards on concrete' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/12.webp', alt: 'Stationery with wooden blocks' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/13.webp', alt: 'App icon on a phone' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/14.webp', alt: 'Website on devices' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/15.webp', alt: 'Branded T-shirt' },
-        { type: 'image', src: 'assets/work/branding/debarro-interiors/16.webp', alt: 'Social media posts' },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/11.webp', alt: 'Business cards on concrete', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/12.webp', alt: 'Stationery with wooden blocks', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/13.webp', alt: 'App icon on a phone', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/14.webp', alt: 'Website on devices', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/15.webp', alt: 'Branded T-shirt', w: 2800, h: 1867 },
+        { type: 'image', src: 'assets/work/branding/debarro-interiors/16.webp', alt: 'Social media posts', w: 2800, h: 1867 },
         { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar. Made with Adobe Illustrator and Photoshop.' },
       ],
     },
     {
       slug: 'sidhi',
+      design: 'herbal', // its own page design (js/designs.js), in the brand's colours
+      theme: { bg: '#3f5223', ink: '#f2eedf', accent: '#d8c47c', soft: 'rgba(242,238,223,0.76)', line: 'rgba(242,238,223,0.2)', font: "'Marcellus', Georgia, serif", fontHref: 'https://fonts.googleapis.com/css2?family=Marcellus&display=swap' },
       title: 'Sidhi',
       subtitle: 'Brand identity for an Ayurvedic life-science brand',
       client: '',
@@ -1521,12 +1265,12 @@ export default {
       cover: { src: 'assets/work/branding/sidhi/02.webp', alt: 'Sidhi logo with a skincare tube and a mortar of herbs' },
       link: 'https://www.behance.net/gallery/97752159/Branding_Sidhi-Advanced-Life-Science',
       modules: [
-        { type: 'image', src: 'assets/work/branding/sidhi/01.webp', alt: 'Ayurveda introduction among basil leaves' },
-        { type: 'image', src: 'assets/work/branding/sidhi/02.webp', alt: 'Sidhi logo with a skincare tube and a mortar of herbs' },
+        { type: 'image', src: 'assets/work/branding/sidhi/01.webp', alt: 'Ayurveda introduction among basil leaves', w: 1400, h: 900 },
+        { type: 'image', src: 'assets/work/branding/sidhi/02.webp', alt: 'Sidhi logo with a skincare tube and a mortar of herbs', w: 1400, h: 1049 },
         { type: 'text', heading: 'The mark', body: 'One icon, four readings: a vaidyan in tapas seeking enlightenment, for the research behind each formula; a leaf, for the brand’s roots in nature; a peacock feather, for India’s traditions of care; and a drop, for pure oils and creams.' },
-        { type: 'image', src: 'assets/work/branding/sidhi/03.webp', alt: 'Oil bottle, logo logic and its four meanings' },
+        { type: 'image', src: 'assets/work/branding/sidhi/03.webp', alt: 'Oil bottle, logo logic and its four meanings', w: 1400, h: 2285 },
         { type: 'text', heading: 'Applications', body: 'Bottles, tubes and boxes in a deep herbal green.' },
-        { type: 'image', src: 'assets/work/branding/sidhi/04.webp', alt: 'Packaging, setting and potted plant' },
+        { type: 'image', src: 'assets/work/branding/sidhi/04.webp', alt: 'Packaging, setting and potted plant', w: 1400, h: 2840 },
         { type: 'text', heading: 'Credits', body: 'Designed by Sarath Bhaskar. Made with Adobe Illustrator and Photoshop.' },
       ],
     },

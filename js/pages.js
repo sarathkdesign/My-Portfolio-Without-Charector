@@ -12,6 +12,8 @@
 
 import { categories } from './work/index.js';
 import { content } from './content.js';
+import { layout, restyled, startMotion, splitWords } from './designs.js';
+import { createLightbox } from './lightbox.js';
 
 const MOTION = {
   grow: 1100, // ms: a tile or thumbnail growing into a page
@@ -77,6 +79,15 @@ const arrow = () => {
 };
 const backLink = (href, label) =>
   el('a', { class: 'page__back', href, 'data-route': true, 'data-back': true }, [arrow(), el('span', { text: label })]);
+
+// A project's close (×), top right at the edge of the work: goes back to its category, like the back link
+const closeLink = (href, label) => {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 16 16');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.innerHTML = '<path d="M3.5 3.5l9 9m0-9l-9 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>';
+  return el('a', { class: 'page__close', href, 'data-route': true, 'data-back': true, 'aria-label': `Close, back to ${label}` }, [svg]);
+};
 
 // The link at the foot of a page: label, name and an optional line of detail, with an optional thumbnail
 const nextLink = (href, label, title, image, meta) =>
@@ -492,8 +503,32 @@ const loadFont = (href) => {
   document.head.append(el('link', { rel: 'stylesheet', href }));
 };
 
+function projectModules(project) {
+  const designed = layout(project, { el, picture, module });
+  if (designed) return designed;
+  const nodes = (project.modules || []).map(module);
+  const extra = restyled(project.design);
+  if (extra) {
+    let k = 0;
+    for (const n of nodes) {
+      if (!n) continue;
+      if (n.classList.contains('mod--image')) for (const [key, v] of Object.entries(extra.image)) n.querySelector('img')?.setAttribute(key, v === true ? '' : v);
+      if (n.classList.contains('mod--duo')) n.classList.add(`is-${extra.duo}`);
+      if (extra.words) n.querySelectorAll('.th__heading, .th__line').forEach(splitWords);
+      if (extra.enter && (n.classList.contains('mod--image') || n.classList.contains('mod--duo'))) n.dataset.enter = extra.enter[k++ % extra.enter.length];
+    }
+  }
+  return nodes;
+}
+
 function renderProject(page, category, project) {
   loadFont(project.theme?.fontHref);
+  const t = project.theme || {};
+  const vars = { '--th-bg': t.bg, '--th-ink': t.ink, '--th-accent': t.accent, '--th-soft': t.soft,
+    '--th-gradient': t.gradient, '--th-mesh': t.mesh, '--th-font': t.font, '--th-line': t.line };
+  for (const [k, v] of Object.entries(vars)) v ? page.style.setProperty(k, v) : page.style.removeProperty(k);
+  if (project.design) page.dataset.design = project.design;
+  else delete page.dataset.design;
   const list = category.projects;
   const next = list[(list.indexOf(project) + 1) % list.length];
   const meta = [
@@ -506,6 +541,7 @@ function renderProject(page, category, project) {
   page.setAttribute('aria-labelledby', 'page-project-title');
   page.replaceChildren(
     backLink(hrefOf(category), category.name),
+    closeLink(hrefOf(category), category.name),
     el('header', { class: 'proj__head' }, [
       el('div', { class: 'proj__lead' }, [
         el('p', { class: 'proj__kicker', 'data-reveal': true, text: category.name }),
@@ -517,24 +553,21 @@ function renderProject(page, category, project) {
         project.summary && el('p', { class: 'proj__summary', text: project.summary }),
       ]),
     ]),
-    el('div', { class: project.whole ? 'proj__cover proj__cover--whole' : 'proj__cover' }, [picture(project.cover, { 'data-hero': true, fetchpriority: 'high' })]),
-    el('div', { class: 'proj__modules', style: [
-      project.gap && `--gap:${project.gap}px`,
-      project.theme && `--th-bg:${project.theme.bg};--th-ink:${project.theme.ink};--th-accent:${project.theme.accent};--th-soft:${project.theme.soft}`,
-      project.theme?.gradient && `--th-gradient:${project.theme.gradient};--th-mesh:${project.theme.mesh}`,
-      project.theme?.font && `--th-font:${project.theme.font}`,
-    ].filter(Boolean).join(';') || null },
-      (project.modules || []).map(module)),
+    !project.hideCover && el('div', { class: project.whole ? 'proj__cover proj__cover--whole' : 'proj__cover' }, [picture(project.cover, { 'data-hero': true, fetchpriority: 'high' })]),
+    el('div', { class: 'proj__modules', style: project.gap ? `--gap:${project.gap}px` : null }, projectModules(project)),
     el('footer', { class: 'proj__foot' }, [
       project.link && el('a', { class: 'proj__link', href: project.link, target: '_blank', rel: 'noopener', text: `${linkLabel} ↗` }),
       list.length > 1 && nextLink(hrefOf(category, next), 'Next project', next.title, next.thumb || next.cover, next.subtitle),
     ])
   );
   page.scrollTop = 0;
+  page._motion?.();
+  page._motion = startMotion(page, reducedQuery.matches);
 }
 
 /* ── Pages ─────────────────────────────────────────────── */
 export function createPages({ sound, leaveHome, returnHome }) {
+  const lightbox = createLightbox();
   const root = document.documentElement;
   const home = $('#main');
   const menu = $('[data-menu]');
@@ -609,6 +642,8 @@ export function createPages({ sound, leaveHome, returnHome }) {
     page._io?.disconnect();
     page._wall?.destroy();
     page._wall = null;
+    page._motion?.();
+    page._motion = null;
     page.hidden = true;
     page.classList.remove('is-before', 'is-after', 'is-morphing');
     page.replaceChildren(); // also stops any video
@@ -845,7 +880,8 @@ export function createPages({ sound, leaveHome, returnHome }) {
     show(projectPage, 'is-before');
     categoryPage.inert = true;
     sound.play('menuOpen');
-    if (thumb && !reduced()) {
+    // A project without a cover picture (hideCover) simply fades in
+    if (thumb && $('[data-hero]', projectPage) && !reduced()) {
       const img = $('img', thumb);
       thumb.classList.add('is-source');
       projectPage.classList.add('is-morphing');
@@ -870,7 +906,8 @@ export function createPages({ sound, leaveHome, returnHome }) {
   async function closeProject(project) {
     const thumb = $(`.thumb[data-project="${project.slug}"]`, categoryPage);
     categoryPage.inert = false;
-    if (thumb && !reduced()) {
+    lightbox.close();
+    if (thumb && $('[data-hero]', projectPage) && !reduced()) {
       // Bring the thumbnail into view first; the project page still covers this scroll
       const r = $('.thumb__media', thumb).getBoundingClientRect();
       if (r.top < 0 || r.bottom > innerHeight) categoryPage.scrollTop += r.top - (innerHeight - r.height) / 2;
