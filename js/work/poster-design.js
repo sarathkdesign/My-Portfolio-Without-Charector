@@ -10,9 +10,34 @@ export default {
   slug: 'poster-design',
   name: 'Poster Design',
   intro: '[A line about your posters.]',
-  cover: { src: 'assets/work/placeholder-05.svg', alt: 'Placeholder artwork: a red block over black diagonal stripes on pink' },
+  // The tile on the homepage
+  cover: { src: 'assets/work/poster-design/tcsl-diwali/poster.webp', alt: 'TCSL Diwali poster: a glowing parcel rising from a diya flame' },
 
   projects: [
+    {
+      slug: 'tcsl-diwali',
+      title: 'TCSL Diwali',
+      subtitle: 'Diwali greeting poster',
+      client: 'TCSL',
+      year: '',
+      services: ['Poster design'],
+      whole: true, // the poster shows whole on its page
+      thumb: { src: 'assets/work/poster-design/tcsl-diwali/poster.webp', alt: 'TCSL Diwali poster: a glowing parcel rising from a diya flame' },
+      cover: { src: 'assets/work/poster-design/tcsl-diwali/poster.webp', alt: 'TCSL Diwali poster: “Let the light of joy reach every doorstep”, a glowing TCSL parcel rising from a diya flame' },
+      modules: [],
+    },
+    {
+      slug: 'tcsl-worldwide',
+      title: 'TCSL Worldwide',
+      subtitle: 'International shipping poster',
+      client: 'TCSL',
+      year: '',
+      services: ['Poster design'],
+      whole: true,
+      thumb: { src: 'assets/work/poster-design/tcsl-worldwide/poster.jpg', alt: 'TCSL poster: a globe in the clouds circled by parcels, gifts and medicines' },
+      cover: { src: 'assets/work/poster-design/tcsl-worldwide/poster.jpg', alt: 'TCSL poster: “Your next shipment, worldwide”, a globe in the clouds circled by documents, medicines, food, gifts and parcels' },
+      modules: [],
+    },
     placeholderProject(11),
     placeholderProject(12),
     placeholderProject(13),

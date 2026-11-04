@@ -383,7 +383,7 @@ function renderProject(page, category, project) {
         project.summary && el('p', { class: 'proj__summary', text: project.summary }),
       ]),
     ]),
-    el('div', { class: 'proj__cover' }, [picture(project.cover, { 'data-hero': true, fetchpriority: 'high' })]),
+    el('div', { class: project.whole ? 'proj__cover proj__cover--whole' : 'proj__cover' }, [picture(project.cover, { 'data-hero': true, fetchpriority: 'high' })]),
     el('div', { class: 'proj__modules', style: project.gap ? `--gap:${project.gap}px` : null },
       (project.modules || []).map(module)),
     el('footer', { class: 'proj__foot' }, [

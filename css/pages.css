@@ -473,6 +473,9 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
 
 .proj__cover { width: var(--col); margin: 0 auto; aspect-ratio: 16 / 9; overflow: hidden; background: var(--cream-2); }
 .proj__cover img { height: 100%; min-height: 0; object-fit: cover; }
+/* A poster shows whole, at its own shape, sized to fit the screen (`whole: true` in its entry) */
+.proj__cover--whole { aspect-ratio: auto !important; background: none; display: flex; justify-content: center; }
+.proj__cover--whole img { width: auto; max-width: 100%; height: auto; max-height: 92svh; object-fit: contain; }
 
 /* Modules stack edge to edge, like Behance; a project can set a gap (`gap` in its entry) */
 .proj__modules {
