@@ -500,6 +500,218 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
 }
 .mod--text p { max-width: 32em; padding-top: 0.3em; font: 400 clamp(17px, 1.3vw, 26px) / 1.35 var(--text); }
 .mod--embed { aspect-ratio: var(--ratio); }
+/* ── Brand-coloured presentation blocks ──────────────────────
+   chapter / section / split / cards / palette take the project's `theme` colours;
+   duo sets two images side by side at their own shapes */
+.mod--th {
+  --th-pad-x: clamp(24px, 5.5vw, 120px);
+  background: var(--th-bg, var(--ink)); color: var(--th-ink, var(--cream));
+}
+.th__label {
+  display: flex; align-items: baseline; gap: 0.9em;
+  color: var(--th-accent, var(--accent));
+  font: 500 clamp(12px, 0.85vw, 15px) / 1 var(--label); letter-spacing: 0.08em; text-transform: uppercase;
+}
+.th__num { font-variant-numeric: tabular-nums; }
+.th__num::after { content: ''; display: inline-block; width: 2.4em; height: 1px; margin-left: 0.9em; vertical-align: 0.3em; background: currentColor; opacity: 0.6; }
+.th__heading {
+  margin-left: -0.03em;
+  font: 700 clamp(36px, 4.8vw, 104px) / 0.92 var(--display);
+  letter-spacing: -0.04em; text-wrap: balance;
+}
+.th__heading--sm { font-size: clamp(30px, 3.1vw, 64px); line-height: 0.98; }
+.th__copy, .th__body p, .th__card-copy {
+  color: var(--th-soft, inherit);
+  font: 400 clamp(16px, 1.2vw, 22px) / 1.45 var(--text); text-wrap: pretty;
+}
+
+/* Chapter: number and label on the left, a large heading and two columns of text */
+.mod--chapter {
+  display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: 32px clamp(24px, 3vw, 64px);
+  padding: clamp(72px, 10vw, 200px) var(--th-pad-x);
+}
+.th__aside { padding-top: 0.6em; }
+.th__body { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22em), 1fr)); gap: 1em clamp(24px, 3vw, 64px); margin-top: clamp(32px, 4vw, 72px); max-width: 66em; }
+
+/* Section: a slim band that opens each group of images */
+.mod--section {
+  display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); align-items: baseline; gap: 16px clamp(24px, 3vw, 64px);
+  padding: clamp(40px, 5vw, 96px) var(--th-pad-x);
+}
+.th__line { max-width: 34em; font: 500 clamp(20px, 1.9vw, 38px) / 1.2 var(--display); letter-spacing: -0.015em; text-wrap: balance; }
+
+/* Split: an image beside its text, alternating sides */
+.mod--split { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.mod--split.is-reverse .th__media { order: 2; }
+.th__media { margin: 0; min-height: clamp(320px, 36vw, 760px); }
+.th__media img { width: 100%; height: 100%; object-fit: cover; }
+.th__media--contain { display: flex; align-items: center; padding: clamp(24px, 3vw, 64px); } /* a diagram shows whole */
+.th__media--contain img { height: auto; object-fit: contain; }
+.th__text {
+  display: flex; flex-direction: column; justify-content: center; gap: clamp(18px, 1.8vw, 32px);
+  padding: clamp(48px, 6vw, 128px) var(--th-pad-x);
+}
+.th__text .th__copy { max-width: 28em; }
+
+/* Cards: a header, then pictures with a short line each */
+.mod--cards, .mod--palette { padding: clamp(72px, 9vw, 180px) var(--th-pad-x); }
+.th__head {
+  display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: 20px clamp(24px, 3vw, 64px);
+  margin-bottom: clamp(40px, 5vw, 96px);
+}
+.th__head .th__label { grid-row: span 2; padding-top: 0.6em; }
+.th__head .th__copy { max-width: 36em; }
+.th__cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: clamp(32px, 3vw, 56px) clamp(16px, 1.8vw, 32px); }
+.th__card-media { position: relative; margin: 0; aspect-ratio: 4 / 3; overflow: hidden; }
+.th__card-media > img:first-child { width: 100%; height: 100%; object-fit: cover; }
+.mod--cards .th__card-media .th__card-icon {
+  position: absolute; left: 0; bottom: 0;
+  width: 28%; height: auto; aspect-ratio: 1; object-fit: cover;
+}
+.th__card-title { margin-top: 18px; font: 700 clamp(17px, 1.3vw, 24px) / 1.1 var(--display); letter-spacing: -0.01em; }
+.th__card-copy { margin-top: 8px; font-size: clamp(14px, 1vw, 18px); }
+.mod--cards[style*='--cols:5'] .th__card-media { aspect-ratio: 4 / 5; }
+
+/* Palette: the brand colours as tall swatches */
+.th__swatches { list-style: none; margin: 0; padding: 0; display: flex; }
+.th__swatch {
+  flex: 1 1 0; min-height: clamp(220px, 26vw, 520px);
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 6px;
+  padding: clamp(14px, 1.4vw, 28px);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22); /* keeps a swatch the colour of the panel visible */
+}
+.th__swatch-name { font: 700 clamp(15px, 1.2vw, 22px) / 1.1 var(--display); }
+.th__swatch-code { font: 500 clamp(11px, 0.8vw, 14px) / 1.3 var(--label); letter-spacing: 0.06em; opacity: 0.85; }
+
+/* Duo: two pictures in one row, each at its own shape, the row's heights equal */
+.mod--duo { display: flex; gap: var(--gap, 0px); }
+.mod--duo figure { margin: 0; min-width: 0; }
+.mod--duo img { width: 100%; height: auto; display: block; }
+
+/* ── IndSoft-style blocks: dark, rounded, gradient-lit ─────────
+   statement / anatomy / gradient / bento / closing, in the theme's colours and font */
+.mod--statement, .mod--anatomy, .mod--gradient, .mod--bento, .mod--closing {
+  --r: clamp(14px, 1.4vw, 28px); /* the rounded corners of the brand's lockups */
+  --pad-x: clamp(24px, 5.5vw, 120px);
+  background: var(--th-bg, #000); color: var(--th-ink, #fff);
+  font-family: var(--th-font, var(--text));
+}
+.st__kicker {
+  color: var(--th-accent);
+  font: 500 clamp(11px, 0.8vw, 14px) / 1.3 ui-monospace, 'SF Mono', Menlo, monospace; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.is-grad { background: var(--th-gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* Statement: one big line, then the problem and the answer side by side */
+.mod--statement { padding: clamp(80px, 11vw, 220px) var(--pad-x) clamp(56px, 7vw, 140px); }
+.st__title {
+  max-width: 15em; margin-top: clamp(20px, 2vw, 36px);
+  font: 600 clamp(40px, 6.4vw, 140px) / 0.98 var(--th-font, var(--display)); letter-spacing: -0.035em; text-wrap: balance;
+}
+.st__pair {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 1.6vw, 28px);
+  margin-top: clamp(56px, 7vw, 140px);
+}
+.st__half { padding: clamp(24px, 2.6vw, 48px); border-radius: var(--r); background: rgb(255 255 255 / 0.05); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1); }
+.st__half:last-child { background: var(--th-mesh); box-shadow: none; }
+.st__tag { font: 500 clamp(11px, 0.8vw, 14px) / 1 ui-monospace, 'SF Mono', Menlo, monospace; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.8; }
+.st__text { margin-top: clamp(28px, 3vw, 60px); font: 400 clamp(17px, 1.35vw, 26px) / 1.4 var(--th-font, var(--text)); text-wrap: pretty; }
+
+/* Anatomy: the mark stays pinned while its four ideas scroll past */
+.mod--anatomy {
+  display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 120px);
+  padding: clamp(72px, 9vw, 180px) var(--pad-x);
+}
+.an__pin { position: sticky; top: clamp(72px, 10vh, 140px); align-self: start; }
+.page .an__mark { width: min(100%, 520px); margin: clamp(24px, 3vw, 56px) 0; border-radius: var(--r); }
+.an__title { font: 600 clamp(28px, 2.8vw, 58px) / 1.02 var(--th-font, var(--display)); letter-spacing: -0.03em; text-wrap: balance; }
+.an__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(56px, 7vw, 140px); }
+.an__meta { display: flex; justify-content: space-between; gap: 1em; padding-bottom: 14px; margin-bottom: 18px; border-bottom: 1px solid rgb(255 255 255 / 0.16);
+  font: 500 clamp(11px, 0.8vw, 14px) / 1 ui-monospace, 'SF Mono', Menlo, monospace; letter-spacing: 0.06em; text-transform: uppercase; color: var(--th-soft); }
+.an__meta span:first-child { color: var(--th-accent); }
+.page .an__photo { aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--r); }
+.an__body { display: grid; grid-template-columns: clamp(96px, 11vw, 180px) minmax(0, 1fr); gap: clamp(16px, 2vw, 36px); align-items: start; margin-top: clamp(18px, 2vw, 32px); }
+.page .an__part { aspect-ratio: 700 / 494; object-fit: cover; border-radius: calc(var(--r) * 0.6); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1); }
+.an__name { font: 600 clamp(22px, 1.9vw, 38px) / 1.05 var(--th-font, var(--display)); letter-spacing: -0.02em; }
+.an__text { margin-top: 10px; max-width: 30em; color: var(--th-soft); font: 400 clamp(15px, 1.1vw, 20px) / 1.45 var(--th-font, var(--text)); }
+
+/* Gradient: the brand's colour field, full width, with its stops listed */
+.mod--gradient {
+  min-height: clamp(520px, 52vw, 1000px);
+  display: flex; flex-direction: column; justify-content: space-between; gap: 48px;
+  padding: clamp(56px, 7vw, 140px) var(--pad-x) clamp(32px, 3vw, 56px);
+  background: var(--th-mesh);
+}
+.mod--gradient .st__kicker { color: inherit; opacity: 0.85; }
+.gr__title { max-width: 10em; margin-top: 18px; font: 600 clamp(40px, 6vw, 128px) / 0.96 var(--th-font, var(--display)); letter-spacing: -0.035em; }
+.gr__text { max-width: 30em; margin-top: clamp(20px, 2vw, 36px); font: 400 clamp(16px, 1.25vw, 24px) / 1.45 var(--th-font, var(--text)); opacity: 0.88; }
+.gr__stops { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; }
+.gr__stops li {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 16px 10px 10px; border-radius: 999px;
+  background: rgb(0 0 0 / 0.45); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  font: 500 clamp(12px, 0.85vw, 15px) / 1 var(--th-font, var(--text));
+}
+.gr__dot { width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.35); }
+.gr__hex { font-family: ui-monospace, 'SF Mono', Menlo, monospace; opacity: 0.7; }
+
+/* Bento: rounded tiles on black, a wide or tall tile where the picture asks for it */
+.mod--bento { padding: clamp(40px, 5vw, 96px) var(--pad-x); }
+.bn__head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px 32px; margin-bottom: clamp(24px, 3vw, 56px); }
+.bn__line { max-width: 30em; font: 500 clamp(18px, 1.6vw, 32px) / 1.25 var(--th-font, var(--display)); letter-spacing: -0.015em; text-wrap: balance; }
+.bn__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-flow: dense; gap: clamp(10px, 1vw, 20px); }
+.bn__item { position: relative; margin: 0; grid-column: span 2; border-radius: var(--r); overflow: hidden; background: #111; }
+.bn__item::after { content: ''; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12); pointer-events: none; } /* a black tile still shows on black */
+.bn__item.is-wide { grid-column: span 4; }
+.bn__item.is-tall { grid-row: span 2; }
+.bn__item.is-third { grid-column: span 1; }
+.page .bn__item img { height: 100%; object-fit: cover; }
+.bn__item figcaption {
+  position: absolute; left: 14px; bottom: 14px;
+  padding: 7px 12px; border-radius: 999px;
+  background: rgb(0 0 0 / 0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  color: #fff; font: 500 clamp(10px, 0.75vw, 13px) / 1 ui-monospace, 'SF Mono', Menlo, monospace; letter-spacing: 0.05em; text-transform: uppercase;
+}
+
+/* Closing: the brand line, centred, lit by the gradient */
+.mod--closing { display: flex; flex-direction: column; align-items: center; gap: clamp(24px, 3vw, 48px); padding: clamp(96px, 12vw, 240px) var(--pad-x); text-align: center; }
+.page .cl__mark { width: clamp(72px, 7vw, 132px); border-radius: calc(var(--r) * 0.6); }
+.cl__title { max-width: 14em; font: 600 clamp(40px, 6vw, 128px) / 0.98 var(--th-font, var(--display)); letter-spacing: -0.035em; text-wrap: balance; }
+
+@media (max-width: 900px) {
+  .st__pair { grid-template-columns: minmax(0, 1fr); }
+  .mod--anatomy { grid-template-columns: minmax(0, 1fr); }
+  .an__pin { position: static; }
+  .page .an__mark { width: min(60%, 320px); }
+  .bn__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bn__item.is-wide { grid-column: span 2; }
+  .bn__item.is-third { grid-column: span 1; }
+}
+@media (max-width: 560px) {
+  .an__body { grid-template-columns: minmax(0, 1fr); }
+  .page .an__part { width: 50%; }
+  .bn__item, .bn__item.is-wide, .bn__item.is-third { grid-column: span 2; }
+  .bn__item.is-tall { grid-row: auto; }
+}
+
+@media (max-width: 900px) {
+  .mod--chapter, .mod--section, .th__head { grid-template-columns: minmax(0, 1fr); }
+  .th__head .th__label { grid-row: auto; }
+  .mod--split { grid-template-columns: minmax(0, 1fr); }
+  .mod--split.is-reverse .th__media { order: 0; }
+  .th__media { min-height: 0; aspect-ratio: 4 / 3; }
+  .th__cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .th__swatches { flex-wrap: wrap; }
+  .th__swatch { flex: 1 1 33%; min-height: 160px; }
+}
+@media (max-width: 560px) {
+  .th__cards { grid-template-columns: minmax(0, 1fr); }
+  .mod--cards[style*='--cols:5'] .th__card-media { aspect-ratio: 4 / 3; }
+  .mod--duo { flex-direction: column; }
+  .mod--duo figure { flex: none !important; }
+  .th__swatch { flex-basis: 50%; }
+}
+
 .mod--embed iframe { width: 100%; height: 100%; border: 0; display: block; }
 
 .proj__foot { width: var(--col); margin: clamp(56px, 7vw, 120px) auto 0; }

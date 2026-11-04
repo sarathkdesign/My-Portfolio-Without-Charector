@@ -113,10 +113,137 @@ function module(m) {
       return el('div', { class: 'mod mod--embed', 'data-reveal': true, style: `--ratio:${m.ratio || '16 / 9'}` }, [
         el('iframe', { src: m.src, title: m.title || 'Embedded video', loading: 'lazy', allow: 'autoplay; fullscreen; picture-in-picture', allowfullscreen: true }),
       ]);
+    // ── Brand-coloured presentation blocks (a project's `theme` sets their colours)
+    case 'chapter':
+      return el('section', { class: 'mod mod--th mod--chapter', 'data-reveal': true, style: accentOf(m) }, [
+        el('div', { class: 'th__aside' }, [thLabel(m)]),
+        el('div', { class: 'th__main' }, [
+          el('h2', { class: 'th__heading', text: m.heading }),
+          el('div', { class: 'th__body' }, [].concat(m.body || []).map((t) => el('p', { text: t }))),
+        ]),
+      ]);
+    case 'section':
+      return el('section', { class: 'mod mod--th mod--section', 'data-reveal': true, style: accentOf(m) }, [
+        thLabel(m),
+        el('p', { class: 'th__line', text: m.line }),
+      ]);
+    case 'split':
+      return el('section', { class: `mod mod--th mod--split${m.reverse ? ' is-reverse' : ''}`, 'data-reveal': true, style: accentOf(m) }, [
+        el('figure', { class: m.fit === 'contain' ? 'th__media th__media--contain' : 'th__media' }, [picture(m.image, { loading: 'lazy' })]),
+        el('div', { class: 'th__text' }, [
+          thLabel(m),
+          el('h2', { class: 'th__heading th__heading--sm', text: m.heading }),
+          el('p', { class: 'th__copy', text: m.body }),
+        ]),
+      ]);
+    case 'cards':
+      return el('section', { class: 'mod mod--th mod--cards', 'data-reveal': true, style: `${accentOf(m) || ''}--cols:${m.cols || m.items.length}` }, [
+        el('header', { class: 'th__head' }, [
+          thLabel(m),
+          el('h2', { class: 'th__heading th__heading--sm', text: m.heading }),
+          m.body && el('p', { class: 'th__copy', text: m.body }),
+        ]),
+        el('ul', { class: 'th__cards' }, m.items.map((c) =>
+          el('li', { class: 'th__card' }, [
+            el('figure', { class: 'th__card-media' }, [
+              picture(c, { loading: 'lazy' }),
+              c.icon && picture({ src: c.icon, alt: '' }, { class: 'th__card-icon', loading: 'lazy' }),
+            ]),
+            el('h3', { class: 'th__card-title', text: c.title }),
+            el('p', { class: 'th__card-copy', text: c.body }),
+          ]))),
+      ]);
+    case 'palette':
+      return el('section', { class: 'mod mod--th mod--palette', 'data-reveal': true, style: accentOf(m) }, [
+        el('header', { class: 'th__head' }, [
+          thLabel(m),
+          el('h2', { class: 'th__heading th__heading--sm', text: m.heading }),
+          m.body && el('p', { class: 'th__copy', text: m.body }),
+        ]),
+        el('ul', { class: 'th__swatches' }, m.colours.map((c) =>
+          el('li', { class: 'th__swatch', style: `background:${c.hex};color:${inkOn(c.hex)}` }, [
+            el('span', { class: 'th__swatch-name', text: c.name }),
+            el('span', { class: 'th__swatch-code', text: [c.hex.toUpperCase(), c.note].filter(Boolean).join(' · ') }),
+          ]))),
+      ]);
+    case 'duo':
+      return el('div', { class: 'mod mod--duo', 'data-reveal': true },
+        m.images.map((i) => el('figure', { style: i.w ? `flex:${(i.w / i.h).toFixed(3)} 1 0` : null }, [picture(i, { loading: 'lazy' })])));
+    // ── IndSoft-style blocks: statement, anatomy, gradient, bento, closing ──
+    case 'statement':
+      return el('section', { class: 'mod mod--statement', 'data-reveal': true }, [
+        el('p', { class: 'st__kicker', text: m.kicker }),
+        el('h2', { class: 'st__title' }, emphasised(m.heading)),
+        el('div', { class: 'st__pair' }, m.pair.map((x) =>
+          el('div', { class: 'st__half' }, [el('p', { class: 'st__tag', text: x.tag }), el('p', { class: 'st__text', text: x.text })]))),
+      ]);
+    case 'anatomy':
+      return el('section', { class: 'mod mod--anatomy' }, [
+        el('div', { class: 'an__pin' }, [
+          el('p', { class: 'st__kicker', text: m.kicker }),
+          picture(m.mark, { class: 'an__mark', loading: 'lazy' }),
+          el('h2', { class: 'an__title' }, emphasised(m.heading)),
+        ]),
+        el('ol', { class: 'an__steps' }, m.steps.map((x, i) =>
+          el('li', { class: 'an__step', 'data-reveal': true }, [
+            el('p', { class: 'an__meta' }, [
+              el('span', { text: `${String(i + 1).padStart(2, '0')} / ${String(m.steps.length).padStart(2, '0')}` }),
+              el('span', { text: x.tag }),
+            ]),
+            picture(x, { class: 'an__photo', loading: 'lazy' }),
+            el('div', { class: 'an__body' }, [
+              picture({ src: x.part, alt: '' }, { class: 'an__part', loading: 'lazy' }),
+              el('div', {}, [el('h3', { class: 'an__name', text: x.title }), el('p', { class: 'an__text', text: x.body })]),
+            ]),
+          ]))),
+      ]);
+    case 'gradient':
+      return el('section', { class: 'mod mod--gradient', 'data-reveal': true }, [
+        el('div', { class: 'gr__copy' }, [
+          el('p', { class: 'st__kicker', text: m.kicker }),
+          el('h2', { class: 'gr__title', text: m.heading }),
+          el('p', { class: 'gr__text', text: m.body }),
+        ]),
+        el('ul', { class: 'gr__stops' }, m.colours.map((c) =>
+          el('li', {}, [el('span', { class: 'gr__dot', style: `background:${c.hex}` }), el('span', { text: c.name }), el('span', { class: 'gr__hex', text: c.hex.toUpperCase() })]))),
+      ]);
+    case 'bento':
+      return el('section', { class: 'mod mod--bento', 'data-reveal': true }, [
+        m.kicker && el('header', { class: 'bn__head' }, [
+          el('p', { class: 'st__kicker', text: m.kicker }),
+          m.line && el('p', { class: 'bn__line', text: m.line }),
+        ]),
+        el('div', { class: 'bn__grid' }, m.items.map((x) =>
+          el('figure', { class: `bn__item${x.span ? ` is-${x.span}` : ''}` }, [
+            picture(x, { loading: 'lazy' }),
+            x.caption && el('figcaption', { text: x.caption }),
+          ]))),
+      ]);
+    case 'closing':
+      return el('section', { class: 'mod mod--closing', 'data-reveal': true }, [
+        m.mark && picture(m.mark, { class: 'cl__mark', loading: 'lazy' }),
+        el('h2', { class: 'cl__title' }, emphasised(m.heading)),
+        m.kicker && el('p', { class: 'st__kicker', text: m.kicker }),
+      ]);
     default:
       return null;
   }
 }
+
+// "Say *yes* to clients" — the words between asterisks carry the brand gradient
+const emphasised = (text) => text.split('*').map((part, i) => (i % 2 ? el('span', { class: 'is-grad', text: part }) : part));
+
+// "02  The idea" — a block's number and label, in its accent colour
+const thLabel = (m) => el('p', { class: 'th__label' }, [
+  m.n && el('span', { class: 'th__num', text: m.n }),
+  m.label && el('span', { text: m.label }),
+]);
+const accentOf = (m) => (m.accent ? `--th-accent:${m.accent};` : null);
+// Dark or light text, whichever reads on a swatch
+const inkOn = (hex) => {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.6 ? '#111' : '#fff';
+};
 
 /* ── Category cover: a wall of the category's work in two rows that glide continuously
    in opposite directions, like the tile band on the homepage ───────────────────── */
@@ -359,7 +486,14 @@ function renderExperienceClassic(page) {
   );
 }
 
+// A project can bring its brand's typeface (theme.fontHref, a Google Fonts stylesheet)
+const loadFont = (href) => {
+  if (!href || document.querySelector(`link[href="${href}"]`)) return;
+  document.head.append(el('link', { rel: 'stylesheet', href }));
+};
+
 function renderProject(page, category, project) {
+  loadFont(project.theme?.fontHref);
   const list = category.projects;
   const next = list[(list.indexOf(project) + 1) % list.length];
   const meta = [
@@ -384,7 +518,12 @@ function renderProject(page, category, project) {
       ]),
     ]),
     el('div', { class: project.whole ? 'proj__cover proj__cover--whole' : 'proj__cover' }, [picture(project.cover, { 'data-hero': true, fetchpriority: 'high' })]),
-    el('div', { class: 'proj__modules', style: project.gap ? `--gap:${project.gap}px` : null },
+    el('div', { class: 'proj__modules', style: [
+      project.gap && `--gap:${project.gap}px`,
+      project.theme && `--th-bg:${project.theme.bg};--th-ink:${project.theme.ink};--th-accent:${project.theme.accent};--th-soft:${project.theme.soft}`,
+      project.theme?.gradient && `--th-gradient:${project.theme.gradient};--th-mesh:${project.theme.mesh}`,
+      project.theme?.font && `--th-font:${project.theme.font}`,
+    ].filter(Boolean).join(';') || null },
       (project.modules || []).map(module)),
     el('footer', { class: 'proj__foot' }, [
       project.link && el('a', { class: 'proj__link', href: project.link, target: '_blank', rel: 'noopener', text: `${linkLabel} ↗` }),
