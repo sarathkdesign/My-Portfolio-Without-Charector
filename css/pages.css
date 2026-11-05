@@ -513,6 +513,8 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
   letter-spacing: -0.045em; text-transform: uppercase;
 }
 .mod--text p { max-width: 32em; padding-top: 0.3em; font: 400 clamp(17px, 1.3vw, 26px) / 1.35 var(--text); }
+.mod--credits { grid-template-columns: minmax(0, 1fr); gap: clamp(14px, 1.4vw, 24px); } /* the credit line sits right under its heading */
+.mod--credits p { padding-top: 0; }
 .mod--embed { aspect-ratio: var(--ratio); }
 /* ── Brand-coloured presentation blocks ──────────────────────
    chapter / section / split / cards / palette take the project's `theme` colours;

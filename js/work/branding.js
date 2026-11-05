@@ -207,6 +207,7 @@ export default {
     // ── From public/workd for website 2/Branding — presented with the brand’s own colours (theme)
     {
       "slug": "optigrise",
+      "hidden": true, // taken off the site; set to false (or delete this line) to show it again
       "design": "cube",
       "title": "Optigrise",
       "subtitle": "Brand identity for a digital and technology consultancy",
@@ -226,13 +227,14 @@ export default {
         "soft": "rgba(255,255,255,0.74)"
       },
       "thumb": {
-        "src": "assets/work/branding/optigrise/thumb-metro.jpg",
-        "alt": "Optigrise posters in a metro underpass"
+        "src": "assets/work/branding/optigrise/thumb-reception.jpg",
+        "alt": "Optigrise reception desk and meeting room glass with the symbol pattern"
       },
       "cover": {
         "src": "assets/work/branding/optigrise/cover.jpg",
         "alt": "Optigrise symbol as a colourful 3D metal sign"
       },
+      "hideCover": true, // the 3D sign photo is left off the page
       "modules": [
         {
           "type": "chapter",
@@ -552,6 +554,7 @@ export default {
     // ── From public/workd for website 2/Branding — presented with the brand’s own colours (theme)
     {
       "slug": "fresh-learning",
+      "hidden": true, // taken off the site; set to false (or delete this line) to show it again
       "design": "campus",
       "title": "Fresh Learning",
       "subtitle": "Brand identity for an online learning academy",
@@ -572,8 +575,8 @@ export default {
         "line": "rgba(12,41,83,0.16)"
       },
       "thumb": {
-        "src": "assets/work/branding/fresh-learning/thumb.jpg",
-        "alt": "Fresh Learning gold signage on a navy facade"
+        "src": "assets/work/branding/fresh-learning/thumb-subway.jpg",
+        "alt": "Fresh Learning posters on a subway wall: you stop growing the day you stop learning"
       },
       "cover": {
         "src": "assets/work/branding/fresh-learning/cover.jpg",

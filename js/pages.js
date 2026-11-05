@@ -12,7 +12,7 @@
 
 import { categories } from './work/index.js';
 import { content } from './content.js';
-import { layout, restyled, startMotion, splitWords } from './designs.js';
+import { layout, restyled, startMotion, splitWords, headArt } from './designs.js';
 import { createLightbox } from './lightbox.js';
 import { small } from './work/small.js';
 import { variants } from './work/variants.js';
@@ -145,7 +145,8 @@ function module(m) {
       return el('div', { class: 'mod mod--row', 'data-reveal': true, style: `--n:${m.images.length}` },
         m.images.map((i) => picture(i, { loading: 'lazy' })));
     case 'text':
-      return el('div', { class: 'mod mod--text', 'data-reveal': true }, [
+      // A "Credits" block stacks its line directly under the heading
+      return el('div', { class: `mod mod--text${/^credits$/i.test(m.heading || '') ? ' mod--credits' : ''}`, 'data-reveal': true }, [
         m.heading && el('h2', { text: m.heading }),
         m.body && el('p', { text: m.body }),
       ]);
@@ -592,6 +593,7 @@ function renderProject(page, category, project) {
         el('dl', { class: 'proj__meta' }, meta.map(([k, v]) => el('div', {}, [el('dt', { text: k }), el('dd', { text: v })]))),
         project.summary && el('p', { class: 'proj__summary', text: project.summary }),
       ]),
+      headArt(project.design, el),
     ]),
     project.hideCover ? '' : el('div', { class: project.whole ? 'proj__cover proj__cover--whole' : 'proj__cover' }, [picture(project.cover, { 'data-hero': true, fetchpriority: 'high' })]),
     el('div', { class: 'proj__modules', style: project.gap ? `--gap:${project.gap}px` : null }, projectModules(project)),

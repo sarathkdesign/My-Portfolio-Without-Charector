@@ -1,6 +1,8 @@
 // Images that also have a light copy (<src>.sm.jpg, longest side 1400px) for walls and thumbnails.
 // Generated; re-run the small-image step when covers or walls change.
 export const small = new Set([
+  'assets/work/branding/optigrise/thumb-reception.jpg',
+  'assets/work/branding/fresh-learning/thumb-subway.jpg',
   'assets/work/branding/wall/02.jpg',
   'assets/work/branding/wall/03.jpg',
   'assets/work/branding/wall/04.jpg',

@@ -296,27 +296,44 @@ DESIGNS.campus = (p, h) => {
         break;
       case 'image':
         if (/pattern/.test(m.src)) {
-          out.push(h.el('section', { class: 'cp-band', 'aria-label': m.alt }, [
-            h.el('div', { class: 'cp-band__track' }, [0, 1, 2, 3].map(() => h.picture({ src: m.src.replace(/pattern\.jpg$/, 'pattern-tile.jpg'), alt: '' }, { loading: 'lazy' }))),
+          // One seamless tile (an exact whole number of motifs each way) repeated across the band and slid by
+          // exactly one tile, so the pattern fills any width and loops with no seam or gap
+          out.push(h.el('section', { class: 'cp-band', role: 'img', 'aria-label': m.alt }, [
+            h.el('div', { class: 'cp-band__fill', style: `background-image:url("${m.src.replace(/pattern\.jpg$/, 'pattern-seamless.webp')}")` }),
           ]));
         } else if (/brandmark|typeface/.test(m.src)) {
           out.push(pic(m, `cp-float ${side++ % 2 ? 'from-right' : 'from-left'}`));
         } else out.push(pic(m, 'cp-drift'));
         break;
-      case 'cards':
+      case 'cards': {
+        // Five ideas assemble into one mark: a pinned panel steps through each idea as the page scrolls
+        // (its photo wipes in, the mark's icon and words change), then ends on the whole brandmark.
+        // Phones and reduced motion get the same content as a plain list.
+        const mark = p.modules.find((x) => x.type === 'image' && /brandmark/.test(x.src));
+        const steps = [...m.items, ...(mark ? [{ ...mark, final: true, title: m.heading }] : [])];
+        const total = m.items.length;
         out.push(h.el('section', { class: 'cp-ideas' }, [
           h.el('header', { class: 'cp-ideas__head', 'data-reveal': true }, [kicker(m), words(m.heading, 'cp-title')]),
-          h.el('ol', { class: 'cp-stack' }, m.items.map((c, i) => h.el('li', { class: 'cp-card', style: `--i:${i}` }, [
-            h.el('figure', { class: 'cp-card__media' }, [h.picture(c, { loading: 'lazy' })]),
-            h.el('div', { class: 'cp-card__text' }, [
-              c.icon && h.picture({ src: c.icon, alt: '' }, { class: 'cp-card__icon', loading: 'lazy' }),
-              h.el('p', { class: 'cp-card__n', text: `${i + 1} / ${m.items.length}` }),
-              h.el('h3', { class: 'cp-card__title', text: c.title }),
-              h.el('p', { class: 'cp-card__body', text: c.body }),
+          h.el('div', { class: 'cp-steps', 'data-steps': true, style: `--n:${steps.length}` }, [
+            h.el('div', { class: 'cp-steps__stage' }, [
+              h.el('div', { class: 'cp-steps__media' }, steps.map((c, i) =>
+                h.el('figure', { class: `cp-step-img${c.final ? ' is-final' : ''}`, 'data-i': i, style: `--o:${i * 3}` }, [h.picture(c, { loading: 'lazy' })]))),
+              h.el('div', { class: 'cp-steps__panel' }, [
+                h.el('div', { class: 'cp-steps__icons' }, steps.map((c, i) => c.icon
+                  ? h.picture({ src: c.icon, alt: '' }, { class: 'cp-step-icon', 'data-i': i, loading: 'lazy', style: `--o:${i * 3 + 1}` })
+                  : h.el('span', { class: 'cp-step-icon is-blank', 'data-i': i }))),
+                h.el('div', { class: 'cp-steps__words' }, steps.map((c, i) => h.el('div', { class: 'cp-step-text', 'data-i': i, style: `--o:${i * 3 + 2}` }, [
+                  h.el('p', { class: 'cp-card__n', text: c.final ? `${total} ideas` : `${String(i + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}` }),
+                  h.el('h3', { class: 'cp-card__title', text: c.title }),
+                  c.body && h.el('p', { class: 'cp-card__body', text: c.body }),
+                ]))),
+                h.el('div', { class: 'cp-steps__bar', 'aria-hidden': 'true' }, m.items.map(() => h.el('span'))),
+              ]),
             ]),
-          ]))),
+          ]),
         ]));
         break;
+      }
       case 'palette':
         out.push(h.el('section', { class: 'cp-colour', 'data-reveal': true }, [
           h.el('div', { class: 'cp-colour__text' }, [kicker(m), words(m.heading, 'cp-title cp-title--md'), h.el('p', { class: 'cp-copy', text: m.body })]),
@@ -580,6 +597,18 @@ const RESTYLE = {
 };
 export const restyled = (design) => RESTYLE[design];
 
+// Artwork a restyled design adds to its page header (or null).
+// Optigrise: its symbol rebuilt from nine tiles — bars, arches and squares — in the brand's colours,
+// which drop into place one by one when the page opens.
+const HEAD_ART = {
+  cube: (el) => el('div', { class: 'og-mark', 'aria-hidden': 'true' }, [
+    ['bars', 'grey'], ['arch', 'yellow'], ['box', 'silver'],
+    ['open-r', 'green'], ['box', 'white'], ['open-l', 'orange'],
+    ['box', 'grey'], ['cup', 'blue'], ['bars', 'silver'],
+  ].map(([shape, colour], i) => el('span', { class: `og-tile is-${shape} is-${colour}`, style: `--i:${i}` }))),
+};
+export const headArt = (design, el) => HEAD_ART[design]?.(el) || null;
+
 // "Make strength visible." → each word in its own mask, so the heading can rise in word by word
 export function splitWords(node) {
   const text = node.textContent;
@@ -608,9 +637,39 @@ export function startMotion(page, reduced) {
   const strips = [...page.querySelectorAll('[data-hs]')].map((s) => ({
     s, pin: s.firstElementChild, track: s.querySelector('.dz-hs__track'), own: s.hasAttribute('data-hs-own'), x: 0, to: 0,
   }));
-  if (!par.length && !zoom.length && !strips.length) return () => {};
+  // Pinned step-throughs (data-steps): which step shows follows how far the page has scrolled through them
+  const stepSets = [...page.querySelectorAll('[data-steps]')].map((el) => ({
+    el, stage: el.firstElementChild, n: el.querySelectorAll('.cp-step-img').length, at: -1,
+    parts: [...el.querySelectorAll('[data-i]')],
+  }));
+  if (!par.length && !zoom.length && !strips.length && !stepSets.length) return () => {};
   const wide = window.matchMedia('(min-width: 721px)');
   let frame = 0;
+  const stepUpdate = (vh) => {
+    for (const ss of stepSets) {
+      const live = wide.matches;
+      ss.el.classList.toggle('is-live', live);
+      if (!live) continue;
+      const r = ss.el.getBoundingClientRect();
+      const run = ss.el.offsetHeight - vh;
+      const t = run > 0 ? Math.min(1, Math.max(0, -r.top / run)) : 0;
+      ss.el.style.setProperty('--t', t.toFixed(4));
+      const at = Math.min(ss.n - 1, Math.floor(t * ss.n));
+      if (at === ss.at) continue;
+      ss.dir = at > ss.at ? 1 : -1;
+      ss.at = at;
+      ss.stage.dataset.step = at;
+      ss.stage.dataset.dir = ss.dir;
+      ss.stage.classList.toggle('is-final', at === ss.n - 1 && !!ss.el.querySelector('.cp-step-img.is-final'));
+      ss.stage.classList.toggle('is-even', at % 2 === 1);
+      ss.parts.forEach((p) => {
+        const i = Number(p.dataset.i);
+        p.classList.toggle('is-on', i === at);
+        p.classList.toggle('is-past', i < at);
+      });
+      ss.el.querySelectorAll('.cp-steps__bar span').forEach((b, i) => b.classList.toggle('is-on', i <= at));
+    }
+  };
   // An "own" row runs on past its last poster, so that poster can travel to the middle of the screen
   const maxOf = (st) => Math.max(0, st.track.scrollWidth - st.pin.clientWidth + (st.own ? endRoom(st) : 0));
   const endRoom = (st) => {
@@ -670,6 +729,7 @@ export function startMotion(page, reduced) {
       const t = run > 0 ? Math.min(1, Math.max(0, -r.top / run)) : 0;
       track.style.transform = `translate3d(${(-t * (track.scrollWidth - pin.clientWidth)).toFixed(1)}px, 0, 0)`;
     }
+    stepUpdate(vh);
   };
   const queue = () => { if (!frame) frame = requestAnimationFrame(update); };
   const resize = () => { size(); queue(); ends(); };
