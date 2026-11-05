@@ -523,6 +523,48 @@ DESIGNS.exhibit = (p, h) => p.modules.filter((m) => m.type === 'poster').map((m,
     ]),
   ]));
 
+// ── Brochures: a booklet you can leaf through. Pages pair up as leaves (front / back);
+// a leaf turns over the spine in 3D; closed, the book slides so the cover sits centred.
+DESIGNS.booklet = (p, h) => p.modules.filter((m) => m.type === 'booklet').map((m) => {
+  const pages = m.pages;
+  const leaves = [];
+  for (let i = 0; i < pages.length; i += 2) leaves.push([pages[i], pages[i + 1]]);
+  const face = (pg, side) => h.el('div', { class: `bk-face is-${side}` }, pg ? [h.picture(pg, { loading: 'lazy', draggable: 'false' })] : []);
+  const leafEls = leaves.map(([front, back], i) => h.el('div', { class: 'bk-leaf', style: `--z:${leaves.length - i}` }, [face(front, 'front'), face(back, 'back')]));
+  const book = h.el('div', { class: 'bk-book is-closed-front', style: `--ratio:${m.w} / ${m.h}` }, leafEls);
+  const label = h.el('p', { class: 'bk-count', 'aria-live': 'polite' });
+  const prev = h.el('button', { class: 'bk-arrow is-prev', type: 'button', 'aria-label': 'Previous page' }, [arrowSvg('M10 3L5 8l5 5')]);
+  const next = h.el('button', { class: 'bk-arrow is-next', type: 'button', 'aria-label': 'Next page' }, [arrowSvg('M6 3l5 5-5 5')]);
+  let at = 0; // leaves turned
+  const show = () => {
+    leafEls.forEach((l, i) => {
+      l.classList.toggle('is-turned', i < at);
+      l.style.zIndex = i < at ? i + 1 : leaves.length - i + leaves.length;
+    });
+    book.classList.toggle('is-closed-front', at === 0);
+    book.classList.toggle('is-closed-back', at === leaves.length);
+    prev.disabled = at === 0;
+    next.disabled = at === leaves.length;
+    label.textContent = at === 0 ? 'Front cover' : at === leaves.length ? 'Back cover' : `Pages ${at * 2} – ${at * 2 + 1}`;
+  };
+  const go = (d) => { at = Math.max(0, Math.min(leaves.length, at + d)); show(); };
+  prev.addEventListener('click', () => go(-1));
+  next.addEventListener('click', () => go(1));
+  // click the right half to turn forward, the left half to turn back
+  book.addEventListener('click', (e) => { const r = book.getBoundingClientRect(); go(e.clientX > r.left + r.width / 2 ? 1 : -1); });
+  const stage = h.el('section', { class: 'bk-stage', tabindex: '0', 'aria-label': `${p.title} brochure` }, [prev, book, next]);
+  stage.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') go(1); else if (e.key === 'ArrowLeft') go(-1); });
+  show();
+  return h.el('div', { class: 'bk-wrap' }, [stage, label, h.el('p', { class: 'bk-hint', text: 'Use the arrows, or click a page, to turn it' })]);
+});
+const arrowSvg = (d) => {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 16 16');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.innerHTML = `<path d="${d}" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`;
+  return svg;
+};
+
 // Designs that keep a project's own presentation blocks and restyle them (see css/designs.css);
 // these only add motion to the pictures
 const RESTYLE = {
