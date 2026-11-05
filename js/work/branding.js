@@ -27,7 +27,7 @@ export default {
   intro: '[A line about your branding work.]',
   // The tile on the homepage. It is also one of the wall images below: opening the page,
   // the tile flies into its place in the moving wall.
-  cover: { src: 'assets/work/branding/wall/07.jpg', alt: 'Red ZIO tote bag carried over a dark coat' },
+  cover: { src: 'assets/work/branding/cover.jpg', alt: 'Red tote bag reading BRANDING, carried over a dark coat' },
   // The moving wall at the top of this page: two rows gliding in opposite directions.
   // Add or remove images here; w and h are each image's pixel size.
   wall: [

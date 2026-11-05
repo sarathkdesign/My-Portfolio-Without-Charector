@@ -212,6 +212,23 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
     return entry;
   };
 
+  // A tile video: its texture is refreshed with the current frame every time it is drawn
+  const videos = new Map();
+  const videoTexture = (v) => {
+    if (v.readyState < 2 || !v.videoWidth) return null;
+    let entry = videos.get(v);
+    if (!entry) {
+      const tex = gl.createTexture();
+      setTexParams(tex, false);
+      entry = { tex, w: v.videoWidth, h: v.videoHeight };
+      videos.set(v, entry);
+    }
+    gl.bindTexture(gl.TEXTURE_2D, entry.tex);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, v);
+    return entry;
+  };
+
   // A one-pixel texture of a flat colour (behind a tile's picture shown whole)
   const colours = new Map();
   const colourTexture = (css) => {
@@ -303,14 +320,35 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
   /* ── Tiles: the image as the page crops it (cover, parallax shift, 1.1 zoom) ── */
   const drawTile = (item) => {
     const media = item.firstElementChild?.firstElementChild;
+    const video = media?.querySelector('video');
     const img = media?.querySelector('img');
     if (!img) return null;
     const r = media.getBoundingClientRect();
     if (r.right < 0 || r.left > W) return null;
-    const entry = imageTexture(img);
+    const vEntry = video && videoTexture(video);
+    const entry = vEntry || imageTexture(img);
     if (!entry) return r;
     const f = parseFloat(item.style.getPropertyValue('--f')) || 0.8;
     const w = r.width, box = r.height, visible = box * f;
+    if (vEntry && video.dataset.zoom) {
+      const k = parseFloat(video.dataset.zoom);
+      gl.uniform4f(quad.uniforms.uRect, r.left, r.top, w, visible);
+      gl.uniform4f(quad.uniforms.uUv, 0, 0, 1, 1);
+      gl.bindTexture(gl.TEXTURE_2D, colourTexture('rgb(0, 0, 0)'));
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      const s0 = Math.max(w / entry.w, box / entry.h) * k;
+      const dw = entry.w * s0, dh = entry.h * s0;
+      const shift = (parseFloat(video.style.getPropertyValue('--px')) || 0) / 100 * w;
+      const ix = (w - dw) / 2 + shift, iy = (box - dh) * 0.35;
+      const x0 = Math.max(0, ix), y0 = Math.max(0, iy), x1 = Math.min(w, ix + dw), y1 = Math.min(visible, iy + dh);
+      if (x1 > x0 && y1 > y0) {
+        gl.uniform4f(quad.uniforms.uRect, r.left + x0, r.top + y0, x1 - x0, y1 - y0);
+        gl.uniform4f(quad.uniforms.uUv, (x0 - ix) / dw, (y0 - iy) / dh, (x1 - x0) / dw, (y1 - y0) / dh);
+        gl.bindTexture(gl.TEXTURE_2D, entry.tex);
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      }
+      return r;
+    }
     if (media.hasAttribute('data-whole')) {
       gl.uniform4f(quad.uniforms.uRect, r.left, r.top, w, visible);
       gl.uniform4f(quad.uniforms.uUv, 0, 0, 1, 1);

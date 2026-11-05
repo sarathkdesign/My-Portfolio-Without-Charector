@@ -77,6 +77,13 @@ const SOCIAL_ICONS = {
 };
 
 /* ── Tile markup ───────────────────────────────────────── */
+function tileVideo(cover) {
+  const v = el('video', { class: 'card__video', src: cover.video, poster: cover.videoPoster || cover.src, playsinline: '', loop: '', muted: '', autoplay: '', preload: 'auto', 'aria-hidden': 'true', 'data-zoom': cover.videoZoom || null, style: cover.videoZoom ? `--zoom:${cover.videoZoom}` : null }); // attributes too, so the strip's copies of the tile also play
+  v.muted = true; v.autoplay = true; v.playsInline = true;
+  v.play?.().catch(() => {});
+  return v;
+}
+
 // One tile per category; each opens that category's page (see js/pages.js)
 function buildTiles() {
   $('[data-strip-set]').replaceChildren(
@@ -85,6 +92,8 @@ function buildTiles() {
         el('a', { class: 'card', href: `work/${c.slug}`, 'data-route': '', 'data-category': c.slug, draggable: 'false' }, [
           el('span', { class: 'card__media', ...(c.cover.whole && { 'data-whole': '', style: `--tile-bg:${c.cover.bg || '#000'}` }) }, [
             el('img', { src: c.cover.src, alt: c.cover.alt, draggable: 'false', decoding: 'async' }),
+            // a category can play a looping video in its tile (drawn over the still, which the page transition uses)
+            ...(c.cover.video ? [tileVideo(c.cover)] : []),
             el('span', { class: 'card__cue', 'aria-hidden': 'true', text: 'Explore' }),
           ]),
           el('span', { class: 'card__label' }, [
@@ -391,6 +400,7 @@ function setupStrip() {
     items = $$('.strip__item', track).map((node) => ({
       node,
       img: $('img', node),
+      video: $('video', node),
       left: node.offsetLeft,
       width: node.offsetWidth,
       f: -1,
@@ -409,7 +419,9 @@ function setupStrip() {
         it.node.style.setProperty('--f', f.toFixed(4));
       }
       // Gentle in-frame parallax: images slide slightly against the drift
-      it.img.style.setProperty('--px', `${(((center - vw / 2) / vw) * -4).toFixed(2)}%`);
+      const px = `${(((center - vw / 2) / vw) * -4).toFixed(2)}%`;
+      it.img.style.setProperty('--px', px);
+      it.video?.style.setProperty('--px', px);
     }
   };
 

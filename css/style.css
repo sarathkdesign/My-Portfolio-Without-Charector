@@ -536,3 +536,15 @@ div.card { cursor: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .cursor-ring::before, .cursor-glow::before { transition: none; }
 }
+
+/* A tile that plays a video: it sits exactly over the still, framed and moved the same way */
+.card__media .card__video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 35%;
+  transform: translate3d(var(--px, 0), 0, 0) scale(1.1);
+  pointer-events: none;
+}
+.card.is-source .card__media .card__video { visibility: hidden; }
+/* zoomed out (videoZoom): smaller inside the tile, on black */
+.card__media .card__video[data-zoom] { background: #000; object-fit: contain; transform: translate3d(var(--px, 0), 0, 0) scale(var(--zoom)); }

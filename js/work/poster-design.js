@@ -11,7 +11,7 @@ export default {
   intro: '[A line about your posters.]',
   // The tile on the homepage
   // whole: the poster shows uncropped in its tile, on the `bg` colour
-  cover: { src: 'assets/work/poster-design/tcsl-gandhi-jayanti/poster.jpg', alt: 'TCSL Gandhi Jayanti poster: a charkha wheel of planes, ships and trucks on red', whole: true, bg: '#df2027' },
+  cover: { src: 'assets/work/poster-design/cover.jpg', alt: 'Poster: a dark figure behind textured glass with a glowing orange band across the eyes' },
 
   // The moving wall at the top of the page: posters at their own shapes, so none is cropped
   wall: [

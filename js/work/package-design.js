@@ -10,7 +10,7 @@ export default {
   slug: 'package-design',
   name: 'Package Design',
   intro: '[A line about your packaging.]',
-  cover: { src: 'assets/work/placeholder-02.svg', alt: 'Placeholder artwork: a row of cream arches on terracotta' },
+  cover: { src: 'assets/work/package-design/cover.jpg', alt: 'Package: Rainbow perfume boxes and bottle in warm studio light' },
 
   projects: [
     {
