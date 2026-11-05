@@ -10,7 +10,7 @@ export default {
   slug: 'iconography',
   name: 'Iconography',
   intro: '[A line about your icon work.]',
-  cover: { src: 'assets/work/placeholder-03.svg', alt: 'Placeholder artwork: a grid of lime dots on forest green' },
+  cover: { src: 'assets/work/iconography/cover.jpg', alt: 'Iconography: metal app-icon tiles with an orange glow' },
 
   projects: [
     placeholderProject(15),
