@@ -23,13 +23,22 @@
   <link rel="preload" href="public/fonts/NeueMontreal-Bold.otf" as="font" type="font/otf" crossorigin>
   <!-- Inter Tight is only the fallback face: loaded without holding up the first paint -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="css/style.css?v=117">
-  <link rel="stylesheet" href="css/pages.css?v=117">
-  <link rel="stylesheet" href="css/designs.css?v=117">
+  <link rel="stylesheet" href="css/style.css?v=140">
+  <link rel="stylesheet" href="css/pages.css?v=140">
+  <link rel="stylesheet" href="css/designs.css?v=140">
   <script>document.documentElement.classList.add('js');</script>
-  <script type="module" src="js/main.js?v=117"></script>
+  <script type="module" src="js/main.js?v=140"></script>
 </head>
 <body>
+  <style>
+    .loader { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; z-index: 10000; background: #fff; transition: opacity .6s ease, visibility .6s; }
+    .loader.is-done { opacity: 0; visibility: hidden; }
+    .loader__art { position: absolute; left: 50%; top: 50%; width: min(380px, 84vw); height: auto; aspect-ratio: 4 / 3; transform: translate(-50%, -55.5%); } /* the cat-on-bar sits low in its frame: nudged so it is what's centred */
+    .loader__art img { display: block; width: 100%; height: 100%; }
+    /* sits over the gif's grey bar; multiply keeps the cat's dark paw and tail on top */
+    .loader__bar { position: absolute; left: 19.75%; top: 57%; width: 61.75%; height: 10.67%; border-radius: 999px; overflow: hidden; mix-blend-mode: multiply; }
+    .loader__bar i { display: block; height: 100%; width: 0; background: #ccf400; border-radius: inherit; transition: width .35s ease; }
+  </style>
   <!-- Page loader: the cat on its bar while the page loads; the bar fills lime, then it fades away -->
   <div class="loader" id="loader" aria-hidden="true">
     <div class="loader__art">
@@ -37,15 +46,6 @@
       <span class="loader__bar"><i id="loader-fill"></i></span>
     </div>
   </div>
-  <style>
-    .loader { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; background: #fff; transition: opacity .6s ease, visibility .6s; }
-    .loader.is-done { opacity: 0; visibility: hidden; }
-    .loader__art { position: relative; width: min(300px, 72vw); aspect-ratio: 4 / 3; }
-    .loader__art img { display: block; width: 100%; height: 100%; }
-    /* sits over the gif's grey bar; multiply keeps the cat's dark paw and tail on top */
-    .loader__bar { position: absolute; left: 19.75%; top: 57%; width: 61.75%; height: 10.67%; border-radius: 999px; overflow: hidden; mix-blend-mode: multiply; }
-    .loader__bar i { display: block; height: 100%; width: 0; background: #ccf400; border-radius: inherit; transition: width .35s ease; }
-  </style>
   <script>
     (function () {
       var fill = document.getElementById('loader-fill'), p = 0, done = false, t0 = Date.now();

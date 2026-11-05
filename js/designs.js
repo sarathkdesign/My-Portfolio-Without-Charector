@@ -532,6 +532,118 @@ DESIGNS.carousel = (p, h) => {
   ];
 };
 
+// Motion Design — Self-Taught: a quiet, grid-aligned case study around the untouched film.
+// Every section shares one grid: number and label on the left, content on the right.
+// Everything shown comes from the film itself (frames, phrases, colours, timings) or the Behance text.
+const tc = (s) => `00:${String(Math.floor(s)).padStart(2, '0')}`;
+DESIGNS.reel = (p, h) => {
+  const out = [];
+  const head = (m) => h.el('header', { class: 'rl-head' }, [
+    h.el('span', { class: 'rl-head__n', text: m.n }),
+    h.el('span', { class: 'rl-head__label', text: m.label }),
+  ]);
+  const section = (m, cls, body) => h.el('section', { class: `rl-sec ${cls}`, 'data-reveal': true }, [head(m), h.el('div', { class: 'rl-sec__body' }, body)]);
+  for (const m of p.modules) {
+    switch (m.type) {
+      case 'film': {
+        // the film, unchanged, beside its spec sheet; a thin bar under it follows the playhead
+        const video = h.module({ type: 'video', src: m.src, poster: m.poster, w: m.w, h: m.h, controls: true });
+        const v = video.querySelector('video');
+        const fill = h.el('i');
+        const time = h.el('span', { text: `00:00 / ${tc(m.duration || 30)}` });
+        v?.addEventListener('timeupdate', () => {
+          if (!v.duration) return;
+          fill.style.transform = `scaleX(${(v.currentTime / v.duration).toFixed(4)})`;
+          time.textContent = `${tc(v.currentTime)} / ${tc(v.duration)}`;
+        });
+        out.push(h.el('section', { class: 'rl-film', 'data-reveal': true }, [
+          h.el('div', { class: 'rl-film__screen' }, [
+            video,
+            h.el('div', { class: 'rl-film__bar', 'aria-hidden': 'true' }, [h.el('span', { class: 'rl-film__track' }, [fill]), time]),
+          ]),
+          h.el('dl', { class: 'rl-film__specs' }, m.specs.map(([k, val]) => h.el('div', {}, [h.el('dt', { text: k }), h.el('dd', { text: val })]))),
+        ]));
+        break;
+      }
+      case 'statement':
+        out.push(section(m, 'rl-idea', [h.el('p', { class: 'rl-idea__text', text: m.body })]));
+        break;
+      case 'approach':
+        out.push(section(m, 'rl-approach', [h.el('ol', { class: 'rl-approach__list' }, m.items.map((it, i) => h.el('li', {}, [
+          h.el('span', { class: 'rl-approach__n', text: String(i + 1).padStart(2, '0') }),
+          h.el('h3', { text: it.title }),
+          h.el('p', { text: it.body }),
+        ])))]));
+        break;
+      case 'timeline': {
+        // the story laid out on its own clock: each beat at the second it appears
+        const beats = m.beats.map((b) => h.el('li', { class: 'rl-beat', style: `--at:${(b.t / m.duration).toFixed(4)}` }, [
+          h.el('figure', {}, [h.picture({ src: b.src, alt: b.alt }, { loading: 'lazy' })]),
+          h.el('span', { class: 'rl-beat__t', text: tc(b.t) }),
+          h.el('b', { class: 'rl-beat__w', text: b.words }),
+        ]));
+        out.push(section(m, 'rl-timeline', [
+          h.el('ol', { class: 'rl-timeline__beats' }, beats),
+          h.el('div', { class: 'rl-timeline__ruler', 'aria-hidden': 'true' }, Array.from({ length: m.duration / 5 + 1 }, (_, i) => h.el('span', { style: `--at:${(i * 5 / m.duration).toFixed(4)}`, text: tc(i * 5) }))),
+        ]));
+        break;
+      }
+      case 'guideline':
+        // the motion system, as it can be seen in the film: one rule per card, each with a small visual
+        out.push(section(m, 'rl-guide', [h.el('ul', { class: 'rl-guide__grid' }, m.rules.map((r) => h.el('li', { class: `rl-rule is-${r.kind}` }, [
+          h.el('div', { class: 'rl-rule__visual', 'aria-hidden': 'true' }, ruleVisual(h, r)),
+          h.el('h3', { text: r.title }),
+          h.el('p', { text: r.body }),
+        ])))]));
+        break;
+      case 'frames':
+        // each frame plays its moment of the film on a loop (a short silent clip), only while on screen
+        out.push(section(m, 'rl-frames', [h.el('ol', { class: 'rl-frames__grid' }, m.frames.map((f) => h.el('li', {}, [
+          f.clip ? clipLoop(h, f) : h.picture({ src: f.src, alt: `Frame at ${tc(f.t)}` }, { loading: 'lazy' }),
+          h.el('span', { text: tc(f.t) }),
+        ])))]));
+        break;
+      case 'text':
+        out.push(h.el('section', { class: 'rl-sec rl-credits', 'data-reveal': true }, [
+          head({ n: '—', label: m.heading || 'Credits' }),
+          h.el('div', { class: 'rl-sec__body' }, [h.el('p', { text: m.body })]),
+        ]));
+        break;
+      default:
+        out.push(h.module(m));
+    }
+  }
+  return out;
+};
+// A frame that plays its few seconds of the film on a loop; loads and plays only when on screen
+let clipWatch = null;
+const clipLoop = (h, f) => {
+  const v = h.el('video', { class: 'rl-clip', poster: f.src, loop: true, playsinline: true, preload: 'none', 'aria-label': `Moment at ${tc(f.t)}` });
+  v.muted = true;
+  v.dataset.src = f.clip;
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    clipWatch ??= new IntersectionObserver((entries) => entries.forEach(({ target: c, isIntersecting }) => {
+      if (isIntersecting) { if (!c.src) c.src = c.dataset.src; c.play?.().catch(() => {}); }
+      else c.pause();
+    }), { rootMargin: '200px 0px' });
+    clipWatch.observe(v);
+  }
+  return v;
+};
+
+// The small visual at the top of each guideline card
+const ruleVisual = (h, r) => {
+  switch (r.kind) {
+    case 'format': return [h.el('span', { class: 'rl-v-format' }, [h.el('i', { text: '4:5' })])];
+    case 'rhythm': return [h.el('span', { class: 'rl-v-rhythm' }, r.marks.map((t) => h.el('i', { style: `--at:${(t / 30).toFixed(4)}` })))];
+    case 'colour': return [h.el('span', { class: 'rl-v-colour' }, r.colours.map((c) => h.el('i', { style: `background:${c}` })))];
+    case 'type': return [h.el('span', { class: 'rl-v-type', text: r.sample })];
+    case 'composition': return [h.el('span', { class: 'rl-v-comp' }, [h.el('i')])];
+    case 'light': return [h.el('span', { class: 'rl-v-light' }, [h.el('i')])];
+    default: return [];
+  }
+};
+
 // Other posters — an exhibition: a dark wall, each poster lit by its own spotlight, alternating sides with its label
 DESIGNS.exhibit = (p, h) => p.modules.filter((m) => m.type === 'poster').map((m, i) =>
   h.el('section', { class: `ex-room${i % 2 ? ' is-right' : ''}`, 'data-reveal': true }, [
@@ -559,6 +671,11 @@ DESIGNS.booklet = (p, h) => p.modules.filter((m) => m.type === 'booklet').map((m
   let at = 0; // leaves turned
   const show = () => {
     leafEls.forEach((l, i) => {
+      // the leaf that changes side lifts and catches the light while it turns
+      if (l.classList.contains('is-turned') !== (i < at)) {
+        l.classList.remove('is-flipping'); void l.offsetWidth; l.classList.add('is-flipping');
+        clearTimeout(l.flipTimer); l.flipTimer = setTimeout(() => l.classList.remove('is-flipping'), 1300);
+      }
       l.classList.toggle('is-turned', i < at);
       l.style.zIndex = i < at ? i + 1 : leaves.length - i + leaves.length;
     });

@@ -54,7 +54,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const nextFrame = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-export const countLabel = (n) => `${n} ${n === 1 ? 'project' : 'projects'}`;
+export const countLabel = (n) => (n ? `${n} ${n === 1 ? 'project' : 'projects'}` : 'Coming soon'); // a category with no projects yet
 
 /* ── Addresses ─────────────────────────────────────────── */
 const hrefOf = (category, project) =>
@@ -154,11 +154,14 @@ function module(m) {
       const reduced = reducedQuery.matches;
       // No autoplay attribute: it would make the browser fetch every video on the page at once.
       // The watcher below loads and plays each one only while it is near the screen.
-      const video = el('video', { src: m.src, poster: posterOf(m.poster), playsinline: true, loop: true, preload: reduced ? 'metadata' : 'none', controls: reduced });
+      // `controls: true` lets viewers unmute a piece that has a soundtrack; a portrait video (w < h) is
+      // held to the screen's height and centred instead of filling the width
+      const video = el('video', { src: m.src, poster: posterOf(m.poster), playsinline: true, loop: true, preload: reduced ? 'metadata' : 'none', controls: reduced || !!m.controls,
+        style: m.w && m.h ? `aspect-ratio:${m.w} / ${m.h}` : null });
       // Plays silently on a loop like a moving image (set as a property so browsers allow it to play)
       video.muted = true;
       if (!reduced) videoWatch().observe(video);
-      return el('figure', { class: 'mod mod--video', 'data-reveal': true }, [video]);
+      return el('figure', { class: `mod mod--video${m.w && m.h && m.w < m.h ? ' is-portrait' : ''}`, 'data-reveal': true }, [video]);
     }
     case 'embed':
       return el('div', { class: 'mod mod--embed', 'data-reveal': true, style: `--ratio:${m.ratio || '16 / 9'}` }, [
@@ -741,6 +744,7 @@ export function createPages({ sound, leaveHome, returnHome }) {
     nav.classList.toggle('is-on', on);
     nav.inert = !on;
     if (!on) return;
+    nav.dataset.cat = at.category.slug; // lets a category give the bar its own text colour
     const link = $(`[data-nav="${at.category.slug}"]`, nav);
     $$('a', nav).forEach((a) => (a === link ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
     nav.classList.toggle('is-instant', !glide || reduced());

@@ -20,7 +20,19 @@ createServer(async (req, res) => {
   if (!file.startsWith(root)) return res.writeHead(403).end();
   try {
     const body = await readFile(file);
-    res.writeHead(200, { 'Content-Type': types[extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
+    const type = types[extname(file)] || 'application/octet-stream';
+    // Byte ranges, like GitHub Pages: videos need them to seek (scrubbing back and forth)
+    const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+    if (range) {
+      const size = body.length;
+      let start = range[1] ? Number(range[1]) : size - Number(range[2]);
+      let end = range[1] && range[2] ? Number(range[2]) : size - 1;
+      start = Math.max(0, start); end = Math.min(size - 1, end);
+      if (start > end) return res.writeHead(416, { 'Content-Range': `bytes */${size}` }).end();
+      res.writeHead(206, { 'Content-Type': type, 'Content-Range': `bytes ${start}-${end}/${size}`, 'Accept-Ranges': 'bytes', 'Content-Length': end - start + 1, 'Cache-Control': 'no-cache' });
+      return res.end(body.subarray(start, end + 1));
+    }
+    res.writeHead(200, { 'Content-Type': type, 'Accept-Ranges': 'bytes', 'Cache-Control': 'no-cache' });
     res.end(body);
   } catch {
     // Page addresses (/work/branding, /work/branding/aakara) are drawn by the app, so

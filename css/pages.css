@@ -49,6 +49,7 @@
   transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), visibility 0s 0.5s;
 }
 .cat-nav::-webkit-scrollbar { display: none; }
+.cat-nav[data-cat='package-design'] { color: #111; } /* Package Design's wall and page are light behind the bar */
 .cat-nav.is-on {
   opacity: 1; visibility: visible;
   transform: none;
@@ -498,6 +499,7 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
 }
 .mod { margin: 0; }
 .mod video { display: block; width: 100%; height: auto; }
+.mod--video.is-portrait video { width: auto; max-width: 100%; height: min(86vh, 1100px); margin: 0 auto; background: #000; } /* a tall video fits the screen, centred */
 .mod--row { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: var(--gap, 0px); }
 .mod--row img { height: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
 /* Text sections share the header's two columns: a large heading on the left,

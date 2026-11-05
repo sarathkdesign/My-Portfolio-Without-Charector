@@ -8,7 +8,7 @@
 export default {
   slug: 'poster-design',
   name: 'Poster Design',
-  intro: '[A line about your posters.]',
+  intro: '', // add a line about this category here
   // The tile on the homepage
   // whole: the poster shows uncropped in its tile, on the `bg` colour
   cover: { src: 'assets/work/poster-design/cover.jpg', alt: 'Poster: a dark figure behind textured glass with a glowing orange band across the eyes' },

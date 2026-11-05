@@ -1,6 +1,21 @@
 // Images that also have a light copy (<src>.sm.jpg, longest side 1400px) for walls and thumbnails.
 // Generated; re-run the small-image step when covers or walls change.
 export const small = new Set([
+  'assets/work/package-design/mezzcla/04.jpg',
+  'assets/work/package-design/mezzcla/02.jpg',
+  'assets/work/package-design/mezzcla/01.jpg',
+  'assets/work/brochure-design/initial-hygiene/page-4.jpg',
+  'assets/work/brochure-design/initial-hygiene/page-2.jpg',
+  'assets/work/brochure-design/truly-herbivore/page-32.jpg',
+  'assets/work/brochure-design/truly-herbivore/page-29.jpg',
+  'assets/work/brochure-design/truly-herbivore/page-24.jpg',
+  'assets/work/brochure-design/truly-herbivore/page-20.jpg',
+  'assets/work/brochure-design/truly-herbivore/page-15.jpg',
+  'assets/work/brochure-design/truly-herbivore/page-09.jpg',
+  'assets/work/brochure-design/truly-herbivore/page-08.jpg',
+  'assets/work/brochure-design/truly-herbivore/page-01.jpg',
+  'assets/work/package-design/roban-cb/pouch.jpg',
+  'assets/work/package-design/mothers-kitchen/pure-ghee.jpg',
   'assets/work/branding/optigrise/thumb-reception.jpg',
   'assets/work/branding/fresh-learning/thumb-subway.jpg',
   'assets/work/branding/wall/02.jpg',

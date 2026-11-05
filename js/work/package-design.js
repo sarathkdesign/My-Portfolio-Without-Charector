@@ -1,17 +1,25 @@
 /*
   PACKAGE DESIGN — one entry per project, shown in this order.
   The format is explained at the top of branding.js; copy the Aakara entry there as a starting point.
-  Each placeholderProject(n) below is a stand-in: replace it with a real entry.
 */
-
-import { placeholderProject } from './placeholders.js';
 
 export default {
   slug: 'package-design',
   name: 'Package Design',
-  intro: '[A line about your packaging.]',
+  intro: '', // add a line about this category here
   cover: { src: 'assets/work/package-design/cover.jpg', alt: 'Package: Rainbow perfume boxes and bottle in warm studio light' },
 
+  // The moving wall at the top of the category page: this category's own work
+  wall: [
+    { src: 'assets/work/package-design/cover.jpg', w: 901, h: 1352 },
+    { src: 'assets/work/package-design/mezzcla/01.jpg', w: 1600, h: 2000 },
+    { src: 'assets/work/package-design/mezzcla/02.jpg', w: 1600, h: 2000 },
+    { src: 'assets/work/package-design/mezzcla/04.jpg', w: 1600, h: 2000 },
+    { src: 'assets/work/package-design/awa/neem-lines.jpg', w: 1280, h: 1206 },
+    { src: 'assets/work/package-design/awa/deep-cleansing.jpg', w: 1280, h: 1206 },
+    { src: 'assets/work/package-design/awa/neem-watercolour.jpg', w: 1280, h: 1206 },
+    { src: 'assets/work/package-design/mothers-kitchen/pure-ghee.jpg', w: 2000, h: 1424 },
+  ],
   projects: [
     {
       slug: 'mezzcla',
@@ -33,6 +41,39 @@ export default {
       ],
     },
     {
+      slug: 'mothers-kitchen',
+      title: 'Mothers Kitchen',
+      subtitle: 'Pure ghee jar label',
+      client: 'Mothers Kitchen Almere',
+      year: '',
+      services: ['Package design'],
+      design: 'carousel', // same gallery interface, in the label's purple and yellow
+      hideCover: true,
+      theme: { bg: '#efe6f7', ink: '#2d1450', accent: '#f2c200', soft: 'rgba(45,20,80,0.7)', line: 'rgba(45,20,80,0.14)' },
+      thumb: { src: 'assets/work/package-design/mothers-kitchen/pure-ghee.jpg', alt: 'Mothers Kitchen Pure Ghee jar with a purple label on a white table' },
+      cover: { src: 'assets/work/package-design/mothers-kitchen/pure-ghee.jpg', alt: 'Mothers Kitchen Pure Ghee jar with a purple label on a white table' },
+      modules: [
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/pure-ghee.jpg', w: 2000, h: 1424, title: 'Pure Ghee', note: 'Jar label', alt: 'Mothers Kitchen Pure Ghee jar with a purple label on a white table' },
+      ],
+    },
+    {
+      slug: 'roban-cb',
+      hidden: true, // taken off the site; delete this line to show it again
+      title: 'Roban CB',
+      subtitle: 'Pouch packaging for a rat-killer powder',
+      client: 'PCI',
+      year: '',
+      services: ['Package design'],
+      design: 'carousel', // same gallery interface, in the pouch's greens
+      hideCover: true,
+      theme: { bg: '#e2ecc9', ink: '#123a14', accent: '#f5d400', soft: 'rgba(18,58,20,0.72)', line: 'rgba(18,58,20,0.14)' },
+      thumb: { src: 'assets/work/package-design/roban-cb/pouch.jpg', alt: 'Roban CB rat-killer pouch, front and back, in green' },
+      cover: { src: 'assets/work/package-design/roban-cb/pouch.jpg', alt: 'Roban CB rat-killer pouch, front and back, in green' },
+      modules: [
+        { type: 'poster', src: 'assets/work/package-design/roban-cb/pouch.jpg', w: 2000, h: 1424, title: 'Roban CB', note: 'Front and back', alt: 'Roban CB The Rat Killer powder concentrate pouch, front and back' },
+      ],
+    },
+    {
       slug: 'awa-naturals',
       title: 'AWA Naturals',
       subtitle: 'Facewash tube and carton packaging',
@@ -50,11 +91,5 @@ export default {
         { type: 'poster', src: 'assets/work/package-design/awa/neem-watercolour.jpg', w: 1280, h: 1206, title: 'Refreshing Neem Facewash', note: 'Watercolour', alt: 'AWA Refreshing Neem facewash in green watercolour' },
       ],
     },
-    placeholderProject(12),
-    placeholderProject(13),
-    placeholderProject(14),
-    placeholderProject(15),
-    placeholderProject(16),
-    placeholderProject(17),
   ],
 };
