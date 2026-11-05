@@ -171,6 +171,7 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
   // x/y: where the cursor is; lx/ly: where the lens is (glides after it); travel: distance since last frame
   const pointer = { x: -1e4, y: -1e4, lx: -1e4, ly: -1e4, travel: 0, inside: false, speed: 0 };
   let lens = 0, bend = 0, pulse = null, slowFrames = 0;
+  let maxDpr = 2, frameAvg = 1 / 60, framesSinceResize = 0;
 
   const setTexParams = (tex, mip) => {
     gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -183,7 +184,7 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
   setTexParams(textTex, false);
 
   const resize = () => {
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    dpr = Math.min(maxDpr, window.devicePixelRatio || 1);
     W = document.documentElement.clientWidth;
     H = document.documentElement.clientHeight;
     canvas.width = textCanvas.width = Math.round(W * dpr);
@@ -223,6 +224,9 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
       entry = { tex, w: v.videoWidth, h: v.videoHeight };
       videos.set(v, entry);
     }
+    // Upload only when the video has moved on to a new frame (it runs at ~30fps; the screen at 60–120)
+    if (entry.t === v.currentTime) return entry;
+    entry.t = v.currentTime;
     gl.bindTexture(gl.TEXTURE_2D, entry.tex);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, v);
@@ -399,6 +403,16 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
     raf = requestAnimationFrame(frame);
     const dt = Math.min(0.1, (now - last) / 1000 || 1 / 60);
     last = now;
+
+    // A screen that can't hold ~45fps first drops the drawing resolution (2× → 1.5× → 1×),
+    // which costs a little sharpness, before the effect is given up altogether
+    frameAvg += (dt - frameAvg) * 0.05;
+    if (++framesSinceResize > 90 && frameAvg > 1 / 45 && maxDpr > 1) {
+      maxDpr = maxDpr > 1.5 ? 1.5 : 1;
+      framesSinceResize = 0;
+      frameAvg = 1 / 60;
+      resize();
+    }
 
     // Give up gracefully on a device that cannot keep the frame rate
     slowFrames = dt > 0.05 ? slowFrames + 1 : 0;

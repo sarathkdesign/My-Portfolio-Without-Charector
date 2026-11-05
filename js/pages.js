@@ -14,6 +14,18 @@ import { categories } from './work/index.js';
 import { content } from './content.js';
 import { layout, restyled, startMotion, splitWords } from './designs.js';
 import { createLightbox } from './lightbox.js';
+import { small } from './work/small.js';
+import { variants } from './work/variants.js';
+
+// The light copy of a picture (longest side 1400px) where one exists: walls and thumbnails never show more
+const light = (src) => (small.has(src) ? `${src}.sm.jpg` : src);
+
+// Project videos play only while near the screen, and pause (stop decoding) once scrolled away
+let videoWatcher = null;
+const videoWatch = () => (videoWatcher ??= new IntersectionObserver((entries) => entries.forEach(({ target: v, isIntersecting }) => {
+  if (isIntersecting) { v.preload = 'auto'; v.play?.().catch(() => {}); }
+  else if (!v.paused) v.pause();
+}), { rootMargin: '300px 0px' }));
 
 const MOTION = {
   grow: 1100, // ms: a tile or thumbnail growing into a page
@@ -62,8 +74,33 @@ function resolve(pathname) {
 }
 
 /* ── Markup ────────────────────────────────────────────── */
+// WebP sizes of a picture for srcset, so each screen downloads only what it shows (see js/work/variants.js)
+const srcsetOf = (src) => {
+  const key = src.replace(/\.sm\.jpg$/, '');
+  const v = variants[key];
+  if (!v) return null;
+  const [w, full, ...sizes] = v;
+  return [...sizes.map((s) => `${key}.${s}w.webp ${s}w`), full ? `${key}.${full}w.webp ${full}w` : `${key} ${w}w`].join(', ');
+};
+// A video's still: its 1280px WebP copy where there is one (posters load straight away, even for videos further down)
+const posterOf = (src) => {
+  const v = src && variants[src];
+  if (!v) return src;
+  return v.includes(1280) && v.indexOf(1280) > 1 ? `${src}.1280w.webp` : v[1] ? `${src}.${v[1]}w.webp` : src;
+};
+// The size a just-made <img> will settle on (before the browser has picked one, currentSrc is still empty):
+// the smallest candidate at least as wide as the screen in device pixels, as sizes="100vw" asks
+const srcFor = (img) => {
+  const set = img.getAttribute('srcset');
+  if (!set) return img.src;
+  const need = innerWidth * (devicePixelRatio || 1);
+  const list = set.split(',').map((s) => s.trim().split(' ')).map(([u, w]) => [u, parseInt(w, 10)]);
+  return (list.find(([, w]) => w >= need) || list[list.length - 1])[0];
+};
 const picture = (image, attrs = {}) => {
-  const img = el('img', { src: image.src, alt: image.alt ?? '', decoding: 'async', ...attrs });
+  const srcset = srcsetOf(image.src);
+  // the original stays as src, for any browser that can't use srcset
+  const img = el('img', { src: image.src, alt: image.alt ?? '', decoding: 'async', ...(srcset && { srcset, sizes: '100vw' }), ...attrs });
   // Holds a little room until the image arrives, so lazy images below don't all load at once
   if (!img.complete) img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
   else img.classList.add('is-loaded');
@@ -114,10 +151,12 @@ function module(m) {
       ]);
     case 'video': {
       const reduced = reducedQuery.matches;
-      const video = el('video', { src: m.src, poster: m.poster, playsinline: true, loop: true, preload: 'metadata', controls: reduced });
-      // Plays silently on a loop like a moving image (set as properties so browsers allow autoplay)
+      // No autoplay attribute: it would make the browser fetch every video on the page at once.
+      // The watcher below loads and plays each one only while it is near the screen.
+      const video = el('video', { src: m.src, poster: posterOf(m.poster), playsinline: true, loop: true, preload: reduced ? 'metadata' : 'none', controls: reduced });
+      // Plays silently on a loop like a moving image (set as a property so browsers allow it to play)
       video.muted = true;
-      video.autoplay = !reduced;
+      if (!reduced) videoWatch().observe(video);
       return el('figure', { class: 'mod mod--video', 'data-reveal': true }, [video]);
     }
     case 'embed':
@@ -276,7 +315,7 @@ function mountWall(page, hero, category) {
     const ratio = (img) => (img.w && img.h ? img.w / img.h : 4 / 3);
     const span = row.reduce((sum, img) => sum + ratio(img), 0); // the set's width, in row heights
     const set = () => row.map((img) =>
-      el('img', { src: img.src, alt: '', decoding: 'async', 'data-src': img.src, style: `aspect-ratio:${ratio(img)}` }));
+      el('img', { src: light(img.src), alt: '', decoding: 'async', 'data-src': img.src, style: `aspect-ratio:${ratio(img)}` }));
     // Three copies: the row moves by one copy and starts again, with no seam
     return el('div', { class: 'cat__wall-row' }, [
       el('div', { class: 'cat__wall-track', style: `--dur:${(span * MOTION.wallPace * (r ? 1.15 : 1)).toFixed(1)}s` },
@@ -347,7 +386,7 @@ function renderCategory(page, category) {
     el('ul', { class: 'cat__grid' }, category.projects.map((p, i) =>
       el('li', { 'data-reveal': true, style: `--d:${i % 3}` }, [
         el('a', { class: 'thumb', href: hrefOf(category, p), 'data-route': true, 'data-project': p.slug }, [
-          el('span', { class: 'thumb__media' }, [picture(p.thumb || p.cover, { loading: i < 6 ? 'eager' : 'lazy' })]),
+          el('span', { class: 'thumb__media' }, [picture({ ...(p.thumb || p.cover), src: light((p.thumb || p.cover).src) }, { loading: i < 6 ? 'eager' : 'lazy' })]),
           el('span', { class: 'thumb__title', text: p.title }),
           el('span', { class: 'thumb__meta', text: [p.subtitle, p.year].filter(Boolean).join(' — ') }),
         ]),
@@ -407,7 +446,7 @@ function renderContact(page) {
     backLink('./', 'Index'),
     el('header', { class: 'ct__head' }, [
       el('p', { class: 'ct__kicker', 'data-reveal': true, text: 'Contact' }),
-      el('h1', { class: 'ct__title', id: 'page-contact-title', tabindex: '-1', 'data-reveal': true, style: '--d:1', text: 'Let’s talk' }),
+      el('h1', { class: 'ct__title', id: 'page-contact-title', tabindex: '-1', 'data-reveal': true, style: '--d:1', text: 'Contact' }),
       el('p', { class: 'ct__lede', 'data-reveal': true, style: '--d:2', text: 'Available for new projects.' }),
     ]),
     el('ul', { class: 'ct__list' }, [
@@ -888,7 +927,7 @@ export function createPages({ sound, leaveHome, returnHome }) {
       projectPage.classList.add('is-morphing');
       const box = await morph({
         src: img.currentSrc || img.src,
-        toSrc: $('[data-hero]', projectPage).currentSrc || $('[data-hero]', projectPage).src,
+        toSrc: $('[data-hero]', projectPage).currentSrc || srcFor($('[data-hero]', projectPage)),
         from: $('.thumb__media', thumb).getBoundingClientRect(), fromTransform: getComputedStyle(img).transform,
         to: $('[data-hero]', projectPage).getBoundingClientRect(),
         position: '50% 50%', duration: MOTION.grow,

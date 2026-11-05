@@ -10,7 +10,7 @@ export default {
   slug: 'motion-design',
   name: 'Motion Design',
   intro: '[A line about your motion work.]',
-  cover: { src: 'assets/work/motion-design/cover.jpg', alt: 'Inspire: neon type framed by nested white outlines on black',
+  cover: { src: 'assets/work/motion-design/tile-poster.jpg', alt: 'Motion: a still from the motion reel, glowing blue light on black',
     video: 'assets/work/motion-design/tile.mp4', videoPoster: 'assets/work/motion-design/tile-poster.jpg', videoZoom: 0.85 }, // the homepage tile plays this video
 
   projects: [

@@ -37,7 +37,9 @@ export function createLightbox() {
     const item = list[at];
     img.classList.remove('is-in');
     img.style.setProperty('--from', `${dir * 40}px`);
-    img.src = item.dataset.full || item.currentSrc || item.src;
+    // the largest size on offer: the page may be showing a small one
+    const largest = item.getAttribute('srcset')?.split(',').pop().trim().split(' ')[0];
+    img.src = item.dataset.full || largest || item.currentSrc || item.src;
     img.alt = item.alt || '';
     caption.textContent = item.dataset.title || item.alt || '';
     count.textContent = list.length > 1 ? `${at + 1} / ${list.length}` : '';

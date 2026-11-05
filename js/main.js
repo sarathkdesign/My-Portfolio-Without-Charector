@@ -3,6 +3,7 @@ import { createSurface } from './surface.js';
 import { categories } from './work/index.js';
 import { createPages, countLabel } from './pages.js';
 import { createCursor } from './cursor.js';
+import { variants } from './work/variants.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -79,11 +80,15 @@ const SOCIAL_ICONS = {
 
 /* ── Tile markup ───────────────────────────────────────── */
 function tileVideo(cover) {
-  const v = el('video', { class: 'card__video', src: cover.video, poster: cover.videoPoster || cover.src, playsinline: '', loop: '', muted: '', autoplay: '', preload: 'auto', 'aria-hidden': 'true', 'data-zoom': cover.videoZoom || null, style: cover.videoZoom ? `--zoom:${cover.videoZoom}` : null }); // attributes too, so the strip's copies of the tile also play
-  v.muted = true; v.autoplay = true; v.playsInline = true;
-  v.play?.().catch(() => {});
+  // No src yet: the strip's visibility watcher gives each copy its file only when it comes on screen,
+  // so the copies don't each download the whole video at load
+  const still = cover.videoPoster || cover.src;
+  const v = el('video', { class: 'card__video', 'data-src': cover.video, poster: variants[still]?.[1] ? `${still}.${variants[still][1]}w.webp` : still, playsinline: '', loop: '', muted: '', preload: 'auto', 'aria-hidden': 'true', 'data-zoom': cover.videoZoom || null, style: cover.videoZoom ? `--zoom:${cover.videoZoom}` : null }); // attributes too, so the strip's copies of the tile also play
+  v.muted = true; v.playsInline = true;
   // some phones (e.g. in Low Power Mode) block autoplay: start it on the first touch or scroll instead
-  const kick = () => document.querySelectorAll('.card__video').forEach((x) => x.paused && x.play?.().catch(() => {}));
+  const kick = () => document.querySelectorAll('.card__video').forEach((x) => {
+    if (x.onScreen && x.paused && x.src) x.play?.().catch(() => {});
+  });
   ['pointerdown', 'touchstart', 'scroll', 'wheel'].forEach((t) => window.addEventListener(t, kick, { once: true, passive: true }));
   return v;
 }
@@ -95,7 +100,8 @@ function buildTiles() {
       el('li', { class: 'strip__item' }, [
         el('a', { class: 'card', href: `work/${c.slug}`, 'data-route': '', 'data-category': c.slug, draggable: 'false' }, [
           el('span', { class: 'card__media', ...(c.cover.whole && { 'data-whole': '', style: `--tile-bg:${c.cover.bg || '#000'}` }) }, [
-            el('img', { src: c.cover.src, alt: c.cover.alt, draggable: 'false', decoding: 'async' }),
+            // the full-size WebP copy where there is one: the same picture in fewer bytes
+            el('img', { src: variants[c.cover.src]?.[1] ? `${c.cover.src}.${variants[c.cover.src][1]}w.webp` : c.cover.src, alt: c.cover.alt, draggable: 'false', decoding: 'async' }),
             // a category can play a looping video in its tile (drawn over the still, which the page transition uses)
             ...(c.cover.video ? [tileVideo(c.cover)] : []),
             el('span', { class: 'card__cue', 'aria-hidden': 'true', text: 'Explore' }),
@@ -383,6 +389,7 @@ function setupStrip() {
   };
   let clones = [];
   let items = [];
+  let videoWatch = null;
 
   const baseSpeed = () => Math.max(20, window.innerWidth * 0.043); // px per second, leftward
 
@@ -409,6 +416,24 @@ function setupStrip() {
       width: node.offsetWidth,
       f: -1,
     }));
+    // Only tile videos on (or near) the screen keep decoding: the strip's other copies, and all of them
+    // while a page covers the strip, stay paused
+    videoWatch?.disconnect();
+    videoWatch = new IntersectionObserver((entries) => entries.forEach(({ target: v, isIntersecting }) => {
+      v.onScreen = isIntersecting;
+      if (reduced) { if (!v.paused) v.pause(); return; } // reduced motion: the tile keeps its still picture
+      if (isIntersecting) {
+        if (!v.getAttribute('src')) { v.muted = true; v.src = v.dataset.src; } // first time on screen: load it now
+        if (v.paused) v.play?.().catch(() => {});
+      } else if (!v.paused) v.pause();
+    }), { rootMargin: '0px 200px' });
+    items.forEach((it) => {
+      if (!it.video) return;
+      it.video.onScreen = false;
+      // autoplay (and the first-touch kick) can start a copy after it was paused: stop it again if it is off screen
+      it.video.addEventListener('play', () => { if (!it.video.onScreen || reduced) it.video.pause(); });
+      videoWatch.observe(it.video);
+    });
   };
 
   const render = () => {

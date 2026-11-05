@@ -17,12 +17,17 @@
   <meta name="theme-color" content="#eeebe1">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=78">
-  <link rel="stylesheet" href="css/pages.css?v=78">
-  <link rel="stylesheet" href="css/designs.css?v=78">
+  <!-- The three PP Neue Montreal weights the page uses, fetched straight away so the wordmark doesn't reflow -->
+  <link rel="preload" href="public/fonts/NeueMontreal-Regular.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="public/fonts/NeueMontreal-Medium.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preload" href="public/fonts/NeueMontreal-Bold.otf" as="font" type="font/otf" crossorigin>
+  <!-- Inter Tight is only the fallback face: loaded without holding up the first paint -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+  <link rel="stylesheet" href="css/style.css?v=88">
+  <link rel="stylesheet" href="css/pages.css?v=88">
+  <link rel="stylesheet" href="css/designs.css?v=88">
   <script>document.documentElement.classList.add('js');</script>
-  <script type="module" src="js/main.js?v=78"></script>
+  <script type="module" src="js/main.js?v=88"></script>
 </head>
 <body>
   <!-- Page loader: the cat on its bar while the page loads; the bar fills lime, then it fades away -->
@@ -45,13 +50,17 @@
     (function () {
       var fill = document.getElementById('loader-fill'), p = 0, done = false, t0 = Date.now();
       var tick = setInterval(function () { if (!done) { p += (90 - p) * 0.06; fill.style.width = p + '%'; } }, 60);
-      window.addEventListener('load', function () {
+      var finished = false;
+      function finish() {
+        if (finished) return; finished = true;
         setTimeout(function () {
           done = true; clearInterval(tick); fill.style.width = '100%';
           setTimeout(function () { document.getElementById('loader').classList.add('is-done'); }, 450);
           setTimeout(function () { var l = document.getElementById('loader'); l && l.remove(); }, 1200);
         }, Math.max(0, 1200 - (Date.now() - t0)));
-      });
+      }
+      window.addEventListener('load', finish);
+      setTimeout(finish, 4000); // on a slow connection, show the page after 4s instead of waiting for every image
     })();
   </script>
   <a class="skip" href="#about">Skip to introduction</a>
@@ -123,7 +132,7 @@
       <ul class="menu__list">
         <li><a href="#work" data-menu-link="work">Work</a></li>
         <li><a href="experience" data-route data-menu-link>Experience</a></li>
-        <li><a href="contact" data-route data-menu-link class="is-accent">Let’s talk</a></li>
+        <li><a href="contact" data-route data-menu-link class="is-accent">Contact</a></li>
       </ul>
       <ul class="socials menu__socials" data-socials>
         <li><a href="#">LinkedIn</a></li>
