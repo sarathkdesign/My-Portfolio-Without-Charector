@@ -498,13 +498,17 @@ DESIGNS.redwall = (p, h) => {
 DESIGNS.carousel = (p, h) => {
   const posters = p.modules.filter((m) => m.type === 'poster');
   return [
-    h.el('section', { class: 'dz-hs kc-strip', 'data-hs': true }, [
+    h.el('section', { class: 'dz-hs kc-strip', 'data-hs': true, 'data-hs-own': true }, [
       h.el('div', { class: 'dz-hs__pin' }, [
         h.el('div', { class: 'dz-hs__track' }, [
           ...posters.map((m, i) => h.el('figure', { class: 'kc-card', tabindex: '0', style: `--tilt:${i % 2 ? 1.6 : -1.6}deg` }, [
             posterImg(h, m),
             h.el('figcaption', {}, [h.el('b', { text: m.title }), m.note && h.el('span', { text: m.note })]),
           ])),
+        ]),
+        h.el('div', { class: 'kc-nav' }, [
+          h.el('button', { class: 'kc-nav__btn', type: 'button', 'data-hs-step': '-1', 'aria-label': 'Previous posters' }, [arrowSvg('M10 3L5 8l5 5')]),
+          h.el('button', { class: 'kc-nav__btn', type: 'button', 'data-hs-step': '1', 'aria-label': 'More posters' }, [arrowSvg('M6 3l5 5-5 5')]),
         ]),
       ]),
     ]),
@@ -599,13 +603,37 @@ export function startMotion(page, reduced) {
   if (reduced) return () => {};
   const par = [...page.querySelectorAll('[data-parallax]')];
   const zoom = [...page.querySelectorAll('[data-zoom]')];
-  const strips = [...page.querySelectorAll('[data-hs]')].map((s) => ({ s, pin: s.firstElementChild, track: s.querySelector('.dz-hs__track') }));
+  // Two kinds of sideways rows: pinned ones slide as the page scrolls past them; "own" rows
+  // (data-hs-own) scroll by themselves while the mouse is over them, and leave the page alone
+  const strips = [...page.querySelectorAll('[data-hs]')].map((s) => ({
+    s, pin: s.firstElementChild, track: s.querySelector('.dz-hs__track'), own: s.hasAttribute('data-hs-own'), x: 0, to: 0,
+  }));
   if (!par.length && !zoom.length && !strips.length) return () => {};
   const wide = window.matchMedia('(min-width: 721px)');
   let frame = 0;
+  // An "own" row runs on past its last poster, so that poster can travel to the middle of the screen
+  const maxOf = (st) => Math.max(0, st.track.scrollWidth - st.pin.clientWidth + (st.own ? endRoom(st) : 0));
+  const endRoom = (st) => {
+    const last = st.track.lastElementChild;
+    return last ? Math.max(0, (st.pin.clientWidth - last.offsetWidth) / 2 - (parseFloat(getComputedStyle(st.track).paddingRight) || 0)) : 0;
+  };
 
+  // The first poster of an "own" row starts where the page's title text starts (the row runs edge to
+  // edge, and the text sits in the page's column, so the gap is measured rather than set)
+  const lead = page.querySelector('.proj__lead');
+  const alignLead = () => {
+    for (const st of strips) {
+      if (!st.own) continue;
+      if (!lead || !wide.matches) { st.track.style.paddingLeft = ''; continue; }
+      const rowLeft = st.track.getBoundingClientRect().left + st.x; // where the row begins, ignoring its scroll
+      st.track.style.paddingLeft = `${Math.max(0, lead.getBoundingClientRect().left - rowLeft).toFixed(1)}px`;
+    }
+  };
   const size = () => {
-    for (const { s, pin, track } of strips) {
+    alignLead();
+    for (const st of strips) {
+      const { s, pin, track } = st;
+      if (st.own) { st.to = Math.min(st.to, maxOf(st)); continue; }
       s.style.height = wide.matches ? `${track.scrollWidth - pin.clientWidth + page.clientHeight}px` : '';
     }
   };
@@ -626,8 +654,17 @@ export function startMotion(page, reduced) {
       const t = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
       el.style.transform = `scale(${(1.14 - 0.14 * Math.min(1, t * 1.6)).toFixed(4)})`;
     }
-    for (const { s, pin, track } of strips) {
-      if (!wide.matches) { track.style.transform = ''; continue; }
+    for (const st of strips) {
+      const { s, pin, track } = st;
+      if (!wide.matches) { track.style.transform = ''; st.x = st.to = 0; continue; }
+      if (st.own) {
+        // glide towards where the wheel or arrows sent it
+        st.x += (st.to - st.x) * 0.16;
+        if (Math.abs(st.to - st.x) < 0.5) st.x = st.to;
+        else queue();
+        track.style.transform = `translate3d(${(-st.x).toFixed(1)}px, 0, 0)`;
+        continue;
+      }
       const r = s.getBoundingClientRect();
       const run = s.offsetHeight - vh;
       const t = run > 0 ? Math.min(1, Math.max(0, -r.top / run)) : 0;
@@ -635,16 +672,78 @@ export function startMotion(page, reduced) {
     }
   };
   const queue = () => { if (!frame) frame = requestAnimationFrame(update); };
-  const resize = () => { size(); queue(); };
+  const resize = () => { size(); queue(); ends(); };
   const ro = new ResizeObserver(resize);
   ro.observe(page);
   strips.forEach(({ track }) => ro.observe(track));
+  // Pictures arrive late (lazy) and widen the row: measure again as each one lands, so the
+  // row always reaches the last one
+  const loaded = (e) => { if (e.target.tagName === 'IMG') resize(); };
+  strips.forEach(({ track }) => {
+    track.addEventListener('load', loaded, true);
+    // the row's pictures are all needed for its width: fetch them now rather than as they slide in
+    track.querySelectorAll('img[loading="lazy"]').forEach((img) => (img.loading = 'eager'));
+  });
+  const stripOf = (node) => strips.find((st) => st.s === node?.closest?.('[data-hs]'));
+  // Arrows grey out at either end
+  const ends = () => strips.forEach((st) => {
+    const prev = st.s.querySelector('[data-hs-step="-1"]'), next = st.s.querySelector('[data-hs-step="1"]');
+    if (!prev && !next) return;
+    let atStart, atEnd;
+    if (st.own) { atStart = st.to <= 1; atEnd = st.to >= maxOf(st) - 1; }
+    else {
+      const r = st.s.getBoundingClientRect(), run = st.s.offsetHeight - page.clientHeight;
+      atStart = r.top >= -1; atEnd = run <= 0 || r.top <= -run + 1;
+    }
+    if (prev) prev.disabled = atStart;
+    if (next) next.disabled = atEnd;
+  });
+  const moveTo = (st, to) => { st.to = Math.min(maxOf(st), Math.max(0, to)); ends(); queue(); };
+  // The mouse over an "own" row scrolls the row (up/down or sideways); anywhere else the page scrolls.
+  // Over the posters the page never moves, even at the ends of the row; move the mouse off them to scroll the page.
+  const wheel = (e) => {
+    if (!wide.matches) return;
+    const st = stripOf(e.target);
+    if (!st) return;
+    const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    const px = e.deltaMode === 1 ? d * 32 : e.deltaMode === 2 ? d * page.clientHeight : d;
+    if (st.own) {
+      if (!e.target.closest('.dz-hs__track')) return; // beside the row (e.g. its arrows): the page scrolls
+      e.preventDefault();
+      moveTo(st, st.to + px);
+    } else if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      e.preventDefault(); // a sideways swipe on a pinned row moves it too
+      page.scrollTop += e.deltaX;
+    }
+  };
+  page.addEventListener('wheel', wheel, { passive: false });
+  // Arrow buttons: one poster at a time
+  const stepBy = (st, dir) => {
+    const card = st.track.firstElementChild;
+    const step = (card?.offsetWidth || 400) + (parseFloat(getComputedStyle(st.track).columnGap) || 0);
+    if (st.own) return moveTo(st, st.to + dir * step);
+    // a pinned row: one pixel down the page is one pixel along; bring the row into its stretch first
+    const r = st.s.getBoundingClientRect(), run = st.s.offsetHeight - page.clientHeight;
+    const into = r.top > 0 ? r.top : r.top < -run ? r.top + run : 0;
+    page.scrollBy({ top: into + dir * step, behavior: 'smooth' });
+  };
+  const clicks = (e) => {
+    const b = e.target.closest?.('[data-hs-step]');
+    const st = b && stripOf(b);
+    if (st) stepBy(st, Number(b.dataset.hsStep));
+  };
+  page.addEventListener('click', clicks);
+  page.addEventListener('scroll', ends, { passive: true });
   page.addEventListener('scroll', queue, { passive: true });
   wide.addEventListener('change', resize);
   resize();
   return () => {
     cancelAnimationFrame(frame);
     ro.disconnect();
+    strips.forEach(({ track }) => track.removeEventListener('load', loaded, true));
+    page.removeEventListener('wheel', wheel);
+    page.removeEventListener('click', clicks);
+    page.removeEventListener('scroll', ends);
     page.removeEventListener('scroll', queue);
     wide.removeEventListener('change', resize);
   };

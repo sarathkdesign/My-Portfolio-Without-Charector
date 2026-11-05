@@ -357,7 +357,7 @@ export const variants = {
   'assets/work/poster-design/kadalas-cafe/landing-soon.jpg': [1066, 1066, 640],
   'assets/work/poster-design/kadalas-cafe/meaty-tales.jpg': [904, 904, 640],
   'assets/work/poster-design/other-posters/earthi-face-wash.jpg': [904, 904, 640],
-  'assets/work/poster-design/other-posters/earthi-hair-care.jpg': [1280, 1280, 640],
+  'assets/work/poster-design/other-posters/earthi-hair-care.jpg': [1115, 1115, 640],
   'assets/work/poster-design/other-posters/native-touch.jpg': [1414, 1414, 640, 1280],
   'assets/work/poster-design/other-posters/new-year-celebration.jpg': [1414, 1414, 640, 1280],
   'assets/work/poster-design/other-posters/online-tuition-classes.jpg': [1600, 1600, 640, 1280],
