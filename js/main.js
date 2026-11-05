@@ -81,6 +81,9 @@ function tileVideo(cover) {
   const v = el('video', { class: 'card__video', src: cover.video, poster: cover.videoPoster || cover.src, playsinline: '', loop: '', muted: '', autoplay: '', preload: 'auto', 'aria-hidden': 'true', 'data-zoom': cover.videoZoom || null, style: cover.videoZoom ? `--zoom:${cover.videoZoom}` : null }); // attributes too, so the strip's copies of the tile also play
   v.muted = true; v.autoplay = true; v.playsInline = true;
   v.play?.().catch(() => {});
+  // some phones (e.g. in Low Power Mode) block autoplay: start it on the first touch or scroll instead
+  const kick = () => document.querySelectorAll('.card__video').forEach((x) => x.paused && x.play?.().catch(() => {}));
+  ['pointerdown', 'touchstart', 'scroll', 'wheel'].forEach((t) => window.addEventListener(t, kick, { once: true, passive: true }));
   return v;
 }
 
