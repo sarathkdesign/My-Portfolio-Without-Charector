@@ -228,7 +228,7 @@
 .cat__wall {
   position: absolute; inset: 0;
   display: grid; grid-template-rows: 1fr 1fr; gap: 6px;
-  background: var(--ink);
+  background: #fff; /* white lines between the pictures */
   opacity: 0; visibility: hidden;
   transition: opacity 1.1s var(--ease), visibility 0s 1.1s;
 }
@@ -769,3 +769,5 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
   .page [data-reveal]:not(.is-in), .page.is-before [data-reveal] { transform: none; }
   .thumb__media img, .page__next-title, .cat-nav__mark { transition: none; }
 }
+/* Taras Racing: the film with softly rounded corners */
+.page[data-slug='taras-racing'] .mod--video video { border-radius: clamp(12px, 1.4vw, 22px); }

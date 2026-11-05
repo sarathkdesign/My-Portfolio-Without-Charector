@@ -31,19 +31,19 @@ export default {
   // The moving wall at the top of this page: two rows gliding in opposite directions.
   // Add or remove images here; w and h are each image's pixel size.
   wall: [
-    { src: 'assets/work/branding/wall/01.jpg', w: 666, h: 1000 },
-    { src: 'assets/work/branding/wall/02.jpg', w: 1333, h: 1000 },
-    { src: 'assets/work/branding/wall/03.jpg', w: 1500, h: 1000 },
-    { src: 'assets/work/branding/wall/04.jpg', w: 1428, h: 1000 },
-    { src: 'assets/work/branding/wall/05.jpg', w: 1333, h: 1000 },
-    { src: 'assets/work/branding/wall/06.jpg', w: 1500, h: 1000 },
-    { src: 'assets/work/branding/wall/07.jpg', w: 1050, h: 1500 },
-    { src: 'assets/work/branding/wall/08.jpg', w: 1595, h: 1000 },
-    { src: 'assets/work/branding/wall/09.jpg', w: 1500, h: 1000 },
-    { src: 'assets/work/branding/wall/10.jpg', w: 777, h: 1000 },
-    { src: 'assets/work/branding/wall/11.jpg', w: 1330, h: 1000 },
-    { src: 'assets/work/branding/wall/12.jpg', w: 1500, h: 1000 },
-    { src: 'assets/work/branding/wall/13.jpg', w: 1500, h: 1000 },
+    { src: 'assets/work/branding/wall/01.jpg', w: 666, h: 1000, brand: 'zio' },
+    { src: 'assets/work/branding/wall/02.jpg', w: 1333, h: 1000, brand: 'aakara' },
+    { src: 'assets/work/branding/wall/03.jpg', w: 1500, h: 1000, brand: 'bet' },
+    { src: 'assets/work/branding/wall/04.jpg', w: 1428, h: 1000, brand: 'zio' },
+    { src: 'assets/work/branding/wall/05.jpg', w: 1333, h: 1000, brand: 'aakara' },
+    { src: 'assets/work/branding/wall/06.jpg', w: 1500, h: 1000, brand: 'bet' },
+    { src: 'assets/work/branding/wall/07.jpg', w: 1050, h: 1500, brand: 'zio' },
+    { src: 'assets/work/branding/wall/08.jpg', w: 1595, h: 1000, brand: 'aakara' },
+    { src: 'assets/work/branding/wall/09.jpg', w: 1500, h: 1000, brand: 'bet' },
+    { src: 'assets/work/branding/wall/10.jpg', w: 777, h: 1000, brand: 'zio' },
+    { src: 'assets/work/branding/wall/11.jpg', w: 1330, h: 1000, brand: 'frame' },
+    { src: 'assets/work/branding/wall/12.jpg', w: 1500, h: 1000, brand: 'web' },
+    { src: 'assets/work/branding/wall/13.jpg', w: 1500, h: 1000, brand: 'web' },
   ],
 
   projects: [

@@ -11,5 +11,19 @@ export default {
     video: 'assets/work/video/tile.mp4', videoPoster: 'assets/work/video/tile-poster.jpg' } , // the homepage tile plays this video
 
   projects: [
+    {
+      slug: 'taras-racing',
+      title: 'Taras Racing',
+      subtitle: 'A short car film',
+      client: 'Taras Racing',
+      year: '',
+      services: ['Video'],
+      hideCover: true,
+      thumb: { src: 'assets/work/video/taras-racing/poster.jpg', alt: 'A red hatchback driving at night, from the film' },
+      cover: { src: 'assets/work/video/taras-racing/poster.jpg', alt: 'A red hatchback driving at night, from the film' },
+      modules: [
+        { type: 'video', src: 'assets/work/video/taras-racing/film.mp4', poster: 'assets/work/video/taras-racing/poster.jpg', w: 1162, h: 576, controls: true },
+      ],
+    },
   ],
 };

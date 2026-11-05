@@ -36,7 +36,7 @@ export default {
       design: 'reel', // its own page design (js/designs.js): a reel built from the film's frames, phrases and colours
       hideCover: true,
       theme: { bg: '#060608', ink: '#f3f0ff', accent: '#e36497', soft: 'rgba(243,240,255,0.66)', line: 'rgba(243,240,255,0.14)' },
-      thumb: { src: 'assets/work/motion-design/self-taught/poster.jpg', alt: 'A glowing eye in pink and blue light on black, from the animation' },
+      thumb: { src: 'assets/work/motion-design/self-taught/thumb-inspire.jpg', alt: 'The word Inspire in a pink-to-blue gradient inside a tunnel of outline frames, from the animation' },
       cover: { src: 'assets/work/motion-design/self-taught/poster.jpg', alt: 'A glowing eye in pink and blue light on black, from the animation' },
       link: 'https://www.behance.net/gallery/221699357/Motion-Design-Self-Taught',
       modules: [

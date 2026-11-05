@@ -1,6 +1,7 @@
 // Images that also have a light copy (<src>.sm.jpg, longest side 1400px) for walls and thumbnails.
 // Generated; re-run the small-image step when covers or walls change.
 export const small = new Set([
+  'assets/work/motion-design/self-taught/thumb-inspire.jpg',
   'assets/work/package-design/mezzcla/04.jpg',
   'assets/work/package-design/mezzcla/02.jpg',
   'assets/work/package-design/mezzcla/01.jpg',

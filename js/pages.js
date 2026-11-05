@@ -309,12 +309,58 @@ function wallImages(category) {
   return list;
 }
 
+// The wall's two rows, arranged so no two pictures of the same brand sit side by side —
+// including where a row loops back to its start. A picture's brand is its `brand` tag, else its
+// project folder (assets/work/<category>/<project>/…); a loose file counts as its own brand.
+const brandOf = (img) => {
+  if (img.brand) return img.brand;
+  const parts = img.src.split('/');
+  return parts.length > 4 ? parts[3] : img.src;
+};
+const touching = (row) => (row.length < 2 ? 0 : row.reduce((n, x, i) => n + (brandOf(x) === brandOf(row[(i + 1) % row.length]) ? 1 : 0), 0));
+function spreadRow(list) {
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const attempt = () => {
+    const groups = new Map();
+    for (const img of [...list].sort(() => rnd() - 0.5)) (groups.get(brandOf(img)) || groups.set(brandOf(img), []).get(brandOf(img))).push(img);
+    const out = [];
+    let prev = null;
+    while (groups.size) {
+      const brands = [...groups.keys()].sort((a, b) => groups.get(b).length - groups.get(a).length || rnd() - 0.5);
+      const pick = brands.find((b) => b !== prev) ?? brands[0];
+      out.push(groups.get(pick).pop());
+      if (!groups.get(pick).length) groups.delete(pick);
+      prev = pick;
+    }
+    return out;
+  };
+  let best = list, score = touching(list);
+  for (let t = 0; t < 400 && score; t++) {
+    const a = attempt(), c = touching(a);
+    if (c < score) { best = a; score = c; }
+  }
+  return best;
+}
+function wallRows(images) {
+  // deal the brands out evenly between the rows, then order each row
+  const groups = new Map();
+  images.forEach((img) => (groups.get(brandOf(img)) || groups.set(brandOf(img), []).get(brandOf(img))).push(img));
+  // each brand alternates between the two rows (largest brands first), starting with the shorter row
+  const rows = [[], []];
+  [...groups.values()].sort((a, b) => b.length - a.length).forEach((g) => {
+    let r = rows[0].length <= rows[1].length ? 0 : 1;
+    g.forEach((img) => { rows[r].push(img); r = 1 - r; });
+  });
+  return rows.map(spreadRow);
+}
+
 // Runs itself: it fades in once its page is open and settled, glides while the cover is
 // in view, and holds still while the page is covered, scrolled away or changing
 function mountWall(page, hero, category) {
   const images = wallImages(category);
   if (images.length < 2) return null;
-  const rows = [images.filter((_, i) => i % 2 === 0), images.filter((_, i) => i % 2 === 1)];
+  const rows = wallRows(images);
   const wall = el('div', { class: 'cat__wall', 'aria-hidden': 'true' }, rows.map((row, r) => {
     const ratio = (img) => (img.w && img.h ? img.w / img.h : 4 / 3);
     const span = row.reduce((sum, img) => sum + ratio(img), 0); // the set's width, in row heights

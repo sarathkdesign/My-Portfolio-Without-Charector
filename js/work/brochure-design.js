@@ -13,13 +13,9 @@ export default {
   wall: [
     { src: 'assets/work/brochure-design/cover.jpg', w: 1254, h: 1254 },
     { src: 'assets/work/brochure-design/truly-herbivore/page-01.jpg', w: 1400, h: 1980 },
-    { src: 'assets/work/brochure-design/truly-herbivore/page-08.jpg', w: 1400, h: 1980 },
     { src: 'assets/work/brochure-design/truly-herbivore/page-09.jpg', w: 1400, h: 1980 },
-    { src: 'assets/work/brochure-design/truly-herbivore/page-15.jpg', w: 1400, h: 1980 },
     { src: 'assets/work/brochure-design/truly-herbivore/page-20.jpg', w: 1400, h: 1980 },
-    { src: 'assets/work/brochure-design/truly-herbivore/page-24.jpg', w: 1400, h: 1980 },
     { src: 'assets/work/brochure-design/truly-herbivore/page-29.jpg', w: 1400, h: 1980 },
-    { src: 'assets/work/brochure-design/truly-herbivore/page-32.jpg', w: 1400, h: 1980 },
     { src: 'assets/work/brochure-design/initial-hygiene/page-1.jpg', w: 1400, h: 1979 },
     { src: 'assets/work/brochure-design/initial-hygiene/page-2.jpg', w: 1400, h: 1979 },
     { src: 'assets/work/brochure-design/initial-hygiene/page-4.jpg', w: 1400, h: 1979 },

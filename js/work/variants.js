@@ -400,6 +400,7 @@ export const variants = {
   'assets/work/motion-design/self-taught/frames/27.jpg': [720, 720, 640],
   'assets/work/motion-design/self-taught/frames/28.jpg': [720, 720, 640],
   'assets/work/motion-design/self-taught/poster.jpg': [720, 720, 640],
+  'assets/work/motion-design/self-taught/thumb-inspire.jpg': [1549, 1549, 640, 1280],
   'assets/work/motion-design/tile-poster.jpg': [1080, 1080, 640],
   'assets/work/package-design/awa/deep-cleansing.jpg': [1280, 1280, 640],
   'assets/work/package-design/awa/neem-lines.jpg': [1280, 1280, 640],
@@ -431,5 +432,6 @@ export const variants = {
   'assets/work/poster-design/tcsl/india-new-zealand-fta.jpg': [1600, 1600, 640, 1280],
   'assets/work/poster-design/tcsl/international-courier.jpg': [1600, 1600, 640, 1280],
   'assets/work/poster-design/tcsl/worldwide.jpg': [1600, 1600, 640, 1280],
+  'assets/work/video/taras-racing/poster.jpg': [1162, 1162, 640],
   'assets/work/video/tile-poster.jpg': [720, 720, 640],
 };
