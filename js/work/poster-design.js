@@ -93,6 +93,7 @@ export default {
         { type: 'poster', src: 'assets/work/poster-design/other-posters/new-year-celebration.jpg', w: 1414, h: 2000, title: 'New Year Celebration', alt: 'New Year celebration flyer with ticket prices and event highlights', note: 'Event flyer' },
         { type: 'poster', src: 'assets/work/poster-design/other-posters/earthi-hair-care.jpg', w: 1280, h: 1280, title: 'earthi — cherished care', alt: 'earthi hair care poster: cherished care', note: 'Product' },
         { type: 'poster', src: 'assets/work/poster-design/other-posters/earthi-face-wash.jpg', w: 904, h: 1280, title: 'earthi — rosy fresh', alt: 'earthi facial wash poster: rosy fresh', note: 'Product' },
+        { type: 'poster', src: 'assets/work/poster-design/other-posters/online-tuition-classes.jpg', w: 1600, h: 2000, title: 'Online Tuition Classes', alt: 'Online tuition classes poster for school students and coding beginners: subjects offered and why choose us', note: 'Education' },
       ],
     },
   ],

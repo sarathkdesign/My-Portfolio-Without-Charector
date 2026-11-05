@@ -360,6 +360,7 @@ export const variants = {
   'assets/work/poster-design/other-posters/earthi-hair-care.jpg': [1280, 1280, 640],
   'assets/work/poster-design/other-posters/native-touch.jpg': [1414, 1414, 640, 1280],
   'assets/work/poster-design/other-posters/new-year-celebration.jpg': [1414, 1414, 640, 1280],
+  'assets/work/poster-design/other-posters/online-tuition-classes.jpg': [1600, 1600, 640, 1280],
   'assets/work/poster-design/other-posters/thala-vazhai-virunthu.jpg': [1409, 1409, 640, 1280],
   'assets/work/poster-design/other-posters/vishu-2026.jpg': [1600, 1600, 640, 1280],
   'assets/work/poster-design/tcsl-diwali/poster.webp': [1600, 1600, 640, 1280],
