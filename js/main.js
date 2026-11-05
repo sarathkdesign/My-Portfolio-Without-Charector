@@ -423,8 +423,10 @@ function setupStrip() {
         it.node.style.setProperty('--f', f.toFixed(4));
       }
       // Gentle in-frame parallax: images slide slightly against the drift
-      const px = `${(((center - vw / 2) / vw) * -4).toFixed(2)}%`;
-      it.img.style.setProperty('--px', px);
+      const d = (center - vw / 2) / vw;
+      const px = `${(d * -4).toFixed(2)}%`;
+      // Pictures drift further than videos, for a slower, deeper parallax (kept inside their 1.14 zoom)
+      it.img.style.setProperty('--px', `${Math.max(-6, Math.min(6, d * -10)).toFixed(2)}%`);
       it.video?.style.setProperty('--px', px);
     }
   };

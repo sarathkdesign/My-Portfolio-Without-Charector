@@ -366,8 +366,8 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
     const ox = (w - dw) * 0.5, oy = (box - dh) * 0.35;
     const shift = (parseFloat(img.style.getPropertyValue('--px')) || 0) / 100 * w;
     const toUv = (lx, ly) => {
-      const px = w / 2 + (lx - w / 2 - shift) / 1.1;
-      const py = box / 2 + (ly - box / 2) / 1.1;
+      const px = w / 2 + (lx - w / 2 - shift) / 1.14;
+      const py = box / 2 + (ly - box / 2) / 1.14;
       return [(px - ox) / dw, (py - oy) / dh];
     };
     const [u0, v0] = toUv(0, 0);

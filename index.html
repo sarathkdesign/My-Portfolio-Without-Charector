@@ -18,13 +18,42 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=65">
-  <link rel="stylesheet" href="css/pages.css?v=65">
-  <link rel="stylesheet" href="css/designs.css?v=65">
+  <link rel="stylesheet" href="css/style.css?v=78">
+  <link rel="stylesheet" href="css/pages.css?v=78">
+  <link rel="stylesheet" href="css/designs.css?v=78">
   <script>document.documentElement.classList.add('js');</script>
-  <script type="module" src="js/main.js?v=65"></script>
+  <script type="module" src="js/main.js?v=78"></script>
 </head>
 <body>
+  <!-- Page loader: the cat on its bar while the page loads; the bar fills lime, then it fades away -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader__art">
+      <img src="assets/loader/cat.gif" alt="" width="800" height="600">
+      <span class="loader__bar"><i id="loader-fill"></i></span>
+    </div>
+  </div>
+  <style>
+    .loader { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; background: #fff; transition: opacity .6s ease, visibility .6s; }
+    .loader.is-done { opacity: 0; visibility: hidden; }
+    .loader__art { position: relative; width: min(300px, 72vw); aspect-ratio: 4 / 3; }
+    .loader__art img { display: block; width: 100%; height: 100%; }
+    /* sits over the gif's grey bar; multiply keeps the cat's dark paw and tail on top */
+    .loader__bar { position: absolute; left: 19.75%; top: 57%; width: 61.75%; height: 10.67%; border-radius: 999px; overflow: hidden; mix-blend-mode: multiply; }
+    .loader__bar i { display: block; height: 100%; width: 0; background: #ccf400; border-radius: inherit; transition: width .35s ease; }
+  </style>
+  <script>
+    (function () {
+      var fill = document.getElementById('loader-fill'), p = 0, done = false, t0 = Date.now();
+      var tick = setInterval(function () { if (!done) { p += (90 - p) * 0.06; fill.style.width = p + '%'; } }, 60);
+      window.addEventListener('load', function () {
+        setTimeout(function () {
+          done = true; clearInterval(tick); fill.style.width = '100%';
+          setTimeout(function () { document.getElementById('loader').classList.add('is-done'); }, 450);
+          setTimeout(function () { var l = document.getElementById('loader'); l && l.remove(); }, 1200);
+        }, Math.max(0, 1200 - (Date.now() - t0)));
+      });
+    })();
+  </script>
   <a class="skip" href="#about">Skip to introduction</a>
 
   <!-- The logo leads home from any page -->
