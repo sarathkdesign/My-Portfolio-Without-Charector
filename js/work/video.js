@@ -10,7 +10,8 @@ export default {
   slug: 'video',
   name: 'Video',
   intro: '[A line about your video work.]',
-  cover: { src: 'assets/work/placeholder-07.svg', alt: 'Placeholder artwork: a glowing sun setting over a dark horizon' },
+  cover: { src: 'assets/work/video/tile-poster.jpg', alt: 'Video: a still from the showreel',
+    video: 'assets/work/video/tile.mp4', videoPoster: 'assets/work/video/tile-poster.jpg' }, // the homepage tile plays this video
 
   projects: [
     placeholderProject(16),
