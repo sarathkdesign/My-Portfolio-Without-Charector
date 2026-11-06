@@ -19,7 +19,7 @@ export default {
       year: '',
       services: ['Video'],
       hideCover: true,
-      thumb: { src: 'assets/work/video/taras-racing/poster.jpg', alt: 'A red hatchback driving at night, from the film' },
+      thumb: { src: 'assets/work/video/taras-racing/thumb.jpg', alt: 'A red hatchback lit by a band of light in the dark, from the film' },
       cover: { src: 'assets/work/video/taras-racing/poster.jpg', alt: 'A red hatchback driving at night, from the film' },
       modules: [
         { type: 'video', src: 'assets/work/video/taras-racing/film.mp4', poster: 'assets/work/video/taras-racing/poster.jpg', w: 1162, h: 576, controls: true },

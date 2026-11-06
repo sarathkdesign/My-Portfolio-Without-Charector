@@ -433,5 +433,6 @@ export const variants = {
   'assets/work/poster-design/tcsl/international-courier.jpg': [1600, 1600, 640, 1280],
   'assets/work/poster-design/tcsl/worldwide.jpg': [1600, 1600, 640, 1280],
   'assets/work/video/taras-racing/poster.jpg': [1162, 1162, 640],
+  'assets/work/video/taras-racing/thumb.jpg': [2000, 2000, 640, 1280],
   'assets/work/video/tile-poster.jpg': [720, 720, 640],
 };
