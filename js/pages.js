@@ -305,7 +305,7 @@ const inkOn = (hex) => {
 // category's own tile image, so the tile can fly straight into its place in the wall
 function wallImages(category) {
   const list = category.wall?.length ? [...category.wall] : category.projects.map((p) => p.thumb || p.cover);
-  if (!list.some((img) => img.src === category.cover.src)) list.unshift(category.cover);
+  if (!category.wallNoCover && !list.some((img) => img.src === category.cover.src)) list.unshift(category.cover);
   return list;
 }
 
@@ -355,9 +355,17 @@ function wallRows(images) {
   return rows.map(spreadRow);
 }
 
+function heroFilm({ src, poster }) {
+  const v = el('video', { class: 'cat__film', src, poster, autoplay: '', loop: '', muted: '', playsinline: '', preload: 'auto', 'aria-hidden': 'true' });
+  v.muted = true; v.playsInline = true;
+  v.play?.().catch(() => {});
+  return v;
+}
+
 // Runs itself: it fades in once its page is open and settled, glides while the cover is
 // in view, and holds still while the page is covered, scrolled away or changing
 function mountWall(page, hero, category) {
+  if (category.hideWall) return null;
   const images = wallImages(category);
   if (images.length < 2) return null;
   const rows = wallRows(images);
@@ -427,7 +435,9 @@ function renderCategory(page, category) {
   page.setAttribute('aria-labelledby', 'page-category-title');
   page.replaceChildren(
     backLink('./', 'Index'),
-    el('div', { class: 'cat__hero' }, [picture(category.cover, { 'data-hero': true, fetchpriority: 'high' })]),
+    el('div', { class: 'cat__hero', style: category.heroTall ? '--hero-h:92svh;--hero-h-sm:64svh' : null }, [picture(category.cover, { 'data-hero': true, fetchpriority: 'high' }),
+      // a category can play its own looping film at the top, over the tile picture the page transition uses
+      ...(category.heroVideo ? [heroFilm(category.heroVideo)] : [])]),
     el('header', { class: 'cat__head' }, [
       el('h1', { class: 'cat__title', id: 'page-category-title', tabindex: '-1', 'data-reveal': true, text: category.name }),
       el('p', { class: 'cat__count', 'data-reveal': true, style: '--d:1', text: countLabel(category.projects.length) }),

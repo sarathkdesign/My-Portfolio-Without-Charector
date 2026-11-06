@@ -974,3 +974,8 @@ img[data-lightbox] { cursor: zoom-in; }
   .rl-film__specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rl-film__specs div { border-left: 0; border-top: 1px solid var(--th-line); padding-left: 0; }
 }
+
+/* Brochure category: smaller, portrait thumbnails, so more sit in a row */
+[data-page='category'][data-slug='brochure-design'] .cat__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1024px) { [data-page='category'][data-slug='brochure-design'] .cat__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { [data-page='category'][data-slug='brochure-design'] .cat__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

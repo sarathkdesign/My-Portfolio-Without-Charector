@@ -10,15 +10,15 @@ export default {
   cover: { src: 'assets/work/brochure-design/cover.jpg', alt: 'Brochure: a profile portrait with red eye make-up and red lips' },
 
   // The moving wall at the top of the category page: this category's own work
+  heroTall: true, // a taller top, so the moving covers are bigger
+  wallNoCover: true, // the wall shows only the covers below, not the homepage tile
   wall: [
-    { src: 'assets/work/brochure-design/cover.jpg', w: 1254, h: 1254 },
-    { src: 'assets/work/brochure-design/truly-herbivore/page-01.jpg', w: 1400, h: 1980 },
-    { src: 'assets/work/brochure-design/truly-herbivore/page-09.jpg', w: 1400, h: 1980 },
-    { src: 'assets/work/brochure-design/truly-herbivore/page-20.jpg', w: 1400, h: 1980 },
-    { src: 'assets/work/brochure-design/truly-herbivore/page-29.jpg', w: 1400, h: 1980 },
-    { src: 'assets/work/brochure-design/initial-hygiene/page-1.jpg', w: 1400, h: 1979 },
-    { src: 'assets/work/brochure-design/initial-hygiene/page-2.jpg', w: 1400, h: 1979 },
-    { src: 'assets/work/brochure-design/initial-hygiene/page-4.jpg', w: 1400, h: 1979 },
+    { src: 'assets/work/brochure-design/wall/01.jpg', w: 1086, h: 1448, brand: 'cover-1' },
+    { src: 'assets/work/brochure-design/wall/02.jpg', w: 1087, h: 1447, brand: 'cover-2' },
+    { src: 'assets/work/brochure-design/wall/03.jpg', w: 1087, h: 1447, brand: 'cover-3' },
+    { src: 'assets/work/brochure-design/wall/04.jpg', w: 1087, h: 1447, brand: 'cover-4' },
+    { src: 'assets/work/brochure-design/wall/05.jpg', w: 1087, h: 1447, brand: 'cover-5' },
+    { src: 'assets/work/brochure-design/wall/06.jpg', w: 1087, h: 1447, brand: 'cover-6' },
   ],
   projects: [
     {
