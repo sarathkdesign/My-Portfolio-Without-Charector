@@ -878,7 +878,7 @@ export function createPages({ sound, leaveHome, returnHome }) {
     const w = morphLayer.clientWidth, n = shutterCount();
     const strips = Array.from({ length: n }, (_, i) => {
       const face = el('div', { class: 'shutter__face', style: `width:${w}px; left:${(-i * w) / n}px` }, [
-        el('img', { src, alt: '' }), shutterName(category),
+        el('img', { src, alt: '' }), // no category name over the picture
       ]);
       return el('div', { class: 'shutter__strip', style: `left:${(i * 100) / n}%; width:calc(${100 / n}% + 1px)` }, [face]);
     });
@@ -914,7 +914,7 @@ export function createPages({ sound, leaveHome, returnHome }) {
       const src = t.img.currentSrc || t.img.src;
       tile.classList.add('is-source');
       // 1. The tile opens out to fill the screen, the category's name rising over it
-      const over = el('div', { class: 'shutter__over' }, [shutterName(category)]);
+      const over = el('div', { class: 'shutter__over' }); // left empty: no category name in the transition
       const showName = setTimeout(() => morphLayer.append(over), MOTION.grow * 0.45);
       const box = await morph({
         src, from: t.rect, fromClip: t.clip, fromTransform: t.transform,
