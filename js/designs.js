@@ -664,27 +664,37 @@ DESIGNS.booklet = (p, h) => p.modules.filter((m) => m.type === 'booklet').map((m
   for (let i = 0; i < pages.length; i += 2) leaves.push([pages[i], pages[i + 1]]);
   const face = (pg, side) => h.el('div', { class: `bk-face is-${side}` }, pg ? [h.picture(pg, { loading: 'lazy', draggable: 'false' })] : []);
   const leafEls = leaves.map(([front, back], i) => h.el('div', { class: 'bk-leaf', style: `--z:${leaves.length - i}` }, [face(front, 'front'), face(back, 'back')]));
-  const book = h.el('div', { class: 'bk-book is-closed-front', style: `--ratio:${m.w} / ${m.h}` }, leafEls);
+  const book = h.el('div', { class: 'bk-book is-closed-front', style: `--ratio:${m.w} / ${m.h}` }, [h.el('span', { class: 'bk-shade is-left' }), h.el('span', { class: 'bk-shade is-right' }), ...leafEls]);
   const label = h.el('p', { class: 'bk-count', 'aria-live': 'polite' });
   const prev = h.el('button', { class: 'bk-arrow is-prev', type: 'button', 'aria-label': 'Previous page' }, [arrowSvg('M10 3L5 8l5 5')]);
   const next = h.el('button', { class: 'bk-arrow is-next', type: 'button', 'aria-label': 'Next page' }, [arrowSvg('M6 3l5 5-5 5')]);
   let at = 0; // leaves turned
+  const FLIP = 1250; // ms, matches the leaf's transition in css/designs.css
   const show = () => {
     leafEls.forEach((l, i) => {
-      // the leaf that changes side lifts and catches the light while it turns
-      if (l.classList.contains('is-turned') !== (i < at)) {
+      const turned = i < at;
+      // the stack order a resting leaf takes on its side of the spine
+      const rest = turned ? i + 1 : leaves.length - i + leaves.length;
+      if (l.classList.contains('is-turned') !== turned) {
+        // the turning leaf stays on top of both stacks for its whole turn, so it never slips
+        // under a page halfway over; it settles into its stack once it lands
         l.classList.remove('is-flipping'); void l.offsetWidth; l.classList.add('is-flipping');
-        clearTimeout(l.flipTimer); l.flipTimer = setTimeout(() => l.classList.remove('is-flipping'), 1300);
-      }
-      l.classList.toggle('is-turned', i < at);
-      l.style.zIndex = i < at ? i + 1 : leaves.length - i + leaves.length;
+        l.style.zIndex = 1000 + (++flipSeq);
+        clearTimeout(l.flipTimer);
+        l.flipTimer = setTimeout(() => { l.classList.remove('is-flipping'); l.style.zIndex = l.restZ; }, FLIP + 30);
+      } else if (!l.classList.contains('is-flipping')) l.style.zIndex = rest;
+      l.restZ = rest;
+      l.classList.toggle('is-turned', turned);
     });
+    // decode the next pages ahead, so a page never turns over blank
+    [at - 1, at, at + 1, at + 2].forEach((i) => leafEls[i]?.querySelectorAll('img').forEach((img) => { img.loading = 'eager'; img.decode?.().catch(() => {}); }));
     book.classList.toggle('is-closed-front', at === 0);
     book.classList.toggle('is-closed-back', at === leaves.length);
     prev.disabled = at === 0;
     next.disabled = at === leaves.length;
     label.textContent = at === 0 ? 'Front cover' : at === leaves.length ? 'Back cover' : `Pages ${at * 2} – ${at * 2 + 1}`;
   };
+  let flipSeq = 0;
   const go = (d) => { at = Math.max(0, Math.min(leaves.length, at + d)); show(); };
   prev.addEventListener('click', () => go(-1));
   next.addEventListener('click', () => go(1));

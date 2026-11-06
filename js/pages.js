@@ -942,30 +942,23 @@ export function createPages({ sound, leaveHome, returnHome }) {
   async function closeCategory(category) {
     const tile = homeTile?.isConnected && inView(homeTile) ? homeTile : findTile(category.slug);
     if (tile && !reduced()) {
-      const t = tileBox(tile);
-      const src = t.img.currentSrc || t.img.src;
-      tile.classList.add('is-source');
-      // 1. The strips drop back over the page
-      const cut = shutter(src, category);
-      cut.strips.forEach((strip) => (strip.style.transform = 'translate3d(0, -101%, 0)'));
-      await decoded(cut.layer);
+      // A curtain wipe: the page is drawn up and away from the bottom edge, its content lifting
+      // a little faster than the edge (parallax), uncovering the homepage as it settles up into place
       sound.play('menuOpen');
-      await runShutter(cut, false);
-      // 2. Behind them the page goes and the homepage returns; the name fades
-      hide(categoryPage);
       setAway(false);
-      await Promise.all($$('.shutter__name', cut.layer).map((name) =>
-        name.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, fill: 'forwards' }).finished.catch(() => {})));
-      // 3. The full-screen picture closes back down into its tile
-      const shrinking = morph({
-        src, from: fullScreen(),
-        to: t.rect, toClip: t.clip, toTransform: t.transform,
-        position: '50% 35%', duration: MOTION.shrink,
-      });
-      nextFrame().then(() => cut.layer.remove());
-      const box = await shrinking;
-      tile.classList.remove('is-source');
-      box.remove();
+      categoryPage.inert = true;
+      const ease = 'cubic-bezier(0.76, 0, 0.24, 1)';
+      const iris = categoryPage.animate([
+        { clipPath: 'inset(0 0 0 0)', transform: 'none' },
+        { clipPath: 'inset(0 0 100% 0)', transform: 'translateY(-12%)' },
+      ], { duration: 1050, easing: ease, fill: 'forwards' });
+      $$('.hero, .surface', home).forEach((n) => n.animate([
+        { transform: 'translateY(16vh)' },
+        { transform: 'none' },
+      ], { duration: 1050, easing: ease, fill: 'backwards' }));
+      await iris.finished.catch(() => {});
+      hide(categoryPage);
+      iris.cancel();
     } else {
       setAway(false);
       await fadeOut(categoryPage);

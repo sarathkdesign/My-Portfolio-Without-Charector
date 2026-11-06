@@ -812,17 +812,22 @@ img[data-lightbox] { cursor: zoom-in; }
   --page-h: min(78vh, 860px);
   position: relative; height: var(--page-h); aspect-ratio: calc(2 * 1400) / 1979;
   perspective: 7000px; transform-style: preserve-3d; /* deep perspective: a turning page stays level instead of rising */
-  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
+  transition: transform 1.25s cubic-bezier(0.45, 0.05, 0.2, 1); /* slides in step with the turning leaf */
   cursor: pointer;
 }
 .bk-book.is-closed-front { transform: translateX(-25%); }
 /* the book casts a soft shadow along its pages' outline, the turning page included */
-.bk-book { filter: drop-shadow(0 24px 28px rgba(40, 24, 10, 0.24)) drop-shadow(0 4px 8px rgba(40, 24, 10, 0.12)); }
+
+/* two half shadows, one under each side of the open book; the empty side's shows only once a page has landed there */
+.bk-book > .bk-shade { position: absolute; top: 0; bottom: 0; z-index: -1; pointer-events: none; box-shadow: 0 24px 40px rgba(40, 24, 10, 0.2), 0 4px 10px rgba(40, 24, 10, 0.1); }
+.bk-shade.is-left { left: 0; right: 50%; } .bk-shade.is-right { left: 50%; right: 0; }
+.bk-book.is-closed-front > .bk-shade.is-left, .bk-book.is-closed-back > .bk-shade.is-right { opacity: 0; transition: opacity 0.15s ease; }
+.bk-book > .bk-shade { transition: opacity 0.35s ease 1.05s; }
 .bk-book.is-closed-back { transform: translateX(25%); }
 .bk-leaf {
   position: absolute; top: 0; left: 50%; width: 50%; height: 100%;
   transform-origin: left center; transform-style: preserve-3d;
-  transition: transform 1.25s cubic-bezier(0.45, 0.05, 0.2, 1), z-index 0s 0.6s; will-change: transform;
+  transition: transform 1.25s cubic-bezier(0.45, 0.05, 0.2, 1); will-change: transform;
 }
 .bk-leaf.is-turned { transform: rotateY(-180deg); }
 .bk-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; background: #fff; } /* no shadow per page: stacked, they built a blotchy halo */
@@ -833,7 +838,7 @@ img[data-lightbox] { cursor: zoom-in; }
 .bk-face.is-front::after { background: linear-gradient(90deg, rgba(0,0,0,0.16), rgba(0,0,0,0) 8%); }
 .bk-face.is-back::after { background: linear-gradient(270deg, rgba(0,0,0,0.16), rgba(0,0,0,0) 8%); }
 /* one soft, neutral shadow under the whole book, following it as it opens and closes */
-.bk-book::before { content: ''; position: absolute; left: 50%; right: 0; bottom: -18px; height: 36px; z-index: -1; pointer-events: none; background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.22), transparent 70%); filter: blur(6px); transition: left 0.9s cubic-bezier(0.65, 0, 0.35, 1), right 0.9s cubic-bezier(0.65, 0, 0.35, 1); }
+.bk-book::before { content: ''; position: absolute; left: 50%; right: 0; bottom: -18px; height: 36px; z-index: -1; pointer-events: none; background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.22), transparent 70%); filter: blur(6px); transition: left 1.25s cubic-bezier(0.45, 0.05, 0.2, 1), right 1.25s cubic-bezier(0.45, 0.05, 0.2, 1); }
 .bk-book:not(.is-closed-front):not(.is-closed-back)::before { left: 0; right: 0; }
 .bk-book.is-closed-back::before { left: 0; right: 50%; }
 /* a turning page: it lifts off the stack, and light and shade sweep across it as it bends over the spine */
