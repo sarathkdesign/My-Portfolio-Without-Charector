@@ -727,6 +727,8 @@ function setupMenu() {
   const menu = $('[data-menu]');
   const label = $('[data-menu-label]');
   const links = $$('[data-menu-link]', menu);
+  const film = $('[data-menu-film]', menu);
+  if (film) film.muted = true;
   // Everything behind the menu is taken out of reach while it is open
   const behind = [$('#main'), $('.mark-link')];
   let closeTimer;
@@ -739,6 +741,8 @@ function setupMenu() {
     btn.setAttribute('aria-expanded', 'true');
     label.textContent = 'Close menu';
     requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('is-open')));
+    // the portrait film: fetched the first time the menu opens, playing only while it is open
+    if (film) { if (!film.src) film.src = film.dataset.src; film.play?.().catch(() => {}); }
     links[0].focus({ preventScroll: true });
     sound.play('menuOpen');
   };
@@ -751,6 +755,7 @@ function setupMenu() {
     closeTimer = setTimeout(() => {
       menu.hidden = true;
       menu.classList.remove('is-closing');
+      film?.pause();
     }, reduced ? 0 : 370);
     if (returnFocus) btn.focus({ preventScroll: true });
   };
