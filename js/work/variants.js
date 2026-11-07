@@ -417,6 +417,8 @@ export const variants = {
   'assets/work/package-design/mezzcla/03.jpg': [1600, 1600, 640, 1280],
   'assets/work/package-design/mezzcla/04.jpg': [1600, 1600, 640, 1280],
   'assets/work/package-design/mothers-kitchen/pure-ghee.jpg': [2000, 2000, 640, 1280],
+  'assets/work/package-design/mothers-kitchen/vegan-pancake-stack.jpg': [2000, 2000, 640, 1280],
+  'assets/work/package-design/mothers-kitchen/vegan-pancake-top.jpg': [2000, 2000, 640, 1280],
   'assets/work/package-design/roban-cb/pouch.jpg': [2000, 2000, 640, 1280],
   'assets/work/poster-design/cover.jpg': [1024, 1024, 640],
   'assets/work/poster-design/kadalas-cafe/chicken-tales.jpg': [904, 904, 640],

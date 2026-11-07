@@ -19,6 +19,8 @@ export default {
     { src: 'assets/work/package-design/awa/deep-cleansing.jpg', w: 1280, h: 1206 },
     { src: 'assets/work/package-design/awa/neem-watercolour.jpg', w: 1280, h: 1206 },
     { src: 'assets/work/package-design/mothers-kitchen/pure-ghee.jpg', w: 2000, h: 1424 },
+    { src: 'assets/work/package-design/mothers-kitchen/vegan-pancake-top.jpg', w: 2000, h: 1500 },
+    { src: 'assets/work/package-design/mothers-kitchen/vegan-pancake-stack.jpg', w: 2000, h: 1500 },
   ],
   projects: [
     {
@@ -43,7 +45,7 @@ export default {
     {
       slug: 'mothers-kitchen',
       title: 'Mothers Kitchen',
-      subtitle: 'Pure ghee jar label',
+      subtitle: 'Pure ghee jar label and vegan pancake sleeve',
       client: 'Mothers Kitchen Almere',
       year: '',
       services: ['Package design'],
@@ -54,6 +56,8 @@ export default {
       cover: { src: 'assets/work/package-design/mothers-kitchen/pure-ghee.jpg', alt: 'Mothers Kitchen Pure Ghee jar with a purple label on a white table' },
       modules: [
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/pure-ghee.jpg', w: 2000, h: 1424, title: 'Pure Ghee', note: 'Jar label', alt: 'Mothers Kitchen Pure Ghee jar with a purple label on a white table' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/vegan-pancake-top.jpg', w: 2000, h: 1500, title: 'Vegan Pancake', note: 'Tub sleeve, front', alt: 'Mothers Kitchen Vegan Pancake sleeve seen from above: a stack of pancakes with berries on a dark blue background' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/vegan-pancake-stack.jpg', w: 2000, h: 1500, title: 'Vegan Pancake', note: 'Tub sleeve, back with instructions', alt: 'Two stacked tubs wrapped in the Mothers Kitchen Vegan Pancake sleeve, showing the orange back panel with instructions' },
       ],
     },
     {
