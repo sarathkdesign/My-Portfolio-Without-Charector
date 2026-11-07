@@ -373,13 +373,14 @@ div.card { cursor: inherit; }
 .menu-btn[aria-expanded='true'] .menu-btn__lines i:first-child { transform: rotate(45deg); }
 .menu-btn[aria-expanded='true'] .menu-btn__lines i:last-child { transform: rotate(-45deg); }
 .menu-btn:focus-visible { box-shadow: 0 0 0 6px var(--accent); }
-.menu { position: fixed; inset: 0; z-index: 50; }
+.menu { position: fixed; inset: 0; z-index: 50; --film-bg: #fde8ce; }
 .menu[hidden] { display: none; }
 .menu__scrim {
   position: absolute; inset: 0;
-  background: color-mix(in srgb, var(--cream) 94%, transparent);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  /* the film's cream, slightly see-through, with the page blurred behind it */
+  background: color-mix(in srgb, var(--film-bg) 80%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   opacity: 0;
   transition: opacity 0.46s var(--ease);
 }
@@ -416,15 +417,19 @@ div.card { cursor: inherit; }
 .menu__socials { font-size: clamp(18px, 1.8vw, 28px); opacity: 0; transition: opacity 0.46s var(--ease); }
 
 .menu__film {
-  position: absolute; left: var(--gutter); top: 50%;
-  width: min(56vw, calc((100vh - 2 * var(--gutter)) * 16 / 9)); aspect-ratio: 16 / 9;
-  border-radius: 12px; overflow: hidden; background: #fde6cf;
-  opacity: 0; transform: translateY(calc(-50% + 14px));
+  /* sits on the bottom edge, flush with it; the menu's background is the film's own cream, so it has no visible frame */
+  position: absolute; left: 0; bottom: 0;
+  width: min(72vw, calc(92vh * 16 / 9)); aspect-ratio: 16 / 9;
+  background: var(--film-bg);
+  /* the top and right edges fade out, so the film melts into the background with no visible border */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%), linear-gradient(to left, transparent, #000 8%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(to bottom, transparent, #000 10%), linear-gradient(to left, transparent, #000 8%); mask-composite: intersect;
+  opacity: 0; transform: translateY(24px);
   transition: opacity 0.46s var(--ease), transform 0.63s var(--ease);
   pointer-events: none;
 }
 .menu__film video { display: block; width: 100%; height: 100%; object-fit: cover; }
-.menu.is-open .menu__film { opacity: 1; transform: translateY(-50%); transition-delay: 0.08s; }
+.menu.is-open .menu__film { opacity: 1; transform: none; transition-delay: 0.08s; }
 .menu.is-closing .menu__film { transition-duration: 0.23s; transition-delay: 0s; }
 .menu.is-open .menu__scrim { opacity: 1; }
 .menu.is-open .menu__list { clip-path: inset(0 0 0 0 round 12px); }
@@ -496,8 +501,9 @@ div.card { cursor: inherit; }
   .bar__group .toggle__icon { width: 1.25em; height: 1.25em; }
   .menu-btn { bottom: calc(var(--bar-pad) + 3px); width: 44px; height: 32px; } /* its foot on the links' baseline */
   .menu__panel { bottom: calc(var(--bar-pad) + 3px + 32px + 14px); }
-  .menu__film { top: calc(var(--gutter) + 56px); left: var(--gutter); right: var(--gutter); width: auto; transform: translateY(14px); }
-  .menu.is-open .menu__film { transform: none; }
+  .menu__film { width: 100%; aspect-ratio: 7 / 5; } /* cropped at the sides, so the character is bigger on a narrow screen */
+  /* on phones the film fills the bottom, and the menu sits above it */
+  .menu__panel { bottom: calc(100vw * 5 / 7 + 16px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
