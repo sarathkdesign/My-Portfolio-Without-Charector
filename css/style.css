@@ -471,8 +471,8 @@ div.card { cursor: inherit; }
 .strip.is-static { overflow-x: auto; overflow-y: hidden; cursor: auto; scrollbar-width: thin; touch-action: auto; }
 .strip.is-static .card__label { opacity: 1; transform: none; }
 
-/* Short laptop screens: a slightly lower tile band leaves the bio its own space */
-@media (min-width: 1025px) and (max-height: 780px) {
+/* Short laptop and landscape-tablet screens: a slightly lower tile band leaves the bio its own space */
+@media (min-width: 1025px) and (max-height: 860px) {
   :root { --strip-h: min(55svh, 50vw); }
 }
 
@@ -482,6 +482,11 @@ div.card { cursor: inherit; }
   .hero__intro { grid-template-columns: 1fr; align-items: start; align-content: end; gap: 40px; padding-right: var(--gutter); }
   .hero__copy { max-width: 36rem; --intro-size: 17px; }
   .hero__para { max-width: 26em; }
+}
+/* Landscape tablets (iPad mini, small iPads): lower tiles so the bottom bar stays on screen */
+@media (min-width: 721px) and (max-width: 1024px) and (orientation: landscape) {
+  :root { --strip-h: min(44svh, 72vw); }
+  .hero__intro { gap: 28px; }
 }
 
 /* ── Mobile ─────────────────────────────────────────────── */
