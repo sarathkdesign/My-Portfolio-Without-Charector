@@ -164,6 +164,9 @@ div.card { cursor: inherit; }
 .card__media {
   position: relative; display: block;
   height: 100%; overflow: hidden;
+  /* one pixel wider than its slot, tucked under the next tile: while the band moves by fractions
+     of a pixel, no hairline of background can open between two tiles (it showed on iPad) */
+  width: calc(100% + 1px);
   background: var(--cream-2);
   clip-path: inset(0 0 calc((1 - var(--f)) * 100%) 0);
   pointer-events: auto;
@@ -271,6 +274,7 @@ div.card { cursor: inherit; }
     justify-content: space-between;
     padding-top: var(--role-shift, 0px);
   }
+  .hero__intro > .hero__copy.is-foot { align-self: end; justify-content: flex-end; gap: 1.2em; }
   .strip { z-index: 2; }
 }
 .wordmark {

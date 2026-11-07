@@ -210,11 +210,18 @@ function capTop(box, fontSource) {
 }
 function alignRole() {
   const copy = $('.hero__copy');
-  if (window.innerWidth <= 1024) return copy.style.removeProperty('--role-shift');
+  if (window.innerWidth <= 1024) { copy.classList.remove('is-foot'); return copy.style.removeProperty('--role-shift'); }
   const eyebrow = $('.eyebrow');
-  const current = parseFloat(copy.style.getPropertyValue('--role-shift')) || 0;
-  const shift = current + capTop($('[data-wordmark-text]'), $('.wordmark')) - capTop(eyebrow, eyebrow);
-  copy.style.setProperty('--role-shift', `${Math.max(0, shift).toFixed(1)}px`);
+  // Measured with no shift applied. (Adding the shift to what was already there fed on itself on
+  // tall screens such as an iPad Pro held upright: the padding grew the row, the name dropped with
+  // it, and the next measure added more, until the copy was tens of thousands of pixels tall.)
+  copy.style.removeProperty('--role-shift');
+  const shift = capTop($('[data-wordmark-text]'), $('.wordmark')) - capTop(eyebrow, eyebrow);
+  // On a tall screen (an upright iPad) the row is much taller than the name: there the copy simply
+  // sits at the foot, beside the name, instead of reaching up for its cap height
+  const tall = shift > $('.wordmark').getBoundingClientRect().height;
+  copy.classList.toggle('is-foot', tall);
+  if (!tall) copy.style.setProperty('--role-shift', `${Math.max(0, shift).toFixed(1)}px`);
 }
 
 /* ── Sound ─────────────────────────────────────────────── */

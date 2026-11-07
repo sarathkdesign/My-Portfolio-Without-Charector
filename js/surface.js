@@ -39,9 +39,10 @@ precision highp float;
 in vec2 vLocal;
 uniform sampler2D uImage;
 uniform vec4 uUv;
+uniform float uAlpha;
 out vec4 color;
 void main() {
-  color = texture(uImage, uUv.xy + vLocal * uUv.zw);
+  color = texture(uImage, uUv.xy + vLocal * uUv.zw) * uAlpha;
 }`;
 
 const WARP_VS = `#version 300 es
@@ -167,7 +168,7 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
 
   let W = 0, H = 0, dpr = 1;
   let running = false, raf = 0, last = 0;
-  let textDirty = true, labelsShown = false, warmUntil = 0;
+  let textDirty = true, warmUntil = 0;
   // x/y: where the cursor is; lx/ly: where the lens is (glides after it); travel: distance since last frame
   const pointer = { x: -1e4, y: -1e4, lx: -1e4, ly: -1e4, travel: 0, inside: false, speed: 0 };
   let lens = 0, bend = 0, pulse = null, slowFrames = 0;
@@ -195,6 +196,7 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, sceneTex, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     textDirty = true;
+    clearLabels?.();
   };
 
   const imageTexture = (img) => {
@@ -251,37 +253,38 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
   const ascents = new Map();
   const ascentFor = (font, size) => {
     if (!ascents.has(font)) {
+      ctx.font = font;
       const m = ctx.measureText('Hg');
       ascents.set(font, m.fontBoundingBoxAscent || size * 0.92);
     }
     return ascents.get(font);
   };
-  const alphaOf = (el) => {
+  const alphaOf = (el, stop = hero) => {
     let a = 1;
-    for (let n = el; n && n !== hero; n = n.parentElement) a *= parseFloat(getComputedStyle(n).opacity);
+    for (let n = el; n && n !== stop; n = n.parentElement) a *= parseFloat(getComputedStyle(n).opacity);
     return a;
   };
 
-  const paintText = (root, clip) => {
+  const paintText = (root, clip, c = ctx, stop = hero) => {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-    ctx.save();
+    c.save();
     if (clip) {
       const r = clip.getBoundingClientRect();
-      ctx.beginPath();
-      ctx.rect(r.left, r.top, r.width, r.height);
-      ctx.clip();
+      c.beginPath();
+      c.rect(r.left, r.top, r.width, r.height);
+      c.clip();
     }
     for (let node = walker.nextNode(); node; node = walker.nextNode()) {
       const el = node.parentElement;
       if (!node.data.trim() || el.closest('.sr-only')) continue;
       const cs = getComputedStyle(el);
-      const alpha = alphaOf(el);
+      const alpha = alphaOf(el, stop);
       if (alpha < 0.01) continue;
       const size = parseFloat(cs.fontSize);
       const font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-      ctx.font = font;
-      ctx.fillStyle = cs.color;
-      ctx.globalAlpha = alpha;
+      c.font = font;
+      c.fillStyle = cs.color;
+      c.globalAlpha = alpha;
       const ascent = ascentFor(font, size);
       const upper = cs.textTransform === 'uppercase';
       for (let i = 0; i < node.data.length; i++) {
@@ -291,18 +294,17 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
         range.setEnd(node, i + 1);
         const r = range.getClientRects()[0];
         if (!r || !r.width) continue;
-        ctx.fillText(upper ? ch.toUpperCase() : ch, r.left, r.top + ascent);
+        c.fillText(upper ? ch.toUpperCase() : ch, r.left, r.top + ascent);
       }
     }
-    ctx.restore();
+    c.restore();
   };
 
-  const paintTextLayer = (labels) => {
+  const paintTextLayer = () => {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
     ctx.textBaseline = 'alphabetic';
     textRoots.forEach((root, i) => root && paintText(root, i === 0 ? wordmark : null));
-    labels.forEach((label) => paintText(label));
     gl.bindTexture(gl.TEXTURE_2D, textTex);
     gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
@@ -321,14 +323,53 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
   intro.addEventListener('transitioncancel', settle);
   document.fonts?.addEventListener?.('loadingdone', () => { ascents.clear(); textDirty = true; });
 
+  /* ── Tile labels: each painted once into its own small texture, then simply moved and faded.
+     (Repainting and re-uploading the whole screen-sized text layer every frame while a label
+     showed was what made the band stutter under the cursor.) */
+  const labelTextures = new Map(); // label element -> { tex, w, h, ox, oy }
+  const labelCanvas = document.createElement('canvas');
+  const lctx = labelCanvas.getContext('2d');
+  const labelTexture = (label) => {
+    let entry = labelTextures.get(label);
+    if (entry) return entry;
+    const r = label.getBoundingClientRect();
+    const pad = 8;
+    const w = Math.ceil(r.width + pad * 2), h = Math.ceil(r.height + pad * 2);
+    labelCanvas.width = Math.ceil(w * dpr);
+    labelCanvas.height = Math.ceil(h * dpr);
+    lctx.setTransform(dpr, 0, 0, dpr, (pad - r.left) * dpr, (pad - r.top) * dpr);
+    lctx.clearRect(r.left - pad, r.top - pad, w, h);
+    lctx.textBaseline = 'alphabetic';
+    paintText(label, null, lctx, label);
+    const tex = gl.createTexture();
+    setTexParams(tex, false);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, labelCanvas);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+    entry = { tex, w, h, pad };
+    labelTextures.set(label, entry);
+    return entry;
+  };
+  const clearLabels = () => { labelTextures.forEach((e) => gl.deleteTexture(e.tex)); labelTextures.clear(); };
+  document.fonts?.addEventListener?.('loadingdone', clearLabels);
+  // a label's letters scramble in when it appears: its texture is redrawn whenever its text changes
+  const dropLabel = (label) => { const e = label && labelTextures.get(label); if (e) { gl.deleteTexture(e.tex); labelTextures.delete(label); } };
+  new MutationObserver((list) => list.forEach((m) => {
+    const node = m.target.nodeType === 1 ? m.target : m.target.parentElement;
+    dropLabel(node?.closest('.card__label'));
+  })).observe(document.querySelector('.strip') || document.body, { subtree: true, childList: true, characterData: true });
+
   /* ── Tiles: the image as the page crops it (cover, parallax shift, 1.1 zoom) ── */
   const drawTile = (item) => {
     const media = item.firstElementChild?.firstElementChild;
     const video = media?.querySelector('video');
     const img = media?.querySelector('img');
     if (!img) return null;
-    const r = media.getBoundingClientRect();
-    if (r.right < 0 || r.left > W) return null;
+    const raw = media.getBoundingClientRect();
+    if (raw.right < 0 || raw.left > W) return null;
+    const snap = (v) => Math.round(v * dpr) / dpr;
+    const left = snap(raw.left), top = snap(raw.top);
+    const r = { left, top, width: snap(raw.right) - left, height: snap(raw.bottom) - top, right: snap(raw.right) };
     const vEntry = video && videoTexture(video);
     const entry = vEntry || imageTexture(img);
     if (!entry) return r;
@@ -462,23 +503,34 @@ export function createSurface({ canvas, tileSpeed, onFail }) {
     gl.activeTexture(gl.TEXTURE0);
     gl.disable(gl.BLEND);
 
+    gl.uniform1f(quad.uniforms.uAlpha, 1);
     const labels = [];
     for (const item of document.querySelectorAll('.strip__item')) {
       const r = drawTile(item);
       if (!r) continue;
       const label = item.querySelector('.card__label');
-      if (label && parseFloat(getComputedStyle(label).opacity) > 0.01) labels.push(label);
+      if (!label) continue;
+      const a = parseFloat(getComputedStyle(label).opacity);
+      if (a > 0.01) labels.push([label, a]);
     }
 
-    // Text is repainted only when something about it changed
-    const showing = labels.length > 0;
-    if (textDirty || showing || labelsShown || transitions > 0 || now < warmUntil) {
-      paintTextLayer(labels);
+    // The introduction text is repainted only when something about it changed
+    if (textDirty || transitions > 0 || now < warmUntil) {
+      paintTextLayer();
       textDirty = false;
     }
-    labelsShown = showing;
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+    for (const [label, a] of labels) {
+      const e = labelTexture(label);
+      const r = label.getBoundingClientRect();
+      gl.uniform1f(quad.uniforms.uAlpha, a);
+      gl.uniform4f(quad.uniforms.uRect, Math.round((r.left - e.pad) * dpr) / dpr, Math.round((r.top - e.pad) * dpr) / dpr, e.w, e.h);
+      gl.uniform4f(quad.uniforms.uUv, 0, 0, (e.w * dpr) / Math.ceil(e.w * dpr), (e.h * dpr) / Math.ceil(e.h * dpr));
+      gl.bindTexture(gl.TEXTURE_2D, e.tex);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+    gl.uniform1f(quad.uniforms.uAlpha, 1);
     gl.uniform4f(quad.uniforms.uRect, 0, 0, W, H);
     gl.uniform4f(quad.uniforms.uUv, 0, 0, 1, 1);
     gl.bindTexture(gl.TEXTURE_2D, textTex);
