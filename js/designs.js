@@ -30,6 +30,11 @@ export function layout(project, h) {
 
 /* Shared parts */
 // Scroll zoom moves the picture inside its frame, never the frame itself
+// Designs with a faint grid behind the page that slides as the page scrolls. The grid is its own
+// fixed layer moved by a transform, so scrolling never repaints the page under it
+const GRID_DESIGNS = new Set(['blueprint', 'foundation']);
+const GRID_STEP = 56; // px, the grid's square (matches .sy-grid in designs.css)
+
 const fig = (h, m, cls = '', { 'data-zoom': zoom, ...attrs } = {}) => {
   if (m.type !== 'image') return h.module(m);
   const img = h.picture(m, { loading: 'lazy', 'data-zoom': zoom, style: m.w ? `aspect-ratio:${m.w} / ${m.h}` : null });
@@ -756,7 +761,10 @@ export function splitWords(node) {
 /* ── Motion ─────────────────────────────────────────────────
    Runs on the page's scroll. Returns a function that stops it. */
 export function startMotion(page, reduced) {
-  if (reduced) return () => {};
+  const grid = GRID_DESIGNS.has(page.dataset.design) ? page.insertBefore(document.createElement('div'), page.firstChild) : null;
+  if (grid) { grid.className = 'sy-grid'; grid.setAttribute('aria-hidden', 'true'); }
+  const dropGrid = () => grid?.remove();
+  if (reduced) return dropGrid; // reduced motion: the grid stays put
   const par = [...page.querySelectorAll('[data-parallax]')];
   const zoom = [...page.querySelectorAll('[data-zoom]')];
   // Two kinds of sideways rows: pinned ones slide as the page scrolls past them; "own" rows
@@ -769,20 +777,20 @@ export function startMotion(page, reduced) {
     el, stage: el.firstElementChild, n: el.querySelectorAll('.cp-step-img').length, at: -1,
     parts: [...el.querySelectorAll('[data-i]')],
   }));
-  if (!par.length && !zoom.length && !strips.length && !stepSets.length) return () => {};
+  if (!grid && !par.length && !zoom.length && !strips.length && !stepSets.length) return () => {};
   const wide = window.matchMedia('(min-width: 721px)');
   let frame = 0;
   const stepUpdate = (vh) => {
-    for (const ss of stepSets) {
-      const live = wide.matches;
+    const live = wide.matches;
+    // measure every step-through first, then change classes: no layout between the two
+    const runs = live ? stepSets.map((ss) => [ss.el.getBoundingClientRect().top, ss.el.offsetHeight - vh]) : [];
+    stepSets.forEach((ss, k) => {
       ss.el.classList.toggle('is-live', live);
-      if (!live) continue;
-      const r = ss.el.getBoundingClientRect();
-      const run = ss.el.offsetHeight - vh;
-      const t = run > 0 ? Math.min(1, Math.max(0, -r.top / run)) : 0;
-      ss.el.style.setProperty('--t', t.toFixed(4));
+      if (!live) return;
+      const [top, run] = runs[k];
+      const t = run > 0 ? Math.min(1, Math.max(0, -top / run)) : 0;
       const at = Math.min(ss.n - 1, Math.floor(t * ss.n));
-      if (at === ss.at) continue;
+      if (at === ss.at) return;
       ss.dir = at > ss.at ? 1 : -1;
       ss.at = at;
       ss.stage.dataset.step = at;
@@ -795,7 +803,7 @@ export function startMotion(page, reduced) {
         p.classList.toggle('is-past', i < at);
       });
       ss.el.querySelectorAll('.cp-steps__bar span').forEach((b, i) => b.classList.toggle('is-on', i <= at));
-    }
+    });
   };
   // An "own" row runs on past its last poster, so that poster can travel to the middle of the screen
   const maxOf = (st) => Math.max(0, st.track.scrollWidth - st.pin.clientWidth + (st.own ? endRoom(st) : 0));
@@ -827,35 +835,44 @@ export function startMotion(page, reduced) {
     frame = 0;
     const vh = page.clientHeight;
     if (!vh) return;
-    page.style.setProperty('--sy', page.scrollTop.toFixed(0)); // for backgrounds that move with the scroll
-    for (const el of par) {
-      const r = el.getBoundingClientRect();
-      if (r.bottom < -200 || r.top > vh + 200) continue;
+    // Read every position first, then write every transform. Interleaving the two made the
+    // browser redo style and layout for the whole page once per element, on every scroll frame.
+    const parR = par.map((el) => el.getBoundingClientRect());
+    const zoomR = zoom.map((el) => el.getBoundingClientRect());
+    const isWide = wide.matches;
+    const stripR = strips.map((st) => (isWide && !st.own
+      ? { top: st.s.getBoundingClientRect().top, run: st.s.offsetHeight - vh, span: st.track.scrollWidth - st.pin.clientWidth }
+      : null));
+    const scrolled = page.scrollTop;
+    // the grid runs a little ahead of the page; it repeats every square, so it only ever moves one square
+    if (grid) grid.style.transform = `translate3d(0, ${(-((scrolled * 1.35) % GRID_STEP)).toFixed(1)}px, 0)`;
+    par.forEach((el, k) => {
+      const r = parR[k];
+      if (r.bottom < -200 || r.top > vh + 200) return;
       const off = (r.top + r.height / 2 - vh / 2) * parseFloat(el.dataset.parallax);
       el.style.transform = `translate3d(0, ${(-off).toFixed(1)}px, 0)`;
-    }
-    for (const el of zoom) {
-      const r = el.getBoundingClientRect();
-      if (r.bottom < 0 || r.top > vh) continue;
+    });
+    zoom.forEach((el, k) => {
+      const r = zoomR[k];
+      if (r.bottom < 0 || r.top > vh) return;
       const t = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
       el.style.transform = `scale(${(1.14 - 0.14 * Math.min(1, t * 1.6)).toFixed(4)})`;
-    }
-    for (const st of strips) {
-      const { s, pin, track } = st;
-      if (!wide.matches) { track.style.transform = ''; st.x = st.to = 0; continue; }
+    });
+    strips.forEach((st, k) => {
+      const { track } = st;
+      if (!isWide) { track.style.transform = ''; st.x = st.to = 0; return; }
       if (st.own) {
         // glide towards where the wheel or arrows sent it
         st.x += (st.to - st.x) * 0.16;
         if (Math.abs(st.to - st.x) < 0.5) st.x = st.to;
         else queue();
         track.style.transform = `translate3d(${(-st.x).toFixed(1)}px, 0, 0)`;
-        continue;
+        return;
       }
-      const r = s.getBoundingClientRect();
-      const run = s.offsetHeight - vh;
-      const t = run > 0 ? Math.min(1, Math.max(0, -r.top / run)) : 0;
-      track.style.transform = `translate3d(${(-t * (track.scrollWidth - pin.clientWidth)).toFixed(1)}px, 0, 0)`;
-    }
+      const { top, run, span } = stripR[k];
+      const t = run > 0 ? Math.min(1, Math.max(0, -top / run)) : 0;
+      track.style.transform = `translate3d(${(-t * span).toFixed(1)}px, 0, 0)`;
+    });
     stepUpdate(vh);
   };
   const queue = () => { if (!frame) frame = requestAnimationFrame(update); };
@@ -926,6 +943,7 @@ export function startMotion(page, reduced) {
   resize();
   return () => {
     cancelAnimationFrame(frame);
+    dropGrid();
     ro.disconnect();
     strips.forEach(({ track }) => track.removeEventListener('load', loaded, true));
     page.removeEventListener('wheel', wheel);

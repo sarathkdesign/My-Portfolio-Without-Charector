@@ -156,12 +156,15 @@ figure:has(> img[data-zoom]), .ar-plate { overflow: hidden; }
 .hb-credit { text-align: center; color: var(--th-accent); font: 400 clamp(18px, 1.4vw, 26px) / 1.4 var(--th-font); }
 
 /* ── JC Construction · blueprint (restyles its blocks) ── */
-[data-design='blueprint']:not(.is-before):not(.is-after) {
+/* The faint grid behind blueprint and foundation pages: a fixed layer one square taller than the
+   screen, slid by js/designs.js with a transform (no repaint while scrolling) */
+.sy-grid {
+  position: fixed; left: 0; right: 0; top: 0; height: calc(100% + 56px); z-index: -1; pointer-events: none;
   background-image: linear-gradient(rgba(243,237,229,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(243,237,229,0.05) 1px, transparent 1px);
   background-size: 56px 56px;
-  background-attachment: local;
-  background-position: 0 calc(var(--sy, 0) * -0.35px); /* the grid slides a little slower than the page */
+  will-change: transform;
 }
+.page.is-before > .sy-grid, .page.is-after > .sy-grid { display: none; }
 [data-design='blueprint'] .proj__title { text-transform: uppercase; letter-spacing: -0.03em; }
 [data-design='blueprint'] .mod--th { background: transparent; }
 [data-design='blueprint'] .mod--chapter, [data-design='blueprint'] .mod--section, [data-design='blueprint'] .mod--cards, [data-design='blueprint'] .mod--palette { border-top: 1px solid rgba(196,148,111,0.35); }
@@ -505,11 +508,6 @@ figure:has(> img[data-zoom]), .ar-plate { overflow: hidden; }
 
 /* ── JC Construction · foundation (the Behance boards, rebuilt as live panels) ──
    Deep green #063a33, muted clay #b5886a, near-black #111, Poppins — the page keeps the blueprint grid behind */
-[data-design='foundation']:not(.is-before):not(.is-after) {
-  background-image: linear-gradient(rgba(243,237,229,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(243,237,229,0.05) 1px, transparent 1px);
-  background-size: 56px 56px; background-attachment: local;
-  background-position: 0 calc(var(--sy, 0) * -0.35px);
-}
 [data-design='foundation'] { --fd-green: #063a33; --fd-clay: #b5886a; --fd-black: #111111; --fd-mint: #22b573; --fd-ease: cubic-bezier(0.22, 1, 0.36, 1); --fd-wipe: cubic-bezier(0.76, 0, 0.24, 1); }
 [data-design='foundation'] .proj__title { font-family: 'Poppins', var(--display); font-weight: 600; letter-spacing: -0.03em; text-transform: none; }
 .fd-panel { position: relative; overflow: hidden; padding: clamp(64px, 8vw, 168px) clamp(28px, 6vw, 140px); font-family: 'Poppins', var(--text); }
