@@ -425,12 +425,21 @@ div.card { cursor: inherit; }
   position: absolute; left: 0; bottom: 0;
   width: min(72vw, calc(92vh * 16 / 9)); aspect-ratio: 16 / 9;
   background: var(--film-bg);
-  /* the top and right edges fade out, so the film melts into the background with no visible border */
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%), linear-gradient(to left, transparent, #000 8%);
-  -webkit-mask-composite: source-in; mask-image: linear-gradient(to bottom, transparent, #000 10%), linear-gradient(to left, transparent, #000 8%); mask-composite: intersect;
+  /* the top and right edges fade out, so the film melts into the background with no visible border.
+     One plain gradient per element (top here, right on the inner layer): Safari can fail to draw
+     a video under a two-layer composited mask, and then the character vanished */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%);
+  mask-image: linear-gradient(to bottom, transparent, #000 10%);
   opacity: 0; transform: translateY(24px);
   transition: opacity 0.46s var(--ease), transform 0.63s var(--ease);
   pointer-events: none;
+}
+.menu__film-fade {
+  width: 100%; height: 100%;
+  -webkit-mask-image: linear-gradient(to left, transparent, #000 8%);
+  mask-image: linear-gradient(to left, transparent, #000 8%);
+  /* the first frame sits behind the video, so the character shows even before (or without) playback */
+  background: var(--film-bg) url('../assets/menu/portrait-poster.webp') center / cover no-repeat;
 }
 .menu__film video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .menu.is-open .menu__film { opacity: 1; transform: none; transition-delay: 0.08s; }
