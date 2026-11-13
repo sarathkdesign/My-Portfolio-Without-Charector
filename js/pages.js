@@ -507,7 +507,6 @@ function renderContact(page) {
     el('header', { class: 'ct__head' }, [
       el('p', { class: 'ct__kicker', 'data-reveal': true, text: 'Contact' }),
       el('h1', { class: 'ct__title', id: 'page-contact-title', tabindex: '-1', 'data-reveal': true, style: '--d:1', text: 'Contact' }),
-      el('p', { class: 'ct__lede', 'data-reveal': true, style: '--d:2', text: 'Available for new projects.' }),
     ]),
     el('ul', { class: 'ct__list' }, [
       row('Email', `mailto:${content.email}`, content.email,
@@ -834,7 +833,8 @@ export function createPages({ sound, leaveHome, returnHome }) {
     nav.dataset.cat = at.category.slug; // lets a category give the bar its own text colour
     const link = $(`[data-nav="${at.category.slug}"]`, nav);
     $$('a', nav).forEach((a) => (a === link ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
-    placeMark(link.offsetLeft, link.offsetWidth, glide && !reduced());
+    // The links sit inside the padded list, so measure from the bar itself
+    placeMark(link.offsetLeft + link.offsetParent.offsetLeft, link.offsetWidth, glide && !reduced());
     // On narrow screens the bar scrolls; keep the current category in view
     nav.scrollTo({ left: link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2, behavior: glide ? 'smooth' : 'auto' });
   };

@@ -43,7 +43,7 @@
   position: fixed; top: var(--gutter); right: calc(var(--gutter) + clamp(36px, 2.6vw, 48px) + 20px); z-index: 46;
   max-width: calc(100% - 2 * var(--gutter) - clamp(36px, 2.6vw, 48px) - 20px);
   overflow-x: auto; scrollbar-width: none;
-  padding: 5px;
+  padding: 4px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.92);
   -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
@@ -62,11 +62,12 @@
 .cat-nav ul { position: relative; z-index: 1; display: flex; gap: 2px; }
 .cat-nav a {
   display: flex; align-items: center;
-  height: clamp(30px, 2.1vw, 40px);
-  padding: 0 clamp(12px, 1.05vw, 20px);
+  height: clamp(26px, 1.8vw, 34px);
+  padding: 0 clamp(10px, 0.9vw, 17px);
   border-radius: 999px;
-  font: 500 max(11px, 0.72vw) / 1 var(--label);
+  font: 500 max(10px, 0.62vw) / 1 var(--label);
   letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; white-space: nowrap;
+  text-box: trim-both cap alphabetic; /* centre the capitals themselves, not the line box */
   color: var(--ink-soft);
   transition: color 0.45s var(--ease), background-color 0.3s var(--ease);
 }
@@ -75,8 +76,8 @@
 .cat-nav a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; box-shadow: none; }
 /* The dark pill; js animates its position and width so it stretches as it flows between tabs */
 .cat-nav__mark {
-  position: absolute; left: 0; top: 5px;
-  height: clamp(30px, 2.1vw, 40px);
+  position: absolute; left: 0; top: 4px;
+  height: clamp(26px, 1.8vw, 34px);
   border-radius: 999px;
   background: var(--ink);
   box-shadow: 0 2px 8px rgba(15, 15, 13, 0.25);
@@ -342,12 +343,12 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
   padding: calc(var(--band) + clamp(40px, 6vw, 120px)) var(--gutter) clamp(48px, 5vw, 96px);
 }
 .xp4__title {
-  grid-column: 1 / -1; /* full width; the intro sits under it on the right */
+  grid-column: 1 / -1; /* full width; the intro sits under it, on its left edge */
   margin-left: -0.04em;
   font: 700 clamp(56px, 11vw, 230px) / 0.82 var(--display);
   letter-spacing: -0.055em; text-transform: uppercase;
 }
-.xp4__lede { grid-column: 2; max-width: 30em; color: var(--soft); font-size: clamp(15px, 1.05vw, 20px); line-height: 1.45; }
+.xp4__lede { grid-column: 1; max-width: 34em; color: var(--soft); font-size: clamp(15px, 1.05vw, 20px); line-height: 1.45; }
 
 .xp4__when, .xp4__org span {
   font: 500 clamp(11px, 0.78vw, 15px) / 1.3 var(--label); letter-spacing: 0.06em; text-transform: uppercase;
@@ -446,7 +447,6 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
   font: 700 clamp(64px, 13vw, 270px) / 0.82 var(--display);
   letter-spacing: -0.055em; text-transform: uppercase;
 }
-.ct__lede { grid-column: 2; font-size: clamp(15px, 1.05vw, 20px); line-height: 1.45; }
 .ct__list { margin: 0 var(--gutter); padding-bottom: calc(var(--gutter) + 96px); border-top: 1px solid var(--ink); }
 .ct__row {
   display: grid; grid-template-columns: minmax(0, 0.45fr) minmax(0, 2.15fr) auto;
@@ -470,7 +470,6 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
 .ct__copy:hover { background: var(--ink); color: var(--accent); }
 @media (max-width: 720px) {
   .ct__head { grid-template-columns: minmax(0, 1fr); }
-  .ct__lede { grid-column: auto; }
   .ct__row { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .ct__copy { justify-self: start; }
 }
