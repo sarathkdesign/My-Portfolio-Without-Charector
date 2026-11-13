@@ -795,6 +795,37 @@ export function createPages({ sound, leaveHome, returnHome }) {
   ]);
   nav.inert = true;
   categoryPage.before(nav);
+  /* The dark pill flows to the new tab: its leading edge sets off first and its trailing
+     edge catches up, so it stretches across the gap and settles into the new tab's shape. */
+  let markAt = null, markAnim = null;
+  const MARK_MS = 760;
+  const lead = (t) => 1 - Math.pow(1 - t, 4);
+  const trail = (t) => (t < 0.5 ? 8 * t ** 4 : 1 - Math.pow(-2 * t + 2, 4) / 2);
+  const markFrame = (x, w) => ({ transform: `translate3d(${x}px, 0, 0)`, width: `${w}px` });
+  const placeMark = (x, w, glide) => {
+    let from = markAt;
+    if (markAnim) {
+      // Interrupted mid-flow: start again from wherever the pill is right now
+      const cs = getComputedStyle(mark);
+      from = { x: new DOMMatrixReadOnly(cs.transform).m41, w: parseFloat(cs.width) };
+      markAnim.cancel();
+      markAnim = null;
+    }
+    Object.assign(mark.style, markFrame(x, w));
+    markAt = { x, w };
+    if (!glide || !from || (Math.abs(from.x - x) < 0.5 && Math.abs(from.w - w) < 0.5)) return;
+    const L0 = from.x, R0 = from.x + from.w, L1 = x, R1 = x + w;
+    const right = L1 > L0;
+    const frames = [];
+    for (let i = 0; i <= 24; i++) {
+      const t = i / 24;
+      const L = L0 + (L1 - L0) * (right ? trail(t) : lead(t));
+      const R = R0 + (R1 - R0) * (right ? lead(t) : trail(t));
+      frames.push({ ...markFrame(L, Math.max(0, R - L)), offset: t });
+    }
+    markAnim = mark.animate(frames, { duration: MARK_MS, easing: 'linear' });
+    markAnim.finished.then(() => (markAnim = null), () => {});
+  };
   const setNav = (at, glide = false) => {
     const on = at.depth === 1 && !!at.category;
     nav.classList.toggle('is-on', on);
@@ -803,12 +834,7 @@ export function createPages({ sound, leaveHome, returnHome }) {
     nav.dataset.cat = at.category.slug; // lets a category give the bar its own text colour
     const link = $(`[data-nav="${at.category.slug}"]`, nav);
     $$('a', nav).forEach((a) => (a === link ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')));
-    nav.classList.toggle('is-instant', !glide || reduced());
-    const pad = parseFloat(getComputedStyle(link).paddingLeft); // underline the word, not its padding
-    mark.style.width = `${link.offsetWidth - 2 * pad}px`;
-    mark.style.transform = `translate3d(${link.offsetLeft + pad}px, 0, 0)`;
-    void mark.offsetWidth;
-    nav.classList.remove('is-instant');
+    placeMark(link.offsetLeft, link.offsetWidth, glide && !reduced());
     // On narrow screens the bar scrolls; keep the current category in view
     nav.scrollTo({ left: link.offsetLeft - (nav.clientWidth - link.offsetWidth) / 2, behavior: glide ? 'smooth' : 'auto' });
   };

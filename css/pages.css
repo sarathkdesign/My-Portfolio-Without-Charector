@@ -37,45 +37,54 @@
 /* A category page arriving over another holds its text back until the wipe has crossed */
 .page.is-entering [data-reveal] { opacity: 0; transform: translate3d(0, 28px, 0); }
 
-/* Category bar: every category, as small white type to the left of the logo */
+/* Category bar: a white floating pill to the left of the logo, readable over any page.
+   A dark pill slides behind the current category (driven from js/pages.js). */
 .cat-nav {
-  /* Just left of the logo */
-  position: fixed; top: var(--gutter); right: calc(var(--gutter) + clamp(36px, 2.6vw, 48px) + 36px); z-index: 46;
-  max-width: calc(100% - 2 * var(--gutter) - clamp(36px, 2.6vw, 48px) - 36px);
+  position: fixed; top: var(--gutter); right: calc(var(--gutter) + clamp(36px, 2.6vw, 48px) + 20px); z-index: 46;
+  max-width: calc(100% - 2 * var(--gutter) - clamp(36px, 2.6vw, 48px) - 20px);
   overflow-x: auto; scrollbar-width: none;
-  color: #fff;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4);
+  box-shadow: 0 1px 2px rgba(15, 15, 13, 0.06), 0 8px 28px rgba(15, 15, 13, 0.12);
+  color: var(--ink);
   opacity: 0; visibility: hidden;
-  transform: translateY(-8px);
-  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), visibility 0s 0.5s;
+  transform: translateY(-10px) scale(0.98);
+  transition: opacity 0.5s var(--ease), transform 0.6s var(--ease), visibility 0s 0.5s;
 }
 .cat-nav::-webkit-scrollbar { display: none; }
-.cat-nav[data-cat='package-design'] { color: #111; } /* Package Design's wall and page are light behind the bar */
 .cat-nav.is-on {
   opacity: 1; visibility: visible;
   transform: none;
   transition-delay: 0.35s, 0.35s, 0s;
 }
-.cat-nav ul { display: flex; }
+.cat-nav ul { position: relative; z-index: 1; display: flex; gap: 2px; }
 .cat-nav a {
   display: flex; align-items: center;
-  height: clamp(36px, 2.6vw, 48px);
-  padding: 0 0.8em;
-  font: 500 max(8px, 0.5vw) / 1 var(--label);
-  letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; white-space: nowrap;
-  transition: opacity 0.3s;
+  height: clamp(30px, 2.1vw, 40px);
+  padding: 0 clamp(12px, 1.05vw, 20px);
+  border-radius: 999px;
+  font: 500 max(11px, 0.72vw) / 1 var(--label);
+  letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; white-space: nowrap;
+  color: var(--ink-soft);
+  transition: color 0.45s var(--ease), background-color 0.3s var(--ease);
 }
-.cat-nav a:not([aria-current]):hover { opacity: 0.6; }
-.cat-nav a:focus-visible { outline-color: currentColor; outline-offset: -6px; box-shadow: none; }
-/* A thin underline glides to the current category with the same easing as the pages */
+.cat-nav a:not([aria-current]):hover { color: var(--ink); background-color: rgba(15, 15, 13, 0.06); }
+.cat-nav a[aria-current] { color: #fff; transition-delay: 0.12s; }
+.cat-nav a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; box-shadow: none; }
+/* The dark pill; js animates its position and width so it stretches as it flows between tabs */
 .cat-nav__mark {
-  position: absolute; left: 0; bottom: calc(50% - 1em);
-  height: 1px; background: currentColor;
-  transition: transform 1.05s cubic-bezier(0.76, 0, 0.24, 1), width 1.05s cubic-bezier(0.76, 0, 0.24, 1);
+  position: absolute; left: 0; top: 5px;
+  height: clamp(30px, 2.1vw, 40px);
+  border-radius: 999px;
+  background: var(--ink);
+  box-shadow: 0 2px 8px rgba(15, 15, 13, 0.25);
+  will-change: transform, width;
 }
-.cat-nav.is-instant .cat-nav__mark { transition: none; }
 @media (max-width: 960px) {
   /* Below the back button, scrolling sideways */
-  .cat-nav { right: var(--gutter); max-width: calc(100% - 2 * var(--gutter)); top: calc(var(--gutter) + clamp(36px, 2.6vw, 48px) + 4px); }
+  .cat-nav { right: var(--gutter); max-width: calc(100% - 2 * var(--gutter)); top: calc(var(--gutter) + clamp(36px, 2.6vw, 48px) + 8px); }
 }
 
 /* The logo is a link home */
