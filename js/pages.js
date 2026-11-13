@@ -505,8 +505,7 @@ function renderContact(page) {
   page.replaceChildren(
     backLink('./', 'Index'),
     el('header', { class: 'ct__head' }, [
-      el('p', { class: 'ct__kicker', 'data-reveal': true, text: 'Contact' }),
-      el('h1', { class: 'ct__title', id: 'page-contact-title', tabindex: '-1', 'data-reveal': true, style: '--d:1', text: 'Contact' }),
+      el('h1', { class: 'ct__title', id: 'page-contact-title', tabindex: '-1', 'data-reveal': true, text: 'Contact' }),
     ]),
     el('ul', { class: 'ct__list' }, [
       row('Email', `mailto:${content.email}`, content.email,
