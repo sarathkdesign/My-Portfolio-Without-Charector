@@ -80,6 +80,16 @@ const SOCIAL_ICONS = {
 };
 
 /* ── Tile markup ───────────────────────────────────────── */
+// The tile clips (MBs) wait until the page's pictures have arrived (the window's load event; at most
+// 6 s), so on a slow connection they don't share the line with the images the page opens on
+let pageLoaded = document.readyState === 'complete';
+const whenLoaded = new Promise((resolve) => {
+  const done = () => { pageLoaded = true; resolve(); };
+  if (pageLoaded) return resolve();
+  window.addEventListener('load', done, { once: true });
+  setTimeout(done, 6000);
+});
+
 function tileVideo(cover) {
   // No src yet: the strip's visibility watcher gives each copy its file only when it comes on screen,
   // so the copies don't each download the whole video at load
@@ -431,8 +441,12 @@ function setupStrip() {
       v.onScreen = isIntersecting;
       if (reduced) { if (!v.paused) v.pause(); return; } // reduced motion: the tile keeps its still picture
       if (isIntersecting) {
-        if (!v.getAttribute('src')) { v.muted = true; v.src = v.dataset.src; } // first time on screen: load it now
-        if (v.paused) v.play?.().catch(() => {});
+        const start = () => {
+          if (!v.onScreen || reduced) return;
+          if (!v.getAttribute('src')) { v.muted = true; v.src = v.dataset.src; } // first time on screen: load it now
+          if (v.paused) v.play?.().catch(() => {});
+        };
+        if (pageLoaded) start(); else whenLoaded.then(start); // until then the tile shows its still
       } else if (!v.paused) v.pause();
     }), { rootMargin: '0px 200px' });
     items.forEach((it) => {
