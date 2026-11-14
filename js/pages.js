@@ -684,14 +684,10 @@ function projectModules(project) {
   return nodes;
 }
 
-// A bracketed end to a name, e.g. 'Adaminde Chayakada (Adam’s Tea Shop)', sits small beside the last word
+// A bracketed end to a name, e.g. 'Adaminde Chayakada (Adam’s Tea Shop)', goes smaller on a line of its own
 const titleParts = (title) => {
-  const m = title.match(/^(?:(.*)\s+)?(\S+)\s+(\([^()]+\))$/);
-  if (!m) return [title];
-  const [, before, last, aside] = m;
-  // the last word and the bracket never part across lines
-  const tail = el('span', { class: 'proj__title-tail' }, [last, ' ', el('span', { class: 'proj__title-aside', text: aside })]);
-  return before ? [before, ' ', tail] : [tail];
+  const m = title.match(/^(.*\S)\s+(\([^()]+\))$/);
+  return m ? [m[1], ' ', el('span', { class: 'proj__title-aside', text: m[2] })] : [title];
 };
 
 function renderProject(page, category, project) {

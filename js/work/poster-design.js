@@ -81,7 +81,7 @@ export default {
       client: 'Adaminde Chayakada',
       year: '',
       location: 'Calicut & Kottayam, Kerala',
-      services: ['Poster design'],
+      services: ['Product illustration / Poster design'],
       design: 'carousel', // same interface as every poster page, in the poster's mustard and cocoa
       hideCover: true,
       theme: { bg: '#f6e2b3', ink: '#2b211d', accent: '#f2a51e', soft: 'rgba(43,33,29,0.7)', line: 'rgba(43,33,29,0.14)' },

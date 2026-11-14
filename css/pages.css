@@ -569,9 +569,8 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
   font: 700 clamp(48px, 7.5vw, 160px) / 0.85 var(--display);
   letter-spacing: -0.05em; text-transform: uppercase;
 }
-/* The bracketed end of a name (titleParts in pages.js): small, on the last word's baseline */
-.proj__title-tail { white-space: nowrap; }
-.proj__title-aside { display: inline-block; font-size: 0.3em; letter-spacing: -0.03em; white-space: nowrap; }
+/* The bracketed end of a name (titleParts in pages.js): smaller, on its own line under the name */
+.proj__title-aside { display: block; margin-top: 0.3em; font-size: 0.42em; letter-spacing: -0.03em; }
 .proj__subtitle { margin-top: 0.8em; max-width: 38em; font: 500 clamp(17px, 1.4vw, 26px) / 1.2 var(--display); }
 .proj__meta { display: flex; flex-wrap: wrap; gap: 16px 32px; margin: 0; }
 .proj__meta dd { margin: 4px 0 0; font: 500 max(14px, 0.95vw) / 1.3 var(--text); }
