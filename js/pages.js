@@ -499,7 +499,7 @@ function renderInfo(page, kind) {
    Marks come in every shape, so each is sized to the same visual weight rather than the same
    width: equal area (a long wordmark doesn't tower, a tall badge isn't tiny), nudged for how
    solid the mark is, and kept inside its cell. Returns the width as % of the cell. */
-const LOGO = { side: 17, maxW: 32, maxH: 16 }; // in % of the cell's width; the cell is 19:10
+const LOGO = { side: 21, maxW: 38, maxH: 20 }; // in % of the cell's width
 const logoWidth = ({ w, h, ink }) => {
   const aspect = w / h;
   const weight = Math.min(1.15, Math.max(0.8, (0.22 / ink) ** 0.15)); // solid marks a little smaller, fine ones a little larger
