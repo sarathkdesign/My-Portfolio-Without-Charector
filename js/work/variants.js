@@ -549,6 +549,8 @@ export const variants = {
   'assets/work/poster-design/tcsl/india-new-zealand-fta.jpg': [1600, 1600, 640, 1280],
   'assets/work/poster-design/tcsl/international-courier.jpg': [1600, 1600, 640, 1280],
   'assets/work/poster-design/tcsl/worldwide.jpg': [1600, 1600, 640, 1280],
+  'assets/work/poster-design/tcsl/childrens-day.jpg': [1600, 1600, 640, 1280],
+  'assets/work/poster-design/tcsl/sea-freight.jpg': [1600, 1600, 640, 1280],
   'assets/work/video/hero/hero-poster.jpg': [720, 720, 640],
   'assets/work/video/placeholders/01.jpg': [1200, 1200, 640],
   'assets/work/video/placeholders/02.jpg': [1200, 1200, 640],

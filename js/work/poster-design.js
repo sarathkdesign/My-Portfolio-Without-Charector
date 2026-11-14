@@ -52,6 +52,8 @@ export default {
         { type: 'poster', src: 'assets/work/poster-design/tcsl/international-courier.jpg', w: 1600, h: 2000, title: 'International Courier', alt: 'TCSL International Courier poster: your next shipment, worldwide', note: 'Service' },
         { type: 'poster', src: 'assets/work/poster-design/tcsl/diwali.jpg', w: 1600, h: 2000, title: 'Diwali', alt: 'TCSL Diwali poster: a glowing parcel rising from a diya flame', note: 'Festival greeting' },
         { type: 'poster', src: 'assets/work/poster-design/tcsl/worldwide.jpg', w: 1600, h: 2000, title: 'Worldwide Shipping', alt: 'TCSL poster: your next shipment, worldwide, a globe circled by parcels', note: 'Service' },
+        { type: 'poster', src: 'assets/work/poster-design/tcsl/childrens-day.jpg', w: 1600, h: 2000, title: 'Children’s Day', alt: 'TCSL Children’s Day poster: children playing football with a cardboard-box robot in a TCSL band. Little dreams, big futures', note: 'Greeting' },
+        { type: 'poster', src: 'assets/work/poster-design/tcsl/sea-freight.jpg', w: 1600, h: 1998, title: 'Sea Freight', alt: 'TCSL poster: Bigger shipments, smarter shipping, a container ship at port with FCL and LCL shipping options', note: 'Service' },
       ],
     },
     {
