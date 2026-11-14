@@ -444,7 +444,7 @@ div.card { cursor: inherit; }
   /* to the right of the character's head, level with his face: the film is min(72vw, 92vh * 16/9)
      wide and min(40.5vw, 92vh) tall, and his head ends about two thirds of the way across it */
   position: absolute;
-  left: calc(min(72vw, 92vh * 16 / 9) * 0.72);
+  left: calc(min(72vw, 92vh * 16 / 9) * 0.76); /* clear of his hair, even when he turns side-on */
   /* up to the menu, whose width js/main.js measures as it opens */
   right: calc(var(--gutter) + var(--menu-w, 360px) + clamp(24px, 3vw, 56px));
   top: calc(100vh - min(40.5vw, 92vh) * 0.8);
