@@ -87,7 +87,7 @@ export default {
       design: 'carousel', // same interface as every poster page, in the poster's mustard and cocoa
       hideCover: true,
       theme: { bg: '#f6e2b3', ink: '#2b211d', accent: '#f2a51e', soft: 'rgba(43,33,29,0.7)', line: 'rgba(43,33,29,0.14)' },
-      thumb: { src: 'assets/work/poster-design/adaminde-chayakada/opening-soon-kottayam.jpg', alt: 'Adaminde Chayakada poster: two cartoon roosters on the phone, opening soon in Kottayam' },
+      thumb: { src: 'assets/work/poster-design/adaminde-chayakada/takeaway-offer.jpg', alt: 'Adaminde Chayakada poster: a rooster at the parcel counter, 10% off takeaway orders above ₹500' },
       cover: { src: 'assets/work/poster-design/adaminde-chayakada/opening-soon-kottayam.jpg', alt: 'Adaminde Chayakada poster: two cartoon roosters on the phone, opening soon in Kottayam' },
       whole: true,
       modules: [

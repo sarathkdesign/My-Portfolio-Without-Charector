@@ -787,7 +787,7 @@ DESIGNS.booklet = (p, h) => p.modules.filter((m) => m.type === 'booklet').map((m
   for (let i = 0; i < pages.length; i += 2) leaves.push([pages[i], pages[i + 1]]);
   const face = (pg, side) => h.el('div', { class: `bk-face is-${side}` }, pg ? [h.picture(pg, { loading: 'lazy', draggable: 'false' })] : []);
   const leafEls = leaves.map(([front, back], i) => h.el('div', { class: 'bk-leaf', style: `--z:${leaves.length - i}` }, [face(front, 'front'), face(back, 'back')]));
-  const book = h.el('div', { class: 'bk-book is-closed-front', style: `--ratio:${m.w} / ${m.h}` }, [h.el('span', { class: 'bk-shade is-left' }), h.el('span', { class: 'bk-shade is-right' }), ...leafEls]);
+  const book = h.el('div', { class: 'bk-book is-closed-front', style: `--pw:${m.w};--ph:${m.h}` }, [h.el('span', { class: 'bk-shade is-left' }), h.el('span', { class: 'bk-shade is-right' }), ...leafEls]);
   const label = h.el('p', { class: 'bk-count', 'aria-live': 'polite' });
   const prev = h.el('button', { class: 'bk-arrow is-prev', type: 'button', 'aria-label': 'Previous page' }, [arrowSvg('M10 3L5 8l5 5')]);
   const next = h.el('button', { class: 'bk-arrow is-next', type: 'button', 'aria-label': 'Next page' }, [arrowSvg('M6 3l5 5-5 5')]);

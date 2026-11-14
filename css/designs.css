@@ -795,14 +795,6 @@ img[data-lightbox] { cursor: zoom-in; }
   .lb__next { left: calc(50% + 6px); }
 }
 
-/* Package Design category: every pack shows whole in its tile, on a soft, blurred copy of the same picture */
-[data-page='category'][data-slug='package-design'] .thumb__media { position: relative; isolation: isolate; }
-[data-page='category'][data-slug='package-design'] .thumb__media::before {
-  content: ''; position: absolute; inset: -40px; z-index: -1;
-  background: var(--thumb) center / cover no-repeat; filter: blur(28px) saturate(1.1); opacity: 0.85;
-}
-[data-page='category'][data-slug='package-design'] .thumb__media img { object-fit: contain; }
-
 /* Poster Design category: the tiles stand upright and show each poster whole, at its own shape */
 /* the tiles sit together, centred; more collections wrap onto centred rows below */
 [data-page='category'][data-slug='poster-design'] .cat__grid { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: clamp(40px, 4vw, 72px) clamp(20px, 2.2vw, 40px); }
@@ -849,8 +841,11 @@ img[data-lightbox] { cursor: zoom-in; }
 .bk-wrap { display: grid; justify-items: center; gap: 18px; padding: clamp(24px, 4vw, 72px) 0 clamp(48px, 6vw, 120px); }
 .bk-stage { position: relative; display: flex; align-items: center; justify-content: center; gap: clamp(12px, 2vw, 40px); width: 100%; outline: none; }
 .bk-book {
-  --page-h: min(78vh, 860px);
-  position: relative; height: var(--page-h); aspect-ratio: calc(2 * 1400) / 1979;
+  /* every brochure keeps its own page shape (--pw / --ph from its entry: a tall A4, a square, …), as tall as
+     the screen allows, but never wider than the room between the arrows, so a page is never cropped */
+  --pw: 1400; --ph: 1979;
+  --page-h: min(78vh, 860px, calc((100vw - 260px) * var(--ph) / (2 * var(--pw))));
+  position: relative; height: var(--page-h); aspect-ratio: calc(2 * var(--pw)) / var(--ph);
   perspective: 7000px; transform-style: preserve-3d; /* deep perspective: a turning page stays level instead of rising */
   transition: transform 1.25s cubic-bezier(0.45, 0.05, 0.2, 1); /* slides in step with the turning leaf */
   cursor: pointer;

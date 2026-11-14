@@ -33,7 +33,7 @@ export default {
       design: 'carousel', // same gallery interface, in Mezzcla's red
       hideCover: true,
       theme: { bg: '#f6d9d4', ink: '#3b1210', accent: '#7fc28a', soft: 'rgba(59,18,16,0.7)', line: 'rgba(59,18,16,0.14)' },
-      thumb: { src: 'assets/work/package-design/mezzcla/03.jpg', alt: 'Three Mezzcla smoothie bottles floating on red' },
+      thumb: { src: 'assets/work/package-design/mezzcla/tile.jpg', alt: 'Three Mezzcla smoothie bottles floating on red' },
       cover: { src: 'assets/work/package-design/mezzcla/03.jpg', alt: 'Three Mezzcla smoothie bottles floating on red' },
       modules: [
         { type: 'poster', src: 'assets/work/package-design/mezzcla/03.jpg', w: 1600, h: 2000, title: 'Mezzcla range', note: 'Range', alt: 'Three Mezzcla smoothie bottles floating on red' },
@@ -85,7 +85,7 @@ export default {
       design: 'carousel', // the pouches’ warm wheat and orange
       hideCover: true,
       theme: { bg: '#f7ead6', ink: '#3a2410', accent: '#f2b31b', soft: 'rgba(58,36,16,0.7)', line: 'rgba(58,36,16,0.14)' },
-      thumb: { src: 'assets/work/package-design/mothers-kitchen/methi-thepla.jpg', alt: 'Mothers Kitchen Methi Thepla pouch in blue and orange beside a plate of thepla' },
+      thumb: { src: 'assets/work/package-design/mothers-kitchen/tile-instant-foods.jpg', alt: 'Mothers Kitchen Methi Thepla pouch in blue and orange beside a plate of thepla' },
       cover: { src: 'assets/work/package-design/mothers-kitchen/methi-thepla.jpg', alt: 'Mothers Kitchen Methi Thepla pouch in blue and orange beside a plate of thepla' },
       modules: [
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/methi-thepla.jpg', w: 1254, h: 1254, title: 'Methi Thepla', note: 'Pouch', alt: 'Mothers Kitchen Methi Thepla pouch in blue and orange beside a plate of thepla, green chutney and fenugreek leaves' },
@@ -105,7 +105,7 @@ export default {
       design: 'carousel', // the bag’s chilli red and yellow
       hideCover: true,
       theme: { bg: '#f8dcd6', ink: '#4a0d0a', accent: '#f6b21a', soft: 'rgba(74,13,10,0.7)', line: 'rgba(74,13,10,0.14)' },
-      thumb: { src: 'assets/work/package-design/mothers-kitchen/mixture-snack-bag.jpg', alt: 'Mothers Kitchen Hot & Spicy Mixture snack bag in red, with a bowl of mixture inside a flame' },
+      thumb: { src: 'assets/work/package-design/mothers-kitchen/mixture-display.jpg', alt: 'Mothers Kitchen Hot & Spicy Mixture snack bag in red, with a bowl of mixture inside a flame' },
       cover: { src: 'assets/work/package-design/mothers-kitchen/mixture-snack-bag.jpg', alt: 'Mothers Kitchen Hot & Spicy Mixture snack bag in red, with a bowl of mixture inside a flame' },
       modules: [
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/mixture-snack-bag.jpg', w: 1123, h: 1401, title: 'Hot & Spicy Mixture', note: 'Pack shot', alt: 'Mothers Kitchen Hot & Spicy Mixture snack bag: red bag on a wooden table with a bowl of mixture and a green plant' },
@@ -142,7 +142,7 @@ export default {
       design: 'carousel', // same gallery interface as the poster pages, in AWA's fresh green
       hideCover: true,
       theme: { bg: '#e3f1dc', ink: '#1f3a17', accent: '#a8d98a', soft: 'rgba(31,58,23,0.7)', line: 'rgba(31,58,23,0.14)' },
-      thumb: { src: 'assets/work/package-design/awa/neem-lines.jpg', alt: 'AWA Refreshing Neem facewash tube and carton' },
+      thumb: { src: 'assets/work/package-design/awa/tile.jpg', alt: 'AWA Refreshing Neem facewash tube and carton' },
       cover: { src: 'assets/work/package-design/awa/neem-lines.jpg', alt: 'AWA Refreshing Neem facewash tube and carton' },
       modules: [
         { type: 'poster', src: 'assets/work/package-design/awa/neem-lines.jpg', w: 1280, h: 1206, title: 'Refreshing Neem Facewash', note: 'Line pattern', alt: 'AWA Refreshing Neem facewash in a green line pattern' },

@@ -66,6 +66,7 @@ export const small = new Set([
   'assets/work/branding/debarro-interiors/07.webp',
   'assets/work/branding/sidhi/thumb-aloe-vera.jpg',
   'assets/work/poster-design/adaminde-chayakada/opening-soon-kottayam.jpg',
+  'assets/work/poster-design/adaminde-chayakada/takeaway-offer.jpg',
   'assets/work/poster-design/tcsl-gandhi-jayanti/poster.jpg',
   'assets/work/poster-design/other-posters/native-touch.jpg',
   'assets/work/poster-design/tcsl/international-courier.jpg',
