@@ -411,15 +411,37 @@ div.card { cursor: inherit; }
   font-size: var(--bar-size);
   display: flex; flex-direction: column; align-items: flex-end; gap: 22px;
 }
+/* The black follows the words: each row is only as wide as its own word, right-aligned, so the
+   panel steps in and out. Every outer corner curves like the right-hand ones, and where a narrow row
+   meets a wider one the inside corner curves the other way, so the steps read as one flowing shape.
+   js/main.js works out which way each row steps (data-tl / data-bl round a corner, data-notch adds
+   the inside curve) as the menu opens. */
 .menu__list {
-  background: var(--ink); color: #fff;
-  border-radius: 12px;
-  padding: 22px;
-  min-width: min(320px, calc(100vw - 2 * var(--gutter)));
-  display: flex; flex-direction: column; align-items: stretch; gap: 4px;
+  --r: 12px;
+  color: #fff;
+  display: flex; flex-direction: column; align-items: flex-end;
   clip-path: inset(100% 0 0 calc(100% - 40px) round 12px);
   transition: clip-path 0.63s var(--ease);
 }
+.menu__list li {
+  position: relative;
+  width: fit-content;
+  padding: 2px 22px;
+  background: var(--ink);
+}
+.menu__list li:first-child { padding-top: 22px; border-top-right-radius: var(--r); }
+.menu__list li:last-child { padding-bottom: 22px; border-bottom-right-radius: var(--r); }
+.menu__list li[data-tl] { border-top-left-radius: var(--r); }
+.menu__list li[data-bl] { border-bottom-left-radius: var(--r); }
+/* the inside curves: a small square of black just outside the row's left edge, with a quarter circle cut away */
+.menu__list li[data-notch~='top']::before,
+.menu__list li[data-notch~='bottom']::after {
+  content: ''; position: absolute; left: calc(-1 * var(--r));
+  width: var(--r); height: var(--r);
+  pointer-events: none;
+}
+.menu__list li[data-notch~='top']::before { top: 0; background: radial-gradient(circle var(--r) at 0 100%, transparent calc(var(--r) - 0.5px), var(--ink) var(--r)); }
+.menu__list li[data-notch~='bottom']::after { bottom: 0; background: radial-gradient(circle var(--r) at 0 0, transparent calc(var(--r) - 0.5px), var(--ink) var(--r)); }
 .menu__list a {
   display: block; text-align: right;
   padding: 6px 18px;

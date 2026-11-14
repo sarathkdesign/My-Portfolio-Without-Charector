@@ -740,13 +740,40 @@ function setupMenu() {
   let keyed; // the film drawn without its cream background (js/film-key.js); set up on first open
   // The headline beside the character runs up to the menu, so the CSS needs the menu's width
   const list = $('.menu__list', menu);
-  const measureMenu = () => menu.style.setProperty('--menu-w', `${list.offsetWidth}px`);
+  // Each row's black is as wide as its word, so the panel steps. Rows wider than their neighbour get
+  // a curved outer corner there; rows narrower get an inside curve (see .menu__list in css/style.css)
+  const shapeMenu = () => {
+    const rows = $$('li', list);
+    const widths = rows.map((r) => r.getBoundingClientRect().width);
+    const R = 12, step = (a, b) => (b === undefined ? 'out' : a > b + 2 * R ? 'out' : a < b - 2 * R ? 'in' : 'flat');
+    rows.forEach((row, i) => {
+      const up = step(widths[i], widths[i - 1]), down = step(widths[i], widths[i + 1]);
+      row.toggleAttribute('data-tl', up === 'out');
+      row.toggleAttribute('data-bl', down === 'out');
+      const notch = [up === 'in' && 'top', down === 'in' && 'bottom'].filter(Boolean).join(' ');
+      if (notch) row.dataset.notch = notch; else delete row.dataset.notch;
+    });
+  };
+  const measureMenu = () => {
+    shapeMenu();
+    menu.style.setProperty('--menu-w', `${list.offsetWidth}px`);
+  };
   window.addEventListener('resize', () => { if (!menu.hidden) measureMenu(); });
   // Everything behind the menu is taken out of reach while it is open
   const behind = [$('#main'), $('.mark-link')];
   let closeTimer;
+  // The menu's words are in IBM Plex Mono, used nowhere else: fetched as the pointer comes to the
+  // button (or it is focused or touched), so visitors who never open the menu don't download it
+  let fontsAsked = false;
+  const askFonts = () => {
+    if (fontsAsked) return;
+    fontsAsked = true;
+    ['600', '400'].forEach((w) => document.fonts?.load(`${w} 1em "IBM Plex Mono"`).catch(() => {}));
+  };
+  ['pointerenter', 'focus', 'touchstart'].forEach((type) => btn.addEventListener(type, askFonts, { passive: true }));
 
   const open = (byKeyboard = false) => {
+    askFonts();
     clearTimeout(closeTimer);
     menu.hidden = false;
     measureMenu();
