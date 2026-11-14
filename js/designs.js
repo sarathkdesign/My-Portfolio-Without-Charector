@@ -62,10 +62,12 @@ const filmstrip = (h, media, cls = '') =>
 
 /* ── The designs ─────────────────────────────────────────── */
 const DESIGNS = {
-  // Aakara — an earthen editorial: serif, roman numerals, drop caps, pictures drifting in clay frames
+  // Aakara — an earthen editorial: serif, roman numerals and drop caps between the boards.
+  // Every board and film is shown whole, at one width, with one even gap, like pages of a deck;
+  // each settles into place as it arrives. Nothing is cropped or drawn larger than its frame.
   earthen(p, h) {
     const { list, credits } = chapters(p.modules);
-    let n = 0, k = 0;
+    let n = 0;
     return [
       ...list.flatMap((c) => [
         c.text && h.el('section', { class: 'ea-text', 'data-reveal': true }, [
@@ -73,13 +75,10 @@ const DESIGNS = {
           h.el('h2', { class: 'ea-head', text: c.text.heading }),
           h.el('p', { class: 'ea-body', text: c.text.body }),
         ]),
-        ...c.media.map((m) => {
-          if (m.type !== 'image') return h.module(m);
-          const inset = tall(m) || k++ % 3 === 1;
-          return h.el('figure', { class: `ea-fig${inset ? ' is-inset' : ''}`, 'data-reveal': true }, [
-            h.picture(m, { loading: 'lazy', 'data-parallax': '0.06', style: `aspect-ratio:${m.w} / ${m.h}` }),
-          ]);
-        }),
+        c.media.length && h.el('div', { class: 'ea-deck' }, c.media.map((m) =>
+          m.type === 'image'
+            ? h.el('figure', { class: 'ea-fig', 'data-reveal': true }, [h.picture(m, { loading: 'lazy', style: `aspect-ratio:${m.w} / ${m.h}` })])
+            : h.el('div', { class: 'ea-fig ea-film', 'data-reveal': true }, [h.module(m)]))),
       ]),
       credit(h, credits, 'ea-credit'),
     ];
