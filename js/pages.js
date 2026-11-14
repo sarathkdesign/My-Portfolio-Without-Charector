@@ -485,15 +485,19 @@ const durationOf = (months) => {
 const INFO_TITLES = { experience: 'Experience', contact: 'Contact', logofolio: 'Logofolio' };
 function renderInfo(page, kind) {
   page.dataset.page = kind;
+  page.classList.remove('is-white');
+  page._lit?.disconnect(); // the Logofolio's touch-screen colour watcher
   if (kind === 'logofolio') return renderLogofolio(page);
   return kind === 'contact' ? renderContact(page) : renderExperience(page);
 }
 
-/* Logofolio: every mark on its own white tile, all tiles the same size and evenly spaced.
+/* Logofolio: a white wall of marks, four to a row, every one in grey until it is pointed at,
+   when it shows its real colours and grows a little. Behind them, the page's name stays in the
+   middle of the screen, very faint, as the marks scroll over it.
    Marks come in every shape, so each is sized to the same visual weight rather than the same
    width: equal area (a long wordmark doesn't tower, a tall badge isn't tiny), nudged for how
-   solid the mark is, and always kept inside its tile. Returns the width as % of the tile. */
-const LOGO = { side: 44, maxW: 68, maxH: 52 }; // in tile units: the tile is 100 wide and 75 tall
+   solid the mark is, and kept inside its cell. Returns the width as % of the cell. */
+const LOGO = { side: 17, maxW: 32, maxH: 16 }; // in % of the cell's width; the cell is 19:10
 const logoWidth = ({ w, h, ink }) => {
   const aspect = w / h;
   const weight = Math.min(1.15, Math.max(0.8, (0.22 / ink) ** 0.15)); // solid marks a little smaller, fine ones a little larger
@@ -501,29 +505,37 @@ const logoWidth = ({ w, h, ink }) => {
 };
 function renderLogofolio(page) {
   page.classList.remove('is-dark', 'is-accent');
+  page.classList.add('is-white');
   page.setAttribute('aria-labelledby', 'page-logofolio-title');
   const branding = categories.find((c) => c.slug === 'branding');
-  const tile = (logo, i) => {
+  const cell = (logo, i) => {
     const pct = logoWidth(logo);
     const src = `assets/logofolio/${logo.file}`;
-    // the grid is 5 columns wide, 3 on tablets and 2 on phones
-    const sizes = `(max-width: 599px) ${(pct / 2).toFixed(1)}vw, (max-width: 1099px) ${(pct / 3).toFixed(1)}vw, ${(pct / 5).toFixed(1)}vw`;
-    return el('li', { class: 'lf__tile', 'data-reveal': true, style: `--d:${i % 5}` }, [
+    // 4 columns (marks drawn 1.3x larger on tablets), 2 on phones (1.7x larger); see css/pages.css
+    const sizes = `(max-width: 699px) ${((pct * 1.7) / 2).toFixed(1)}vw, (max-width: 1099px) ${((pct * 1.3) / 4).toFixed(1)}vw, ${(pct / 4).toFixed(1)}vw`;
+    return el('li', { class: 'lf__cell', 'data-reveal': true, style: `--d:${i % 4}` }, [
       el('img', {
         class: 'lf__logo', src: `${src}.webp`, srcset: `${src}.sm.webp ${logo.smw}w, ${src}.webp ${logo.w}w`, sizes,
         width: logo.w, height: logo.h, alt: `${logo.name} logo`, loading: 'lazy', decoding: 'async', style: `--lw:${pct.toFixed(1)}%`,
       }),
     ]);
   };
+  const grid = el('ul', { class: 'lf__grid', 'aria-label': `${logofolio.length} logos` }, logofolio.map(cell));
   page.replaceChildren(
     backLink('./', 'Index'),
-    el('header', { class: 'lf__head' }, [
-      el('h1', { class: 'lf__title', id: 'page-logofolio-title', tabindex: '-1', 'data-reveal': true, text: 'Logofolio' }),
-      el('p', { class: 'lf__count', 'data-reveal': true, style: '--d:1', text: `${logofolio.length} logos` }),
+    el('div', { class: 'lf__backdrop' }, [
+      el('h1', { class: 'lf__title', id: 'page-logofolio-title', tabindex: '-1', text: 'Logofolio' }),
     ]),
-    el('ul', { class: 'lf__grid', 'aria-label': 'Logos' }, logofolio.map(tile)),
+    grid,
     branding && nextLink(hrefOf(branding), 'More identity work', 'Branding')
   );
+  // Touch screens have no hover: there, a mark shows its colours while it crosses the middle of the screen
+  if (matchMedia('(hover: none)').matches) {
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle('is-lit', e.isIntersecting)),
+      { root: page, rootMargin: '-42% 0px -42% 0px' });
+    grid.querySelectorAll('.lf__cell').forEach((c) => io.observe(c));
+    page._lit = io;
+  }
 }
 
 /* Contact: a bold green page with each way to reach Sarath as a large row */

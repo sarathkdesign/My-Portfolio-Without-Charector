@@ -8,3 +8,8 @@ Licensed font files used by the site (see the `@font-face` rules at the top of `
 
 Light and the italics are here too but not used yet.
 For faster loading, `.woff2` versions of these three files can replace the `.otf` ones.
+
+# IBM Plex Mono
+
+- `IBMPlexMono-SemiBold-latin.woff2` (600, Latin) — the name "SARATH BHASKAR" in the menu.
+  Free under the SIL Open Font License (`IBMPlexMono-LICENSE.txt`), from the Fontsource package.
