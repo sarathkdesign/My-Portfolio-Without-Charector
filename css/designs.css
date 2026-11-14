@@ -1113,8 +1113,70 @@ img[data-lightbox] { cursor: zoom-in; }
 .bt-proof__big span:nth-child(2) { color: var(--bt-red); }
 .page .bt-proof__big[data-reveal]:not(.is-in) { opacity: 1; transform: none; }
 .page .bt-proof__big:not(.is-in) span { transform: translate3d(0, 40%, 0) scale(0.7); color: transparent; }
-.bt-proof__key { width: min(100%, 960px); margin: 0 auto; aspect-ratio: 1240 / 720; background: #fff; }
-.bt-proof__key img { object-fit: contain; }
+
+/* the concept, pinned: three steps (data-step from data-progress), each change eased in CSS.
+   0 — the side view and its B; 1 — the front view, its E, and the T lit in its bars; 2 — the two dock into the mark */
+.bt-proof { display: none; }
+.bt-spell { --p: 0; --u: min(15vw, 230px); --ease-s: cubic-bezier(0.65, 0, 0.35, 1); position: relative; height: 320vh; margin: clamp(20px, 3vw, 60px) 0 clamp(40px, 5vw, 100px); }
+.bt-spell__stage { position: sticky; top: 0; height: 100vh; height: 100svh; display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); align-items: center; gap: clamp(32px, 5vw, 110px); }
+.bt-spell__photos { position: relative; height: min(70vh, 740px); aspect-ratio: 2 / 3; justify-self: center; transition: transform 1.1s var(--ease-s), opacity 0.9s var(--ease-s); }
+.bt-spell__photo { position: absolute; inset: 0; margin: 0; overflow: hidden; border-radius: clamp(10px, 1vw, 18px); box-shadow: 0 50px 90px -40px rgb(0 0 0 / 0.55); transition: transform 1.1s var(--ease-s), opacity 0.9s var(--ease-s); }
+.bt-spell__photo img { width: 100%; height: 100%; object-fit: cover; transform: scale(calc(1.1 - var(--p) * 0.1)); }
+.bt-spell__photo.is-b { opacity: 0; transform: translate3d(14%, 6%, 0) rotate(5deg) scale(0.92); }
+.bt-spell__board { position: relative; display: grid; gap: clamp(28px, 3.4vw, 64px); align-content: center; transition: transform 1.1s var(--ease-s); }
+.bt-spell__glyphs { display: flex; align-items: flex-start; gap: calc(var(--u) * 0.5); transition: gap 1.1s var(--ease-s); }
+.bt-spell__glyph { position: relative; width: var(--u); display: grid; gap: clamp(12px, 1.2vw, 22px); transition: opacity 0.9s var(--ease-s), transform 1.1s var(--ease-s); }
+.bt-spell__glyph.is-front { width: calc(var(--u) * 1.046); opacity: 0; transform: translate3d(40%, 0, 0); }
+.bt-spell__glyph svg { display: block; width: 100%; height: auto; }
+.bt-spell__glyph.is-side .bt-half { fill: var(--bt-red); }
+.bt-spell__glyph.is-front .bt-half { fill: #fff; }
+.bt-spell__t { position: absolute; top: 0; left: 0; fill: var(--bt-red); opacity: 0; transition: opacity 0.7s var(--ease-s) 0.35s; }
+.bt-spell__letter { display: flex; justify-content: center; gap: 0.5em; font: 700 clamp(28px, 3vw, 56px) / 1 var(--th-font); color: var(--bt-red); transition: color 0.8s var(--ease-s); }
+.bt-spell__letter i { font-style: normal; display: inline-block; transition: opacity 0.7s var(--ease-s), transform 0.9s var(--ease-s), color 0.8s; }
+.bt-spell__glyph.is-front .bt-spell__letter { color: #fff; }
+.bt-spell__letter .is-t { opacity: 0; transform: translate3d(0, 40%, 0); color: var(--bt-red); transition-delay: 0.35s; }
+.bt-spell__copy { position: relative; min-height: 9em; }
+.bt-spell__say { position: absolute; inset: 0 auto auto 0; max-width: 26em; display: grid; gap: 10px; opacity: 0; transform: translate3d(0, 18px, 0); transition: opacity 0.6s var(--ease-s), transform 0.8s var(--ease-s); pointer-events: none; }
+.bt-spell__say span { font: 700 clamp(12px, 0.85vw, 14px) / 1 var(--th-font); letter-spacing: 0.16em; color: var(--bt-red); }
+.bt-spell__say b { font: 700 clamp(26px, 2.4vw, 46px) / 1 var(--th-font); letter-spacing: -0.03em; color: #fff; }
+.bt-spell__say p { font: 400 clamp(16px, 1.2vw, 21px) / 1.55 var(--th-font); color: rgb(255 255 255 / 0.82); }
+.bt-spell__name { display: flex; flex-wrap: wrap; gap: 0 0.35em; font: 500 clamp(18px, 1.6vw, 30px) / 1.2 var(--th-font); color: rgb(255 255 255 / 0.85); }
+.bt-spell__name span { display: inline-block; opacity: 0; transform: translate3d(0, 60%, 0); transition: opacity 0.7s var(--ease-s), transform 0.9s var(--ease-s); }
+.bt-spell__name span:nth-child(2) { transition-delay: 0.1s; } .bt-spell__name span:nth-child(3) { transition-delay: 0.2s; }
+.bt-spell__name b { color: var(--bt-red); font-weight: 700; }
+.bt-spell__ticks { position: absolute; left: 0; bottom: clamp(24px, 4vh, 48px); display: flex; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.bt-spell__ticks li { width: 36px; height: 3px; border-radius: 2px; background: rgb(255 255 255 / 0.25); overflow: hidden; }
+.bt-spell__ticks li::after { content: ''; display: block; height: 100%; background: #fff; transform: scaleX(0); transform-origin: left; transition: transform 0.6s var(--ease-s); }
+
+/* step 0 (also before the scene arrives): the side view */
+.bt-spell:not([data-step]) .bt-spell__say[data-i='0'], .bt-spell[data-step='0'] .bt-spell__say[data-i='0'] { opacity: 1; transform: none; }
+.bt-spell:not([data-step]) .bt-spell__ticks li[data-i='0']::after, .bt-spell[data-step='0'] .bt-spell__ticks li[data-i='0']::after { transform: none; }
+/* step 1: the front view takes over; its top and centre bars light up as the T */
+.bt-spell[data-step='1'] .bt-spell__photo.is-a { opacity: 0; transform: translate3d(-14%, -4%, 0) rotate(-5deg) scale(0.92); }
+.bt-spell[data-step='1'] .bt-spell__photo.is-b { opacity: 1; transform: none; }
+.bt-spell[data-step='1'] .bt-spell__glyph.is-side { opacity: 0.25; }
+.bt-spell[data-step='1'] .bt-spell__glyph.is-front { opacity: 1; transform: none; }
+.bt-spell[data-step='1'] .bt-spell__t { opacity: 1; }
+.bt-spell[data-step='1'] .bt-spell__letter .is-t { opacity: 1; transform: none; }
+.bt-spell[data-step='1'] .bt-spell__say[data-i='1'] { opacity: 1; transform: none; }
+.bt-spell[data-step='1'] .bt-spell__ticks li:not([data-i='2'])::after { transform: none; }
+/* step 2: the photos step back, the two views dock into the mark, the name spells itself out */
+.bt-spell[data-step='2'] .bt-spell__photos { opacity: 0; transform: translate3d(-20%, 0, 0) scale(0.86); }
+.bt-spell[data-step='2'] .bt-spell__photo.is-a { opacity: 0; }
+.bt-spell[data-step='2'] .bt-spell__photo.is-b { opacity: 1; transform: none; }
+.bt-spell[data-step='2'] .bt-spell__board { transform: translate3d(calc(-0.125 * (100vw - 2 * var(--gutter))), 0, 0); } /* the docked mark settles in the middle */
+.bt-spell[data-step='2'] .bt-spell__glyphs { gap: calc(var(--u) * 0.155); }
+.bt-spell[data-step='2'] .bt-spell__glyph { opacity: 1; transform: none; }
+.bt-spell[data-step='2'] .bt-spell__letter .is-t { opacity: 1; transform: none; color: #fff; }
+.bt-spell[data-step='2'] .bt-spell__glyph.is-side .bt-spell__letter { color: #fff; }
+.bt-spell[data-step='2'] .bt-spell__say[data-i='2'] { opacity: 1; transform: none; }
+.bt-spell[data-step='2'] .bt-spell__name span { opacity: 1; transform: none; }
+.bt-spell[data-step='2'] .bt-spell__ticks li::after { transform: none; }
+
+@media (max-width: 720px), (prefers-reduced-motion: reduce) {
+  .bt-spell { display: none; }
+  .bt-proof { display: grid; }
+}
 
 /* 05 the mark: a lead version, two side by side, two full-width */
 .bt-mark { padding-top: var(--bt-gap); }

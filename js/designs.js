@@ -369,15 +369,44 @@ DESIGNS.freight = (p, h) => {
           h.el('div', { class: 'bt-dock__part is-side' }, [sideView(), h.el('p', {}, [h.el('b', { text: 'Side view' }), h.el('span', { text: 'Two containers stacked: capacity and stability.' })])]),
           h.el('div', { class: 'bt-dock__part is-front' }, [frontView(), h.el('p', {}, [h.el('b', { text: 'Front view' }), h.el('span', { text: 'The doors: openness, and cargo kept safe.' })])]),
         ]),
+        // the concept, pinned and told in three steps as you scroll (desktop); a still version on phones
+        h.el('section', { class: 'bt-spell', 'data-progress': '3', 'aria-label': 'How the two container views spell BET' }, [
+          h.el('div', { class: 'bt-spell__stage' }, [
+            h.el('div', { class: 'bt-spell__photos' }, [
+              h.el('figure', { class: 'bt-spell__photo is-a' }, [im('concept-side', 'Container side view: two stacked containers form the first half of the mark')]),
+              h.el('figure', { class: 'bt-spell__photo is-b' }, [im('concept-front', 'Container front view: the doors form the second half of the mark')]),
+            ]),
+            h.el('div', { class: 'bt-spell__board' }, [
+              h.el('div', { class: 'bt-spell__glyphs', 'aria-hidden': 'true' }, [
+                h.el('div', { class: 'bt-spell__glyph is-side' }, [sideView(), h.el('span', { class: 'bt-spell__letter', text: 'B' })]),
+                h.el('div', { class: 'bt-spell__glyph is-front' }, [
+                  frontView(),
+                  svg('bt-spell__t', 104.6, '<path d="M0 0h104.6v15.6H0zM43.6 15.6h15.4v68.8H43.6z"/>'),
+                  h.el('span', { class: 'bt-spell__letter' }, [h.el('i', { text: 'E' }), h.el('i', { class: 'is-t', text: 'T' })]),
+                ]),
+              ]),
+              h.el('div', { class: 'bt-spell__copy' }, [
+                ['01', 'Side view', 'Two containers stacked, seen from the side. Their outline is a B, for capacity and stability.'],
+                ['02', 'Front view', 'Seen head-on, the container’s doors form an E. Its top edge and centre bar stand as a T.'],
+                ['03', 'One mark', 'Side by side, the two views spell BET: the company’s initials, and the thing it moves.'],
+              ].map(([n, t, b], i) => h.el('div', { class: 'bt-spell__say', 'data-i': i }, [h.el('span', { text: n }), h.el('b', { text: t }), h.el('p', { text: b })]))),
+              h.el('p', { class: 'bt-spell__name' }, [
+                h.el('span', {}, [h.el('b', { text: 'B' }), 'estway ']),
+                h.el('span', {}, [h.el('b', { text: 'E' }), 'nvironmental ']),
+                h.el('span', {}, [h.el('b', { text: 'T' }), 'echnologies']),
+              ]),
+            ]),
+            h.el('ol', { class: 'bt-spell__ticks', 'aria-hidden': 'true' }, [0, 1, 2].map((i) => h.el('li', { 'data-i': i }))),
+          ]),
+        ]),
         h.el('div', { class: 'bt-proof' }, [
-          shot('concept-side', 'Container side view: two stacked containers form the first half of the mark', 'is-a', '0.06'),
-          shot('concept-front', 'Container front view: the doors form the second half of the mark', 'is-b', '-0.06'),
+          shot('concept-side', 'Container side view: two stacked containers form the first half of the mark', 'is-a'),
+          shot('concept-front', 'Container front view: the doors form the second half of the mark', 'is-b'),
           h.el('div', { class: 'bt-proof__text' }, [
             h.el('p', { class: 'bt-proof__big', 'data-reveal': true }, ['B', 'E', 'T'].map((c, i) => h.el('span', { text: c, style: `--i:${i}` }))),
             h.el('p', { 'data-reveal': true, style: '--d:2', text: 'Read again, the two views spell the name. The side view is a B, the front view an E, and its centre bar stands as a T. One mark carries both the company’s initials and the thing it moves.' }),
           ]),
         ]),
-        shot('concept-bet', 'The letters B, E and T traced inside the BET mark: Bestway Environmental Technologies', 'bt-proof__key'),
       ]),
     ]),
 
@@ -992,7 +1021,10 @@ export function startMotion(page, reduced) {
   }));
   // Docking (data-dock): --t runs 0 → 1 as the section crosses the screen (BET's two halves slide together)
   const docks = [...page.querySelectorAll('[data-dock]')];
-  if (!par.length && !zoom.length && !strips.length && !stepSets.length && !docks.length) return () => {};
+  // Pinned scenes (data-progress="n"): --p runs 0 → 1 while the scene is held on screen,
+  // and data-step names which of its n steps is showing (CSS animates between steps)
+  const progs = [...page.querySelectorAll('[data-progress]')].map((el) => ({ el, n: Number(el.dataset.progress) || 1, at: -1 }));
+  if (!par.length && !zoom.length && !strips.length && !stepSets.length && !docks.length && !progs.length) return () => {};
   const wide = window.matchMedia('(min-width: 721px)');
   let frame = 0;
   const stepUpdate = (vh) => {
@@ -1081,6 +1113,16 @@ export function startMotion(page, reduced) {
       track.style.transform = `translate3d(${(-st.x).toFixed(1)}px, 0, 0)`;
     }
     stepUpdate(vh);
+    for (const pr of progs) {
+      if (!wide.matches) { if (pr.at !== -1) { pr.at = -1; delete pr.el.dataset.step; } continue; }
+      const r = pr.el.getBoundingClientRect();
+      if (r.bottom < -vh || r.top > vh * 2) continue;
+      const run = pr.el.offsetHeight - vh;
+      const t = run > 0 ? Math.min(1, Math.max(0, -r.top / run)) : 0;
+      pr.el.style.setProperty('--p', t.toFixed(4));
+      const at = Math.min(pr.n - 1, Math.floor(t * pr.n));
+      if (at !== pr.at) { pr.at = at; pr.el.dataset.step = at; }
+    }
     for (const d of docks) {
       const r = d.getBoundingClientRect();
       if (r.bottom < 0 || r.top > vh) continue;

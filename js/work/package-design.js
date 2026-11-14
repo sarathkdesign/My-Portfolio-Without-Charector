@@ -96,6 +96,27 @@ export default {
       ],
     },
     {
+      slug: 'mothers-kitchen-batters',
+      title: 'Mothers Kitchen Idli & Dosa Batters',
+      subtitle: 'Pouch designs for a range of six fresh batters',
+      client: 'Mothers Kitchen Almere',
+      year: '',
+      services: ['Package design'],
+      design: 'carousel', // same gallery interface, in the range's signature blue and orange
+      hideCover: true,
+      theme: { bg: '#e3e8f3', ink: '#14234d', accent: '#f26a1b', soft: 'rgba(20,35,77,0.7)', line: 'rgba(20,35,77,0.14)' },
+      thumb: { src: 'assets/work/package-design/mothers-kitchen/tile-batters.jpg', alt: 'Two blue Mothers Kitchen Adai Idly & Dosa Batter family-pack pouches on blue' },
+      cover: { src: 'assets/work/package-design/mothers-kitchen/batter-adai.jpg', alt: 'Two blue Mothers Kitchen Adai Idly & Dosa Batter family-pack pouches on blue' },
+      modules: [
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/batter-adai.jpg', w: 1199, h: 1312, title: 'Adai Idly & Dosa Batter', note: 'Family pack', alt: 'Mothers Kitchen batter packaging: two blue Adai Idly & Dosa Batter pouches with a crispy adai dosa and chutneys on the front' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/batter-carrot.jpg', w: 1199, h: 1312, title: 'Carrot Idly & Dosa Batter', note: 'Family pack', alt: 'Mothers Kitchen batter packaging: two orange Carrot Idly & Dosa Batter pouches with carrot uttapam on the front' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/batter-spinach.jpg', w: 1199, h: 1312, title: 'Spinach Idly & Dosa Batter', note: 'Family pack', alt: 'Mothers Kitchen batter packaging: two dark green Spinach Idly & Dosa Batter pouches with a bowl of spinach batter on the front' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/batter-ragi.jpg', w: 1199, h: 1312, title: 'Ragi Idly & Dosa Batter', note: 'Family pack', alt: 'Mothers Kitchen batter packaging: two brown Ragi Idly & Dosa Batter pouches with ragi paniyaram and green chutney on the front' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/batter-pesarattu.jpg', w: 1199, h: 1312, title: 'Pesarattu Batter', note: 'Family pack', alt: 'Mothers Kitchen batter packaging: two green Pesarattu Idly & Dosa Batter pouches with a green moong pesarattu on the front' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/batter-appam.jpg', w: 1199, h: 1312, title: 'Appam Batter', note: 'Family pack', alt: 'Mothers Kitchen batter packaging: two white and green Appam Batter pouches with appams and curry on a banana leaf on the front' },
+      ],
+    },
+    {
       slug: 'mothers-kitchen-hot-spicy-mixture',
       title: 'Mothers Kitchen Hot & Spicy Mixture',
       subtitle: 'Snack bag design',
