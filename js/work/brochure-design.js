@@ -13,12 +13,13 @@ export default {
   heroTall: true, // a taller top, so the moving covers are bigger
   wallNoCover: true, // the wall shows only the covers below, not the homepage tile
   wall: [
+    { src: 'assets/work/brochure-design/truly-herbivore/page-01.jpg', w: 1400, h: 1980, brand: 'truly-herbivore' },
     { src: 'assets/work/brochure-design/wall/01.jpg', w: 1086, h: 1448, brand: 'cover-1' },
+    { src: 'assets/work/brochure-design/initial-hygiene/page-1.jpg', w: 1400, h: 1979, brand: 'initial-hygiene' },
     { src: 'assets/work/brochure-design/wall/02.jpg', w: 1087, h: 1447, brand: 'cover-2' },
-    { src: 'assets/work/brochure-design/wall/03.jpg', w: 1087, h: 1447, brand: 'cover-3' },
-    { src: 'assets/work/brochure-design/wall/04.jpg', w: 1087, h: 1447, brand: 'cover-4' },
+    { src: 'assets/work/brochure-design/live-grand-hotels/page-01.jpg', w: 1400, h: 1400, brand: 'live-grand-hotels' },
     { src: 'assets/work/brochure-design/wall/05.jpg', w: 1087, h: 1447, brand: 'cover-5' },
-    { src: 'assets/work/brochure-design/wall/06.jpg', w: 1087, h: 1447, brand: 'cover-6' },
+    { src: 'assets/work/brochure-design/yeti-den/page-1.jpg', w: 1414, h: 2000, brand: 'yeti-den' },
   ],
   projects: [
     {

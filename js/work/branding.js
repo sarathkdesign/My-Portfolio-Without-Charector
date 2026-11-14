@@ -46,6 +46,10 @@ export default {
     { src: 'assets/work/branding/wall/13.jpg', w: 1500, h: 1000, brand: 'web' },
   ],
 
+  // tiles after the projects that open another page of the site
+  extraTiles: [
+    { href: 'logofolio', title: 'Logofolio', subtitle: 'A collection of logos and marks', thumb: { src: 'assets/work/branding/logofolio-tile.jpg', alt: 'LOGOFOLIO in black capitals on orange' } },
+  ],
   projects: [
     // ── From public/workd for website 2/Branding/INDSOFT — the brand mark presentation.
     //    Its own page design: statement, pinned anatomy, gradient field, rounded bento, closing line
@@ -930,7 +934,7 @@ export default {
       year: '2024',
       services: ['Brand identity', 'Logo design', 'Brand guidelines'],
       summary: 'A mark drawn from two views of a shipping container, for a company that sources and moves premium products worldwide.',
-      thumb: { src: 'assets/work/branding/bet/container.jpg', alt: 'A BET shipping container lifted by a crane' },
+      thumb: { src: 'assets/work/branding/bet/event.jpg', alt: 'The BET mark on a large stage screen in front of an audience' },
       cover: { src: 'assets/work/branding/bet/hero.jpg', alt: 'A container ship at sea with the BET mark' },
       hideCover: true, // the design opens with its own full-bleed ship
       modules: [],

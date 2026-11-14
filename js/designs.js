@@ -462,7 +462,7 @@ DESIGNS.freight = (p, h) => {
           ['hoarding', 'BET roadside hoarding: Expanding Horizons, Connecting Opportunities', 'Hoarding'],
           ['street-ad', 'BET poster in a bus shelter at night', 'Bus shelter'],
           ['event', 'BET event backdrop on a stage', 'Event backdrop'],
-          ['signage', 'Lit BET direction sign in a corridor', 'Direction signage'],
+          ['signage', 'BET monument sign in red and blue outside an office building', 'Monument sign'],
         ].map(([n, alt, cap], i) => h.el('figure', { class: 'dz-hs__item bt-run__item' }, [
           im(n, alt), h.el('figcaption', {}, [h.el('b', { text: String(i + 1).padStart(2, '0') }), h.el('span', { text: cap })]),
         ]))),

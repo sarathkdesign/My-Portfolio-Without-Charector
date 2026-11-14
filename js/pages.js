@@ -456,7 +456,17 @@ function renderCategory(page, category) {
           el('span', { class: 'thumb__meta', text: [p.subtitle, p.year].filter(Boolean).join(' — ') }),
         ]),
       ])
-    )),
+    ).concat((category.extraTiles || []).map((t, j) => {
+      // a tile that leads to another page of the site (e.g. the Logofolio), after the projects
+      const i = category.projects.length + j;
+      return el('li', { 'data-reveal': true, style: `--d:${i % 3}` }, [
+        el('a', { class: 'thumb', href: t.href, 'data-route': true }, [
+          el('span', { class: 'thumb__media' }, [picture(t.thumb, { loading: i < 6 ? 'eager' : 'lazy' })]),
+          el('span', { class: 'thumb__title', text: t.title }),
+          t.subtitle && el('span', { class: 'thumb__meta', text: t.subtitle }),
+        ]),
+      ]);
+    }))),
     nextLink(hrefOf(next), 'Next category', next.name)
   );
   page.scrollTop = 0;

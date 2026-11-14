@@ -30,6 +30,7 @@ export const small = new Set([
   'assets/work/package-design/roban-cb/pouch.jpg',
   'assets/work/package-design/mothers-kitchen/pure-ghee.jpg',
   'assets/work/branding/bet/container.jpg',
+  'assets/work/branding/bet/event.jpg',
   'assets/work/branding/optigrise/thumb-reception.jpg',
   'assets/work/branding/fresh-learning/thumb-subway.jpg',
   'assets/work/branding/wall/02.jpg',
