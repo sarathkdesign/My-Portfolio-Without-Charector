@@ -430,27 +430,37 @@ div.card { cursor: inherit; }
   opacity: 0; transform: translateY(14px);
   transition: opacity 0.46s var(--ease), transform 0.63s var(--ease), background-color 0.29s, color 0.29s;
 }
-.menu__list a:hover, .menu__list a:focus-visible, .menu__list a.is-accent {
+/* No link is picked out until it's pointed at (or reached with the keyboard) */
+.menu__list a:hover, .menu__list a:focus-visible {
   background: var(--accent); color: var(--ink);
 }
-.menu__list a.is-accent:hover { background: #fff; }
+.menu__panel:focus { outline: none; } /* takes focus when the menu is opened with the mouse */
 .menu__list a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; box-shadow: none; }
 .menu__socials { font-size: clamp(18px, 1.8vw, 28px); opacity: 0; transition: opacity 0.46s var(--ease); }
 
 /* A headline and a line under it, in the squarish slab style of the pixel-portfolio reference,
    just above the film (whose height is min(72vw, 92vh * 16/9) * 9/16), near the character's head */
 .menu__intro {
-  position: absolute; left: var(--gutter);
-  bottom: calc(min(40.5vw, 92vh) + clamp(4px, 1vw, 16px));
+  /* to the right of the character's head, level with his face: the film is min(72vw, 92vh * 16/9)
+     wide and min(40.5vw, 92vh) tall, and his head ends about two thirds of the way across it */
+  position: absolute;
+  left: calc(min(72vw, 92vh * 16 / 9) * 0.72);
+  /* up to the menu, whose width js/main.js measures as it opens */
+  right: calc(var(--gutter) + var(--menu-w, 360px) + clamp(24px, 3vw, 56px));
+  top: calc(100vh - min(40.5vw, 92vh) * 0.8);
+  container-type: inline-size; /* the headline is sized to the space it has (cqi) */
   display: flex; flex-direction: column; gap: clamp(8px, 1vw, 16px);
-  max-width: calc(100% - 2 * var(--gutter));
   color: var(--ink);
   opacity: 0; transform: translateY(16px);
   transition: opacity 0.46s var(--ease), transform 0.63s var(--ease);
   pointer-events: none;
 }
+/* Narrower screens leave no room between his head and the menu: the words sit above his head */
+@media (max-width: 1279px) {
+  .menu__intro { left: var(--gutter); right: auto; top: auto; bottom: calc(min(40.5vw, 92vh) + clamp(4px, 1vw, 16px)); max-width: calc(100% - 2 * var(--gutter)); container-type: normal; }
+}
 .menu__headline {
-  font: 600 clamp(26px, min(3.4vw, 6vh), 64px) / 1.05 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  font: 600 clamp(20px, min(15cqi, 3.4vw, 6vh), 64px) / 1.05 'IBM Plex Mono', ui-monospace, Menlo, monospace; /* 15cqi: "Bold ideas." fits its space */
   letter-spacing: -0.04em; word-spacing: -0.25em;
 }
 .menu__headline span { display: inline-block; } /* breaks, if it must, only between the two sentences */
@@ -568,7 +578,7 @@ div.card { cursor: inherit; }
   .menu__film { width: 100%; aspect-ratio: 7 / 5; } /* cropped at the sides, so the character is bigger on a narrow screen */
   /* on phones the film fills the bottom, and the menu sits above it */
   .menu__panel { bottom: calc(100vw * 5 / 7 + 16px); }
-  .menu__intro { top: calc(var(--gutter) + 6px); bottom: auto; } /* at the top, above the menu */
+  .menu__intro { left: var(--gutter); right: auto; top: calc(var(--gutter) + 6px); bottom: auto; max-width: calc(100% - 2 * var(--gutter)); } /* phones: at the top, above the menu */
   .menu__headline { font-size: clamp(22px, 6.4vw, 34px); } /* ends short of the logo at the top right */
   .menu__tagline { font-size: 13px; }
 }

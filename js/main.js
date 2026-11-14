@@ -738,13 +738,18 @@ function setupMenu() {
   const film = $('[data-menu-film]', menu);
   if (film) film.muted = true;
   let keyed; // the film drawn without its cream background (js/film-key.js); set up on first open
+  // The headline beside the character runs up to the menu, so the CSS needs the menu's width
+  const list = $('.menu__list', menu);
+  const measureMenu = () => menu.style.setProperty('--menu-w', `${list.offsetWidth}px`);
+  window.addEventListener('resize', () => { if (!menu.hidden) measureMenu(); });
   // Everything behind the menu is taken out of reach while it is open
   const behind = [$('#main'), $('.mark-link')];
   let closeTimer;
 
-  const open = () => {
+  const open = (byKeyboard = false) => {
     clearTimeout(closeTimer);
     menu.hidden = false;
+    measureMenu();
     menu.classList.remove('is-closing');
     behind.forEach((n) => (n.inert = true));
     btn.setAttribute('aria-expanded', 'true');
@@ -756,7 +761,9 @@ function setupMenu() {
       if (keyed === undefined) keyed = keyFilm(film);
       film.play?.().catch(() => {});
     }
-    links[0].focus({ preventScroll: true });
+    // From the keyboard, start on the first link; from a click, focus the menu itself so no link
+    // shows as picked until the pointer is over it (Tab still goes to the first link)
+    (byKeyboard ? links[0] : $('.menu__panel', menu)).focus({ preventScroll: true });
     sound.play('menuOpen');
   };
   const close = (returnFocus = true) => {
@@ -774,7 +781,7 @@ function setupMenu() {
   };
   const isOpen = () => btn.getAttribute('aria-expanded') === 'true';
 
-  btn.addEventListener('click', () => (isOpen() ? close() : open()));
+  btn.addEventListener('click', (e) => (isOpen() ? close() : open(e.detail === 0))); // detail 0: Enter or Space
   $('[data-menu-close]', menu).addEventListener('click', () => close());
   // Work and About point at things on this screen rather than other pages
   links.forEach((a) => a.addEventListener('click', (e) => {
