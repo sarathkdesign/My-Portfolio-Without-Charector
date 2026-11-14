@@ -918,6 +918,23 @@ export default {
         }
       ]
     },
+    // ── BET: from the brand guidelines (Think Dot / BET Branding / Final Brandbook).
+    //    Its own page design: freight, a container yard (js/designs.js, css/designs.css)
+    {
+      slug: 'bet',
+      design: 'freight', // its own page design (js/designs.js), in the brand's orange and blue
+      theme: { bg: '#f3f4f8', ink: '#0b0f24', accent: '#ef4136', soft: 'rgba(11,15,36,0.68)', line: 'rgba(11,15,36,0.14)', font: "'Archivo', var(--text)", fontHref: 'https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&display=swap' },
+      title: 'BET',
+      subtitle: 'Brand identity for Bestway Environmental Technologies',
+      client: 'Bestway Environmental Technologies',
+      year: '2024',
+      services: ['Brand identity', 'Logo design', 'Brand guidelines'],
+      summary: 'A mark drawn from two views of a shipping container, for a company that sources and moves premium products worldwide.',
+      thumb: { src: 'assets/work/branding/bet/container.jpg', alt: 'A BET shipping container lifted by a crane' },
+      cover: { src: 'assets/work/branding/bet/hero.jpg', alt: 'A container ship at sea with the BET mark' },
+      hideCover: true, // the design opens with its own full-bleed ship
+      modules: [],
+    },
     {
       slug: 'aakara',
       design: 'earthen', // its own page design (js/designs.js), in the brand's colours

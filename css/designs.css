@@ -1013,3 +1013,117 @@ img[data-lightbox] { cursor: zoom-in; }
 [data-page='category'][data-slug='brochure-design'] .cat__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 @media (max-width: 1024px) { [data-page='category'][data-slug='brochure-design'] .cat__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 640px) { [data-page='category'][data-slug='brochure-design'] .cat__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ── BET (Bestway Environmental Technologies) — freight ────────────────────
+   Built like a container yard in the brand's orange and blue, set in Archivo:
+   a ship hero, the mark docking together from its two container views, stencilled
+   door headers, painted colour panels, a livery switcher and a stacked cargo grid. */
+[data-design='freight'] { --fr-blue: #0c2dae; --fr-red: #ef4136; --fr-ink: #0b0f24; }
+[data-design='freight'] .proj__title { font-weight: 700; letter-spacing: -0.04em; }
+.fr-kicker { font: 600 clamp(11px, 0.8vw, 14px) / 1.4 var(--th-font); letter-spacing: 0.14em; text-transform: uppercase; color: var(--fr-red); }
+
+/* the hero: the ship full-bleed, the brand's words in a blue block over its lower corner */
+.fr-hero { position: relative; width: 100vw; margin-left: calc(50% - 50vw); margin-bottom: clamp(80px, 10vw, 200px); }
+.fr-hero__img { margin: 0; overflow: hidden; aspect-ratio: 1920 / 984; }
+.fr-hero__text .fr-kicker { color: rgb(255 255 255 / 0.72); }
+.fr-hero__img img { width: 100%; height: 100%; object-fit: cover; }
+.fr-hero__text {
+  position: absolute; right: var(--gutter); bottom: calc(-1 * clamp(48px, 6vw, 120px));
+  width: min(560px, 46vw); padding: clamp(24px, 2.6vw, 48px);
+  background: var(--fr-blue); color: #fff;
+  display: grid; gap: 18px;
+}
+.fr-lede { font: 400 clamp(16px, 1.15vw, 21px) / 1.5 var(--th-font); }
+
+/* door headers: a stencilled container code, a heavy title and the door's locking bars */
+.fr-door { display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 12px 3vw; padding-bottom: clamp(16px, 1.6vw, 28px); margin-bottom: clamp(32px, 4vw, 72px); border-bottom: 3px solid var(--th-ink); }
+.fr-door__code { padding: 0.45em 0.7em; border: 2px solid var(--fr-red); color: var(--fr-red); font: 700 clamp(12px, 0.9vw, 16px) / 1 var(--th-font); letter-spacing: 0.2em; }
+.fr-door__title { font: 700 clamp(30px, 4vw, 80px) / 0.95 var(--th-font); letter-spacing: -0.035em; }
+.fr-door__bars { display: flex; gap: 8px; align-self: stretch; }
+.fr-door__bars i { width: 6px; background: var(--fr-blue); border-radius: 3px; }
+
+/* the dock: the two halves start apart and slide together into the mark as the page scrolls */
+.fr-dock { --t: 0; position: relative; padding: clamp(40px, 5vw, 100px) 0 clamp(80px, 9vw, 180px); }
+.fr-dock { --fr-u: min(30vw, 420px); } /* the width of one half */
+.fr-dock__stage { display: flex; justify-content: center; align-items: flex-start; gap: calc((1 - var(--t)) * 16vw + var(--fr-u) * 0.155); } /* docked, the gap is the mark's own */
+.fr-dock__part { display: grid; justify-items: center; gap: 22px; width: var(--fr-u); transform: translateY(calc((1 - var(--t)) * 40px)); }
+.fr-half { width: 100%; height: auto; fill: var(--fr-red); }
+.fr-dock__part.is-front { width: calc(var(--fr-u) * 1.046); } /* the front view is 4.6% wider, so both stand the same height */
+.fr-dock__part.is-front .fr-half { fill: var(--fr-blue); }
+.fr-dock__label { text-align: center; opacity: calc(1 - var(--t) * 0.45); font: 400 clamp(13px, 0.95vw, 17px) / 1.45 var(--th-font); color: var(--th-soft); max-width: 22em; }
+.fr-dock__label b { display: block; margin-bottom: 4px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--th-ink); }
+.fr-dock__word { text-align: center; margin-top: clamp(24px, 3vw, 56px); font: 700 clamp(64px, 11vw, 220px) / 0.8 var(--th-font); letter-spacing: 0.08em; color: var(--fr-blue); opacity: calc(var(--t) * var(--t)); transform: translateY(calc((1 - var(--t)) * 30px)); }
+
+/* the proof: both container photos and the B-E-T reading, offset like a stack */
+.fr-proof { display: grid; grid-template-columns: 1fr 1fr 1.6fr; gap: clamp(16px, 2vw, 32px); align-items: start; margin-bottom: clamp(100px, 11vw, 220px); }
+.fr-proof__img, .fr-box, .fr-port, .fr-proof__text figure { margin: 0; }
+.fr-proof__img { overflow: hidden; }
+.fr-proof__img img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; }
+.fr-proof__img.is-b { margin-top: clamp(60px, 8vw, 160px); }
+.fr-proof__text { display: grid; gap: 20px; align-self: center; font: 400 clamp(16px, 1.15vw, 21px) / 1.55 var(--th-font); }
+.fr-proof__big { font: 700 clamp(36px, 4.4vw, 88px) / 1 var(--th-font); letter-spacing: 0.04em; color: var(--fr-red); }
+.fr-proof__text figure { border: 1px solid var(--th-line); }
+
+/* the paint: colour panels, full height, with their codes like a spec stencil */
+.fr-paint { margin-bottom: clamp(100px, 11vw, 220px); }
+.fr-paint__panels { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 3fr) minmax(0, 1fr) minmax(0, 1fr); min-height: clamp(280px, 30vw, 520px); }
+.fr-swatch { display: flex; flex-direction: column; justify-content: space-between; padding: clamp(18px, 2vw, 36px); color: #fff; font-family: var(--th-font); }
+.fr-swatch b { font-size: clamp(18px, 1.6vw, 30px); letter-spacing: -0.01em; }
+.fr-swatch dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; font-size: clamp(11px, 0.8vw, 14px); letter-spacing: 0.08em; }
+.fr-swatch dt { opacity: 0.7; }
+.fr-swatch.is-red { background: var(--fr-red); }
+.fr-swatch.is-blue { background: var(--fr-blue); }
+.fr-swatch.is-black { background: #000; }
+.fr-swatch.is-white { background: #fff; color: #000; box-shadow: inset 0 0 0 1px var(--th-line); }
+.fr-swatch.is-black dl, .fr-swatch.is-white dl { grid-template-columns: 1fr; }
+.fr-swatch.is-black dt, .fr-swatch.is-white dt { display: none; }
+.fr-paint__note { margin-top: clamp(20px, 2vw, 36px); max-width: 40em; font: 400 clamp(16px, 1.15vw, 21px) / 1.55 var(--th-font); color: var(--th-soft); }
+
+/* the liveries: tabs like door labels, the chosen version fills the frame */
+.fr-livery { margin-bottom: clamp(60px, 7vw, 140px); }
+.fr-livery__tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: clamp(16px, 1.6vw, 28px); }
+.fr-livery__tab { padding: 0.75em 1.1em; border: 2px solid var(--th-ink); font: 600 clamp(11px, 0.8vw, 14px) / 1 var(--th-font); letter-spacing: 0.1em; text-transform: uppercase; transition: background-color 0.3s, color 0.3s; }
+.fr-livery__tab:hover { background: rgb(12 45 174 / 0.08); }
+.fr-livery__tab[aria-selected='true'] { background: var(--fr-blue); border-color: var(--fr-blue); color: #fff; }
+.fr-livery__panes { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #fff; }
+.fr-livery__pane { position: absolute; inset: 0; margin: 0; opacity: 0; transform: scale(1.04); transition: opacity 0.6s var(--ease), transform 0.9s var(--ease); }
+.fr-livery__pane.is-on { opacity: 1; transform: none; }
+.fr-livery__pane img { width: 100%; height: 100%; object-fit: cover; }
+.fr-port { width: 100vw; margin: 0 0 clamp(100px, 11vw, 220px) calc(50% - 50vw); overflow: hidden; aspect-ratio: 1920 / 760; }
+.fr-port img { width: 100%; height: 118%; object-fit: cover; margin-top: -9%; }
+
+/* the yard: applications stacked three across, every other one two spans wide, each tagged with a container code */
+.fr-yard__stack { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-flow: dense; gap: clamp(8px, 0.9vw, 16px); }
+.fr-box { position: relative; overflow: hidden; background: var(--fr-ink); }
+.fr-box.is-wide { grid-column: span 2; }
+.fr-box img { width: 100%; height: 100%; aspect-ratio: 1724 / 970; object-fit: cover; transition: transform 1s var(--ease); }
+.fr-box:hover img { transform: scale(1.04); }
+.fr-box figcaption {
+  position: absolute; left: 0; bottom: 0; display: flex; gap: 12px; align-items: center;
+  padding: 8px 12px; background: var(--fr-blue); color: #fff;
+  font: 600 clamp(10px, 0.72vw, 12px) / 1 var(--th-font); letter-spacing: 0.12em; text-transform: uppercase;
+}
+.fr-box figcaption b { font-weight: 700; color: #fff; padding-right: 12px; border-right: 1px solid rgb(255 255 255 / 0.35); }
+.page .fr-box[data-reveal]:not(.is-in) { opacity: 0; transform: translate3d(0, 60px, 0); }
+.fr-box[data-reveal] { transition: opacity 0.9s var(--ease), transform 1.1s var(--ease); transition-delay: calc(var(--d, 0) * 90ms); }
+.fr-credit { margin-top: clamp(80px, 9vw, 180px); padding-top: 20px; border-top: 3px solid var(--th-ink); font: 500 clamp(13px, 0.95vw, 17px) / 1.5 var(--th-font); color: var(--th-soft); }
+
+@media (max-width: 720px) {
+  .fr-hero__text { position: static; width: auto; margin: 0 var(--gutter); }
+  .fr-door { grid-template-columns: auto 1fr; }
+  .fr-door__bars { display: none; }
+  .fr-dock { --fr-u: 38vw; }
+  .fr-dock__label { display: none; }
+  .fr-proof__text { grid-column: 1 / -1; }
+  .fr-paint__panels { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .fr-swatch dl { grid-template-columns: 1fr; gap: 2px; }
+  .fr-swatch dt { display: none; }
+  .fr-proof { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .fr-hero { width: auto; margin-left: 0; }
+  .fr-swatch { min-height: 180px; }
+  .fr-yard__stack { grid-template-columns: 1fr; }
+  .fr-box.is-wide { grid-column: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fr-dock { --t: 1 !important; }
+}

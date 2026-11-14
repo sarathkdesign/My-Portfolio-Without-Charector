@@ -27,6 +27,7 @@ export const small = new Set([
   'assets/work/brochure-design/truly-herbivore/page-01.jpg',
   'assets/work/package-design/roban-cb/pouch.jpg',
   'assets/work/package-design/mothers-kitchen/pure-ghee.jpg',
+  'assets/work/branding/bet/container.jpg',
   'assets/work/branding/optigrise/thumb-reception.jpg',
   'assets/work/branding/fresh-learning/thumb-subway.jpg',
   'assets/work/branding/wall/02.jpg',
@@ -76,6 +77,8 @@ export const small = new Set([
   'assets/work/poster-design/tcsl/gandhi-jayanti.jpg',
   'assets/work/package-design/mezzcla/03.jpg',
   'assets/work/brochure-design/initial-hygiene/page-1.jpg',
+  'assets/work/brochure-design/yeti-den/page-1.jpg',
+  'assets/work/brochure-design/live-grand-hotels/page-01.jpg',
   'assets/work/motion-design/cover.jpg',
   'assets/work/iconography/cover.jpg',
 ]);
