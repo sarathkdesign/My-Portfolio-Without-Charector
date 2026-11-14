@@ -452,8 +452,10 @@ function renderCategory(page, category) {
             // posters: each cover is one of a set, so a quiet hint that there's more inside
             category.slug === 'poster-design' && el('span', { class: 'thumb__hint', 'aria-hidden': 'true' }, [el('span', { text: 'View collection' }), el('i', { text: '→' })]),
           ]),
-          el('span', { class: 'thumb__title', text: p.title }),
-          el('span', { class: 'thumb__meta', text: [p.subtitle, p.year].filter(Boolean).join(' — ') }),
+          // a bracketed end to the name drops smaller onto its own line, as on the project page
+          el('span', { class: 'thumb__title' }, titleParts(p.title).map((x) => (typeof x === 'string' ? x : el('span', { class: 'thumb__title-aside', text: x.textContent })))),
+          // `tileSubtitle` gives the tile its own short line when the page's subtitle is a longer story
+          el('span', { class: 'thumb__meta', text: [p.tileSubtitle || p.subtitle, p.year].filter(Boolean).join(' — ') }),
         ]),
       ])
     ).concat((category.extraTiles || []).map((t, j) => {

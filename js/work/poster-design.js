@@ -80,6 +80,7 @@ export default {
       slug: 'adaminde-chayakada',
       title: 'Adaminde Chayakada (Adam\u2019s Tea Shop)',
       subtitle: 'Every dish has its own character, hand-drawn in Illustrator from what’s on the plate. The illustrations made the restaurant stand out, got people curious and talking, and helped grow the business.',
+      tileSubtitle: 'Restaurant product posters', // the short line under its tile on the Poster Design page
       client: 'Adaminde Chayakada',
       year: '',
       location: 'Calicut & Kottayam, Kerala',
