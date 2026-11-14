@@ -415,22 +415,31 @@ div.card { cursor: inherit; }
    panel steps in and out. Every outer corner curves like the right-hand ones, and where a narrow row
    meets a wider one the inside corner curves the other way, so the steps read as one flowing shape.
    js/main.js works out which way each row steps (data-tl / data-bl round a corner, data-notch adds
-   the inside curve) as the menu opens. */
+   the inside curve) as the menu opens.
+   Spacing is measured from the letters themselves (the top of the capitals, the baseline, the ends
+   of the word), not from the line box, which has more room above the capitals than below:
+   --s from every edge of the black to the nearest letters, so rows sit 2 × --s apart and each step
+   lies exactly halfway between two words; --p is the green highlight's own padding, so it is inset
+   from the black by the same amount (--s − --p) on every side. */
 .menu__list {
-  --r: 12px;
+  --r: 8px;
+  --s: 0.4em;
+  --p: 0.21em;
+  font: 500 clamp(40px, 4.4vw, 72px) / 1 var(--text);
+  letter-spacing: -0.035em;
   color: #fff;
   display: flex; flex-direction: column; align-items: flex-end;
-  clip-path: inset(100% 0 0 calc(100% - 40px) round 12px);
+  clip-path: inset(100% 0 0 calc(100% - 40px) round var(--r));
   transition: clip-path 0.63s var(--ease);
 }
 .menu__list li {
   position: relative;
   width: fit-content;
-  padding: 2px 22px;
+  padding: calc(var(--s) - var(--p));
   background: var(--ink);
 }
-.menu__list li:first-child { padding-top: 22px; border-top-right-radius: var(--r); }
-.menu__list li:last-child { padding-bottom: 22px; border-bottom-right-radius: var(--r); }
+.menu__list li:first-child { border-top-right-radius: var(--r); }
+.menu__list li:last-child { border-bottom-right-radius: var(--r); }
 .menu__list li[data-tl] { border-top-left-radius: var(--r); }
 .menu__list li[data-bl] { border-bottom-left-radius: var(--r); }
 /* the inside curves: a small square of black just outside the row's left edge, with a quarter circle cut away */
@@ -444,13 +453,18 @@ div.card { cursor: inherit; }
 .menu__list li[data-notch~='bottom']::after { bottom: 0; background: radial-gradient(circle var(--r) at 0 0, transparent calc(var(--r) - 0.5px), var(--ink) var(--r)); }
 .menu__list a {
   display: block; text-align: right;
-  padding: 6px 18px;
-  font: 500 clamp(40px, 4.4vw, 72px)/1.05 var(--text);
-  letter-spacing: -0.035em;
+  padding: var(--p);
+  padding-left: calc(var(--p) - 0.045em); /* capitals like L and E carry a little space of their own on the left */
+  text-box: trim-both cap alphabetic; /* the box runs from the top of the capitals to the baseline */
   text-decoration: none;
   border-radius: 4px;
   opacity: 0; transform: translateY(14px);
   transition: opacity 0.46s var(--ease), transform 0.63s var(--ease), background-color 0.29s, color 0.29s;
+}
+/* Browsers without text-box: the same result by hand. In PP Neue Montreal at line-height 1, the
+   line box has 0.155em above the capitals and 0.13em below the baseline */
+@supports not (text-box: trim-both cap alphabetic) {
+  .menu__list a { padding-top: calc(var(--p) - 0.155em); padding-bottom: calc(var(--p) - 0.13em); }
 }
 /* No link is picked out until it's pointed at (or reached with the keyboard) */
 .menu__list a:hover, .menu__list a:focus-visible {

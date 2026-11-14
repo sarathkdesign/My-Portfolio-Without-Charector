@@ -759,7 +759,7 @@ function setupMenu() {
   const shapeMenu = () => {
     const rows = $$('li', list);
     const widths = rows.map((r) => r.getBoundingClientRect().width);
-    const R = 12, step = (a, b) => (b === undefined ? 'out' : a > b + 2 * R ? 'out' : a < b - 2 * R ? 'in' : 'flat');
+    const R = parseFloat(getComputedStyle(list).getPropertyValue('--r')) || 8, step = (a, b) => (b === undefined ? 'out' : a > b + 2 * R ? 'out' : a < b - 2 * R ? 'in' : 'flat');
     rows.forEach((row, i) => {
       const up = step(widths[i], widths[i - 1]), down = step(widths[i], widths[i + 1]);
       row.toggleAttribute('data-tl', up === 'out');
