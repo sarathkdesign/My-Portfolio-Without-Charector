@@ -853,7 +853,36 @@ function checkFont() {
   }).catch(() => {});
 }
 
+/* ── Fresh copy ────────────────────────────────────────── */
+// GitHub Pages lets a browser keep the page for 10 minutes, so a tab that was already open (or one
+// reopened soon after) kept showing the old site after an update. So: shortly after load, and when
+// the tab comes back into view, ask the server which version is live (the ?v= on the stylesheet).
+// If it's newer than this page, replace the saved copy and reload, once per version.
+function keepFresh() {
+  const versionOf = (text) => Number(/css\/style\.css\?v=(\d+)/.exec(text || '')?.[1]) || 0;
+  const mine = versionOf($('link[href*="css/style.css?v="]')?.getAttribute('href'));
+  if (!mine) return;
+  let lastCheck = 0;
+  const check = async () => {
+    if (Date.now() - lastCheck < 60_000) return; // at most once a minute
+    lastCheck = Date.now();
+    try {
+      const res = await fetch(new URL('./', document.baseURI), { cache: 'no-store' });
+      const live = versionOf(await res.text());
+      if (live <= mine || sessionStorage.getItem('fresh-reload') === String(live)) return;
+      sessionStorage.setItem('fresh-reload', String(live)); // never loops, even if a copy stays stale
+      await fetch(location.href, { cache: 'reload' }).catch(() => {});
+      location.reload();
+    } catch {
+      // offline, or storage blocked: keep the page as it is
+    }
+  };
+  setTimeout(check, 1500);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check(); });
+}
+
 /* ── Boot ──────────────────────────────────────────────── */
+keepFresh();
 bindContent();
 checkFont();
 buildTiles();
