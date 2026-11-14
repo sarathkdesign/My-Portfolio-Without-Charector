@@ -11,6 +11,7 @@ const pad = (n) => String(n).padStart(2, '0');
 // Sideways poster rows: how much further an up/down wheel moves them, how far the mouse must
 // travel before a press becomes a drag, and how far a flung row carries on (ms of its speed)
 const WHEEL_BOOST = 2.2;
+const HS_RATE = 2.2; // a pinned poster row slides this many px per px of page scroll
 const DRAG_START = 6;
 const DRAG_THROW = 260;
 const DRAG_MAX_SPEED = 4; // px per ms
@@ -637,7 +638,7 @@ DESIGNS.redwall = (p, h) => {
 DESIGNS.carousel = (p, h) => {
   const posters = p.modules.filter((m) => m.type === 'poster');
   return [
-    h.el('section', { class: 'dz-hs kc-strip', 'data-hs': true, 'data-hs-own': true }, [
+    h.el('section', { class: 'dz-hs kc-strip', 'data-hs': true, 'data-hs-lead': true }, [
       h.el('div', { class: 'dz-hs__pin' }, [
         h.el('div', { class: 'dz-hs__track' }, [
           ...posters.map((m, i) => h.el('figure', { class: 'kc-card', tabindex: '0', style: `--tilt:${i % 2 ? 1.6 : -1.6}deg` }, [
@@ -882,10 +883,14 @@ export function startMotion(page, reduced) {
   const par = [...page.querySelectorAll('[data-parallax]')];
   const zoom = [...page.querySelectorAll('[data-zoom]')];
   // Two kinds of sideways rows: pinned ones slide as the page scrolls past them; "own" rows
-  // (data-hs-own) scroll by themselves while the mouse is over them, and leave the page alone
-  const strips = [...page.querySelectorAll('[data-hs]')].map((s) => ({
-    s, pin: s.firstElementChild, track: s.querySelector('.dz-hs__track'), own: s.hasAttribute('data-hs-own'), x: 0, to: 0,
-  }));
+  // (data-hs-own) scroll by themselves while the mouse is over them, and leave the page alone.
+  // "Lead" rows (data-hs-lead, the poster pages) are pinned rows that start in line with the page
+  // text, run on until their last poster reaches the middle, and slide HS_RATE px per px of page scroll.
+  const strips = [...page.querySelectorAll('[data-hs]')].map((s) => {
+    const own = s.hasAttribute('data-hs-own');
+    return { s, pin: s.firstElementChild, track: s.querySelector('.dz-hs__track'), own, lead: own || s.hasAttribute('data-hs-lead'), x: 0, to: 0 };
+  });
+  const rateOf = (st) => (st.lead && !st.own ? HS_RATE : 1);
   // Pinned step-throughs (data-steps): which step shows follows how far the page has scrolled through them
   const stepSets = [...page.querySelectorAll('[data-steps]')].map((el) => ({
     el, stage: el.firstElementChild, n: el.querySelectorAll('.cp-step-img').length, at: -1,
@@ -922,7 +927,7 @@ export function startMotion(page, reduced) {
     }
   };
   // An "own" row runs on past its last poster, so that poster can travel to the middle of the screen
-  const maxOf = (st) => Math.max(0, st.track.scrollWidth - st.pin.clientWidth + (st.own ? endRoom(st) : 0));
+  const maxOf = (st) => Math.max(0, st.track.scrollWidth - st.pin.clientWidth + (st.lead ? endRoom(st) : 0));
   const endRoom = (st) => {
     const last = st.track.lastElementChild;
     return last ? Math.max(0, (st.pin.clientWidth - last.offsetWidth) / 2 - (parseFloat(getComputedStyle(st.track).paddingRight) || 0)) : 0;
@@ -933,7 +938,7 @@ export function startMotion(page, reduced) {
   const lead = page.querySelector('.proj__lead');
   const alignLead = () => {
     for (const st of strips) {
-      if (!st.own) continue;
+      if (!st.lead) continue;
       if (!lead || !wide.matches) { st.track.style.paddingLeft = ''; continue; }
       const rowLeft = st.track.getBoundingClientRect().left + st.x; // where the row begins, ignoring its scroll
       st.track.style.paddingLeft = `${Math.max(0, lead.getBoundingClientRect().left - rowLeft).toFixed(1)}px`;
@@ -944,7 +949,7 @@ export function startMotion(page, reduced) {
     for (const st of strips) {
       const { s, pin, track } = st;
       if (st.own) { st.to = Math.min(st.to, maxOf(st)); continue; }
-      s.style.height = wide.matches ? `${track.scrollWidth - pin.clientWidth + page.clientHeight}px` : '';
+      s.style.height = wide.matches ? `${maxOf(st) / rateOf(st) + page.clientHeight}px` : '';
     }
   };
   const update = () => {
@@ -978,7 +983,8 @@ export function startMotion(page, reduced) {
       const r = s.getBoundingClientRect();
       const run = s.offsetHeight - vh;
       const t = run > 0 ? Math.min(1, Math.max(0, -r.top / run)) : 0;
-      track.style.transform = `translate3d(${(-t * (track.scrollWidth - pin.clientWidth)).toFixed(1)}px, 0, 0)`;
+      st.x = t * maxOf(st);
+      track.style.transform = `translate3d(${(-st.x).toFixed(1)}px, 0, 0)`;
     }
     stepUpdate(vh);
     for (const d of docks) {
@@ -1030,7 +1036,7 @@ export function startMotion(page, reduced) {
       moveTo(st, st.to + (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? px : px * WHEEL_BOOST));
     } else if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
       e.preventDefault(); // a sideways swipe on a pinned row moves it too
-      page.scrollTop += e.deltaX;
+      page.scrollTop += e.deltaX / rateOf(st);
     }
   };
   page.addEventListener('wheel', wheel, { passive: false });
@@ -1039,8 +1045,8 @@ export function startMotion(page, reduced) {
   const down = (e) => {
     if (!wide.matches || e.pointerType !== 'mouse' || e.button !== 0) return;
     const st = stripOf(e.target);
-    if (!st?.own || !e.target.closest('.dz-hs__track')) return;
-    drag = { st, x: e.clientX, from: st.to, last: e.clientX, t: e.timeStamp, v: 0, moved: false };
+    if (!st?.lead || !e.target.closest('.dz-hs__track')) return;
+    drag = { st, x: e.clientX, from: st.own ? st.to : page.scrollTop, last: e.clientX, t: e.timeStamp, v: 0, moved: false };
   };
   const move = (e) => {
     if (!drag) return;
@@ -1050,9 +1056,11 @@ export function startMotion(page, reduced) {
     const dt = Math.max(1, e.timeStamp - drag.t);
     drag.v = 0.8 * ((drag.last - e.clientX) / dt) + 0.2 * drag.v; // px per ms, smoothed
     drag.last = e.clientX; drag.t = e.timeStamp;
-    drag.st.to = Math.min(maxOf(drag.st), Math.max(0, drag.from - dx));
-    drag.st.x = drag.st.to; // follow the hand exactly while held
-    queue();
+    if (drag.st.own) {
+      drag.st.to = Math.min(maxOf(drag.st), Math.max(0, drag.from - dx));
+      drag.st.x = drag.st.to; // follow the hand exactly while held
+      queue();
+    } else page.scrollTop = drag.from - dx / rateOf(drag.st); // a pinned row: the page carries it
   };
   const up = (e) => {
     if (!drag) return;
@@ -1062,13 +1070,14 @@ export function startMotion(page, reduced) {
     st.s.classList.remove('is-dragging');
     // a row held still before letting go stays put; a fling carries on, never more than a few posters
     const speed = e.timeStamp - t > 80 ? 0 : Math.max(-DRAG_MAX_SPEED, Math.min(DRAG_MAX_SPEED, v));
-    moveTo(st, st.to + speed * DRAG_THROW);
+    if (st.own) moveTo(st, st.to + speed * DRAG_THROW);
+    else page.scrollBy({ top: (speed * DRAG_THROW) / rateOf(st), behavior: 'smooth' });
     // the click that ends a drag doesn't open the poster
     const stop = (c) => { c.stopPropagation(); c.preventDefault(); };
     window.addEventListener('click', stop, { capture: true, once: true });
     setTimeout(() => window.removeEventListener('click', stop, { capture: true }), 0);
   };
-  const noGhost = (e) => { if (stripOf(e.target)?.own && e.target.closest('.dz-hs__track')) e.preventDefault(); };
+  const noGhost = (e) => { if (stripOf(e.target)?.lead && e.target.closest('.dz-hs__track')) e.preventDefault(); };
   page.addEventListener('pointerdown', down);
   window.addEventListener('pointermove', move);
   window.addEventListener('pointerup', up);
@@ -1081,7 +1090,7 @@ export function startMotion(page, reduced) {
     // a pinned row: one pixel down the page is one pixel along; bring the row into its stretch first
     const r = st.s.getBoundingClientRect(), run = st.s.offsetHeight - page.clientHeight;
     const into = r.top > 0 ? r.top : r.top < -run ? r.top + run : 0;
-    page.scrollBy({ top: into + dir * step, behavior: 'smooth' });
+    page.scrollBy({ top: into + (dir * step) / rateOf(st), behavior: 'smooth' });
   };
   const clicks = (e) => {
     const b = e.target.closest?.('[data-hs-step]');

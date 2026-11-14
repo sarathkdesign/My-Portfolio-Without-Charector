@@ -27,7 +27,8 @@ export function createLightbox() {
   const prev = el('button', { class: 'lb__btn lb__prev', type: 'button', 'aria-label': 'Previous poster' }, [icon('M10 3L5 8l5 5')]);
   const next = el('button', { class: 'lb__btn lb__next', type: 'button', 'aria-label': 'Next poster' }, [icon('M6 3l5 5-5 5')]);
   const box = el('div', { class: 'lightbox', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Poster', hidden: '' }, [
-    el('figure', { class: 'lb__stage' }, [img, el('figcaption', {}, [count, caption])]), prev, next, close,
+    // the arrows ride in the poster's frame, so they sit just beside it, however wide it is
+    el('figure', { class: 'lb__stage' }, [el('div', { class: 'lb__frame' }, [img, prev, next]), el('figcaption', {}, [count, caption])]), close,
   ]);
   document.body.append(box);
 
