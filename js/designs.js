@@ -457,12 +457,12 @@ DESIGNS.freight = (p, h) => {
     h.el('section', { class: 'dz-hs bt-run', 'data-hs': true }, [
       h.el('div', { class: 'dz-hs__pin' }, [
         h.el('div', { class: 'dz-hs__track' }, [
-          ['container', 'A BET shipping container lifted by a crane', 'Shipping container'],
+          ['container-2', 'A BET shipping container lifted by a crane', 'Shipping container'],
           ['billboard', 'A BET digital billboard above a crowd', 'Digital billboard'],
           ['hoarding', 'BET roadside hoarding: Expanding Horizons, Connecting Opportunities', 'Hoarding'],
           ['street-ad', 'BET poster in a bus shelter at night', 'Bus shelter'],
-          ['event', 'BET event backdrop on a stage', 'Event backdrop'],
-          ['signage', 'BET monument sign in red and blue outside an office building', 'Monument sign'],
+          ['event-2', 'BET event backdrop on a stage', 'Event backdrop'],
+          ['signage-2', 'BET monument sign in red and blue outside an office building', 'Monument sign'],
         ].map(([n, alt, cap], i) => h.el('figure', { class: 'dz-hs__item bt-run__item' }, [
           im(n, alt), h.el('figcaption', {}, [h.el('b', { text: String(i + 1).padStart(2, '0') }), h.el('span', { text: cap })]),
         ]))),
@@ -471,8 +471,8 @@ DESIGNS.freight = (p, h) => {
     group('A', 'In hand', 'Stationery that travels with every shipment.', 'is-hand', [
       ['business-card', 'BET business cards on black', 'is-wide'],
       ['folder', 'BET presentation folder', '', '0.05'],
-      ['id-card', 'BET ID card on a lanyard', '', '-0.05'],
-      ['loyalty-card', 'BET Luminary loyalty cards', 'is-wide'],
+      ['id-card-2', 'BET ID card on a lanyard', '', '-0.05'],
+      ['loyalty-card-2', 'BET Luminary loyalty cards', 'is-wide'],
     ]),
     group('B', 'On screen', 'A website, an app icon and social posts in the same voice.', 'is-screen', [
       ['laptop', 'BET website on a laptop: Expand your global footprint', 'is-wide'],

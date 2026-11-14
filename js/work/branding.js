@@ -934,7 +934,7 @@ export default {
       year: '2024',
       services: ['Brand identity', 'Logo design', 'Brand guidelines'],
       summary: 'A mark drawn from two views of a shipping container, for a company that sources and moves premium products worldwide.',
-      thumb: { src: 'assets/work/branding/bet/event.jpg', alt: 'The BET mark on a large stage screen in front of an audience' },
+      thumb: { src: 'assets/work/branding/bet/event-2.jpg', alt: 'The BET mark on a large stage screen in front of an audience' },
       cover: { src: 'assets/work/branding/bet/hero.jpg', alt: 'A container ship at sea with the BET mark' },
       hideCover: true, // the design opens with its own full-bleed ship
       modules: [],
