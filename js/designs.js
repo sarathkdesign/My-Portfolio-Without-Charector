@@ -6,6 +6,8 @@
    data attributes and driven by the page's own scroll.
    ───────────────────────────────────────────────────────────── */
 
+import { toggleButton, spots } from './translate.js';
+
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 const pad = (n) => String(n).padStart(2, '0');
 // Sideways poster rows: how much further an up/down wheel moves them, how far the mouse must
@@ -760,11 +762,16 @@ DESIGNS.redwall = (p, h) => {
 DESIGNS.carousel = (p, h) => {
   const posters = p.modules.filter((m) => m.type === 'poster');
   return [
+    // posters in another language get a Translate switch above them
+    p.translate && h.el('div', { class: 'tr-bar' }, [toggleButton(p.translate)]),
     h.el('section', { class: 'dz-hs kc-strip', 'data-hs': true, 'data-hs-lead': true }, [
       h.el('div', { class: 'dz-hs__pin' }, [
         h.el('div', { class: 'dz-hs__track' }, [
           ...posters.map((m, i) => h.el('figure', { class: 'kc-card', tabindex: '0', style: `--tilt:${i % 2 ? 1.6 : -1.6}deg` }, [
-            posterImg(h, m),
+            // a poster with translations sits in a frame that also holds its translation boxes
+            m.tr && p.translate
+              ? h.el('div', { class: 'tr-wrap', style: `aspect-ratio:${m.w} / ${m.h}` }, [posterImg(h, m, { 'data-tr': JSON.stringify(m.tr) }), spots(m.tr)])
+              : posterImg(h, m),
             h.el('figcaption', {}, [h.el('b', { text: m.title }), m.note && h.el('span', { text: m.note })]),
           ])),
         ]),

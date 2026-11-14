@@ -2,6 +2,8 @@
    as large as the screen allows. Arrows / ← → step through the other posters on the page;
    ×, Esc or a click on the dark surround closes it. */
 
+import { toggleButton, spots } from './translate.js';
+
 const el = (tag, attrs = {}, children = []) => {
   const node = document.createElement(tag);
   for (const [k, v] of Object.entries(attrs)) {
@@ -26,9 +28,13 @@ export function createLightbox() {
   const close = el('button', { class: 'lb__btn lb__close', type: 'button', 'aria-label': 'Close poster' }, [icon('M3.5 3.5l9 9m0-9l-9 9')]);
   const prev = el('button', { class: 'lb__btn lb__prev', type: 'button', 'aria-label': 'Previous poster' }, [icon('M10 3L5 8l5 5')]);
   const next = el('button', { class: 'lb__btn lb__next', type: 'button', 'aria-label': 'Next poster' }, [icon('M6 3l5 5-5 5')]);
+  // translation boxes for posters that carry them, and the same Translate switch as the page
+  const frame = el('div', { class: 'lb__frame' }, [img, prev, next]);
+  let layer = null;
+  const trSwitch = toggleButton('Malayalam', 'lb__tr');
   const box = el('div', { class: 'lightbox', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Poster', hidden: '' }, [
     // the arrows ride in the poster's frame, so they sit just beside it, however wide it is
-    el('figure', { class: 'lb__stage' }, [el('div', { class: 'lb__frame' }, [img, prev, next]), el('figcaption', {}, [count, caption])]), close,
+    el('figure', { class: 'lb__stage' }, [frame, el('figcaption', {}, [count, caption])]), trSwitch, close,
   ]);
   document.body.append(box);
 
@@ -43,6 +49,10 @@ export function createLightbox() {
     img.src = item.dataset.full || largest || item.currentSrc || item.src;
     img.alt = item.alt || '';
     caption.textContent = item.dataset.title || item.alt || '';
+    layer?.remove();
+    layer = item.dataset.tr ? spots(JSON.parse(item.dataset.tr)) : null;
+    if (layer) frame.append(layer);
+    trSwitch.hidden = !layer;
     count.textContent = list.length > 1 ? `${at + 1} / ${list.length}` : '';
     prev.hidden = next.hidden = list.length < 2;
     const show = () => requestAnimationFrame(() => img.classList.add('is-in'));

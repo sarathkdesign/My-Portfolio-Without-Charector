@@ -1280,3 +1280,51 @@ img[data-lightbox] { cursor: zoom-in; }
   .bt-dock, .bt-end, .bt-process { --t: 1 !important; }
   .page .bt-shot:not(.is-in) img { transform: none; }
 }
+
+/* ── Poster translations (js/translate.js) ───────────────────────
+   A pill switch above the posters; with it on (html.tr-on), each piece of foreign text shows a
+   dotted outline, and hovering or tapping it shows the English in a dark tooltip. */
+.tr-bar { display: flex; justify-content: flex-end; margin: clamp(8px, 1vw, 20px) 0 clamp(-56px, -3vw, -24px); position: relative; z-index: 3; }
+.tr-btn {
+  display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px 11px 14px; border-radius: 999px;
+  background: var(--th-ink, #222); color: var(--th-bg, #fff); font: 600 13px / 1 var(--display); letter-spacing: 0.04em;
+  box-shadow: 0 12px 30px -14px rgb(0 0 0 / 0.5); transition: background-color 0.25s, color 0.25s, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tr-btn svg { width: 18px; height: 18px; flex: none; }
+.tr-btn:hover { transform: translateY(-1px); }
+.tr-btn:active { transform: scale(0.97); }
+.tr-btn:focus-visible { outline: 2px solid var(--th-accent, #f2a51e); outline-offset: 3px; }
+.tr-btn__x { display: none; margin-left: 2px; font-size: 18px; line-height: 0.6; opacity: 0.8; }
+.tr-btn.is-on { background: var(--th-accent, #f2a51e); color: var(--th-ink, #222); }
+.tr-btn.is-on .tr-btn__x { display: inline; }
+
+/* the poster and its boxes share one frame */
+.kc-card .tr-wrap { position: relative; flex: none; height: calc(100% - 64px); max-width: 100%; border-radius: 18px; }
+.page .kc-card .tr-wrap img { display: block; width: 100%; height: 100%; max-height: none; }
+.tr-layer { position: absolute; inset: 0; z-index: 1; pointer-events: none; } /* clicks pass through to the poster, except on a box */
+.tr-spot { position: absolute; pointer-events: none; padding: 0; border: 0; border-radius: 8px; background: transparent; cursor: help; opacity: 0; transition: opacity 0.35s ease, background-color 0.2s, box-shadow 0.2s; }
+html.tr-on .tr-layer .tr-spot { pointer-events: auto; }
+html.tr-on .tr-spot { opacity: 1; box-shadow: 0 0 0 2px rgb(255 255 255 / 0.85), 0 0 0 4px rgb(0 0 0 / 0.35); background: rgb(255 255 255 / 0.06); animation: tr-pulse 2.4s ease-in-out infinite; }
+html.tr-on .tr-spot:hover, html.tr-on .tr-spot:focus-visible { background: rgb(255 255 255 / 0.18); box-shadow: 0 0 0 2px #fff, 0 0 0 5px rgb(0 0 0 / 0.4); animation: none; outline: none; }
+@keyframes tr-pulse { 50% { box-shadow: 0 0 0 2px rgb(255 255 255 / 0.4), 0 0 0 4px rgb(0 0 0 / 0.15); } }
+
+.tr-tip {
+  position: fixed; z-index: 120; max-width: min(320px, calc(100vw - 16px)); padding: 12px 14px; border-radius: 12px;
+  background: #15110e; color: #fff; font: 500 14px / 1.45 var(--display, system-ui); box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.55);
+  pointer-events: none; opacity: 0; transform: translate3d(0, 6px, 0); transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tr-tip.is-below { transform: translate3d(0, -6px, 0); }
+.tr-tip.is-on { opacity: 1; transform: none; }
+
+/* in the poster viewer: the boxes over the large poster, and the switch top left */
+.lb__frame .tr-layer { border-radius: 18px; }
+.lb__tr { position: absolute; top: clamp(16px, 3vh, 32px); left: clamp(16px, 3vw, 40px); background: rgb(255 255 255 / 0.12); color: #fff; box-shadow: none; }
+.lb__tr.is-on { background: #f2a51e; color: #15110e; }
+.lb__tr[hidden] { display: none; }
+
+@media (max-width: 720px) {
+  .tr-bar { justify-content: flex-start; margin-bottom: 16px; }
+  .kc-card .tr-wrap { height: auto; width: 100%; }
+  .page .kc-card .tr-wrap img { height: auto; }
+}
+@media (prefers-reduced-motion: reduce) { html.tr-on .tr-spot { animation: none; } }
