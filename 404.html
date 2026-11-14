@@ -23,40 +23,41 @@
   <link rel="preload" href="public/fonts/NeueMontreal-Regular.otf" as="font" type="font/otf" crossorigin>
   <link rel="preload" href="public/fonts/NeueMontreal-Medium.otf" as="font" type="font/otf" crossorigin>
   <link rel="preload" href="public/fonts/NeueMontreal-Bold.otf" as="font" type="font/otf" crossorigin>
-  <link rel="preload" href="public/fonts/IBMPlexMono-SemiBold-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low"><!-- the name in the menu -->
+  <link rel="preload" href="public/fonts/IBMPlexMono-SemiBold-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low"><!-- the menu's headline -->
+  <link rel="preload" href="public/fonts/IBMPlexMono-Regular-latin.woff2" as="font" type="font/woff2" crossorigin fetchpriority="low">
   <!-- Inter Tight is only the fallback face: loaded without holding up the first paint -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="css/style.css?v=189">
-  <link rel="stylesheet" href="css/pages.css?v=189">
-  <link rel="stylesheet" href="css/designs.css?v=189">
+  <link rel="stylesheet" href="css/style.css?v=191">
+  <link rel="stylesheet" href="css/pages.css?v=191">
+  <link rel="stylesheet" href="css/designs.css?v=191">
   <script>document.documentElement.classList.add('js');</script>
   <!-- Every module carries the site version, so a new push is never hidden behind a cached data file -->
   <script type="importmap">
   {
     "imports": {
-      "./js/content.js": "./js/content.js?v=189",
-      "./js/cursor.js": "./js/cursor.js?v=189",
-      "./js/designs.js": "./js/designs.js?v=189",
-      "./js/film-key.js": "./js/film-key.js?v=189",
-      "./js/lightbox.js": "./js/lightbox.js?v=189",
-      "./js/pages.js": "./js/pages.js?v=189",
-      "./js/surface.js": "./js/surface.js?v=189",
-      "./js/work/branding.js": "./js/work/branding.js?v=189",
-      "./js/work/brochure-design.js": "./js/work/brochure-design.js?v=189",
-      "./js/work/iconography.js": "./js/work/iconography.js?v=189",
-      "./js/work/logofolio.js": "./js/work/logofolio.js?v=189",
-      "./js/work/index.js": "./js/work/index.js?v=189",
-      "./js/work/motion-design.js": "./js/work/motion-design.js?v=189",
-      "./js/work/package-design.js": "./js/work/package-design.js?v=189",
-      "./js/work/placeholders.js": "./js/work/placeholders.js?v=189",
-      "./js/work/poster-design.js": "./js/work/poster-design.js?v=189",
-      "./js/work/small.js": "./js/work/small.js?v=189",
-      "./js/work/variants.js": "./js/work/variants.js?v=189",
-      "./js/work/video.js": "./js/work/video.js?v=189"
+      "./js/content.js": "./js/content.js?v=191",
+      "./js/cursor.js": "./js/cursor.js?v=191",
+      "./js/designs.js": "./js/designs.js?v=191",
+      "./js/film-key.js": "./js/film-key.js?v=191",
+      "./js/lightbox.js": "./js/lightbox.js?v=191",
+      "./js/pages.js": "./js/pages.js?v=191",
+      "./js/surface.js": "./js/surface.js?v=191",
+      "./js/work/branding.js": "./js/work/branding.js?v=191",
+      "./js/work/brochure-design.js": "./js/work/brochure-design.js?v=191",
+      "./js/work/iconography.js": "./js/work/iconography.js?v=191",
+      "./js/work/logofolio.js": "./js/work/logofolio.js?v=191",
+      "./js/work/index.js": "./js/work/index.js?v=191",
+      "./js/work/motion-design.js": "./js/work/motion-design.js?v=191",
+      "./js/work/package-design.js": "./js/work/package-design.js?v=191",
+      "./js/work/placeholders.js": "./js/work/placeholders.js?v=191",
+      "./js/work/poster-design.js": "./js/work/poster-design.js?v=191",
+      "./js/work/small.js": "./js/work/small.js?v=191",
+      "./js/work/variants.js": "./js/work/variants.js?v=191",
+      "./js/work/video.js": "./js/work/video.js?v=191"
     }
   }
   </script>
-  <script type="module" src="js/main.js?v=189"></script>
+  <script type="module" src="js/main.js?v=191"></script>
 </head>
 <body>
   <style>
@@ -157,14 +158,17 @@
   <!-- ── Menu ──────────────────────────────────────────────── -->
   <div class="menu" id="menu" data-menu hidden>
     <div class="menu__scrim" data-menu-close>
-      <!-- A looping pixel-art portrait on the menu's black background, with the name above it.
-           Its file loads on first open (js/main.js); js/film-key.js draws it without its cream background -->
+      <!-- A looping pixel-art portrait beside the menu, with a headline above it. Its file loads on
+           first open (js/main.js); js/film-key.js draws it without its own cream background -->
       <div class="menu__film" aria-hidden="true">
         <div class="menu__film-fade">
           <video data-menu-film data-src="assets/menu/portrait-loop-2.mp4" poster="assets/menu/portrait-poster.webp" muted loop playsinline preload="none" disablepictureinpicture></video>
         </div>
       </div>
-      <p class="menu__name">SARATH BHASKAR</p>
+      <div class="menu__intro">
+        <p class="menu__headline"><span>Pixel soul.</span> <span>Bold ideas.</span></p>
+        <p class="menu__tagline">A portfolio built to make creativity impossible to ignore</p>
+      </div>
     </div>
     <nav class="menu__panel" aria-label="Main">
       <ul class="menu__list">

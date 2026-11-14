@@ -487,6 +487,8 @@ function renderInfo(page, kind) {
   page.dataset.page = kind;
   page.classList.remove('is-white');
   page._lit?.disconnect(); // the Logofolio's touch-screen colour watcher
+  if (page._lfScroll) page.removeEventListener('scroll', page._lfScroll); // and its scroll-down arrow
+  page._lfScroll = null;
   if (kind === 'logofolio') return renderLogofolio(page);
   return kind === 'contact' ? renderContact(page) : renderExperience(page);
 }
@@ -521,12 +523,21 @@ function renderLogofolio(page) {
     ]);
   };
   const grid = el('ul', { class: 'lf__grid', 'aria-label': `${logofolio.length} logos` }, logofolio.map(cell));
+  // A small arrow at the foot of the first screen: there are more marks below. It takes you to
+  // the next three rows, and fades away once the page is scrolled (back again at the very top).
+  const more = el('button', { class: 'lf__more', type: 'button', 'aria-label': 'Scroll down to more logos' });
+  more.innerHTML = '<svg viewBox="0 0 16 24" aria-hidden="true"><path d="M8 2v19m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  more.addEventListener('click', () => page.scrollBy({ top: grid.firstElementChild.offsetHeight * 3, behavior: reducedQuery.matches ? 'auto' : 'smooth' }));
+  const onScroll = () => more.classList.toggle('is-gone', page.scrollTop > 8);
+  page.addEventListener('scroll', onScroll, { passive: true });
+  page._lfScroll = onScroll;
   page.replaceChildren(
     backLink('./', 'Index'),
     el('div', { class: 'lf__backdrop' }, [
       el('h1', { class: 'lf__title', id: 'page-logofolio-title', tabindex: '-1', text: 'Logofolio' }),
     ]),
     grid,
+    more,
     branding && nextLink(hrefOf(branding), 'More identity work', 'Branding')
   );
   // Touch screens have no hover: there, a mark shows its colours while it crosses the middle of the screen

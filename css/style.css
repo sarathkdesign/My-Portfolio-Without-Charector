@@ -21,12 +21,19 @@
   font-display: swap;
 }
 
-/* The name in the menu, in the squarish slab style of the pixel-portfolio reference
-   (IBM Plex Mono SemiBold, SIL Open Font License: public/fonts/IBMPlexMono-LICENSE.txt) */
+/* The words in the menu, in the squarish slab style of the pixel-portfolio reference
+   (IBM Plex Mono SemiBold and Regular, SIL Open Font License: public/fonts/IBMPlexMono-LICENSE.txt) */
 @font-face {
   font-family: 'IBM Plex Mono';
   src: url('../public/fonts/IBMPlexMono-SemiBold-latin.woff2') format('woff2');
   font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('../public/fonts/IBMPlexMono-Regular-latin.woff2') format('woff2');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -387,12 +394,14 @@ div.card { cursor: inherit; }
 .menu-btn[aria-expanded='true'] .menu-btn__lines i:first-child { transform: rotate(45deg); }
 .menu-btn[aria-expanded='true'] .menu-btn__lines i:last-child { transform: rotate(-45deg); }
 .menu-btn:focus-visible { box-shadow: 0 0 0 6px var(--accent); }
-.menu { position: fixed; inset: 0; z-index: 50; --film-bg: #fde8ce; --menu-bg: #111; }
+.menu { position: fixed; inset: 0; z-index: 50; --film-bg: #fde8ce; }
 .menu[hidden] { display: none; }
 .menu__scrim {
   position: absolute; inset: 0;
-  /* solid near-black, as the pixel-portfolio reference; the character is drawn straight onto it */
-  background: var(--menu-bg);
+  /* the film's cream, slightly see-through, with the page blurred behind it */
+  background: color-mix(in srgb, var(--film-bg) 80%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   opacity: 0;
   transition: opacity 0.46s var(--ease);
 }
@@ -426,19 +435,30 @@ div.card { cursor: inherit; }
 }
 .menu__list a.is-accent:hover { background: #fff; }
 .menu__list a:focus-visible { outline: 2px solid #fff; outline-offset: 2px; box-shadow: none; }
-.menu__socials { font-size: clamp(18px, 1.8vw, 28px); color: #eee; opacity: 0; transition: opacity 0.46s var(--ease); }
-.menu-btn[aria-expanded='true'] { box-shadow: 0 0 0 1px rgb(238 238 238 / 0.35); } /* its edge, on the black menu */
+.menu__socials { font-size: clamp(18px, 1.8vw, 28px); opacity: 0; transition: opacity 0.46s var(--ease); }
 
-/* The name, just above the film (whose height is min(72vw, 92vh * 16/9) * 9/16), near the character's head */
-.menu__name {
+/* A headline and a line under it, in the squarish slab style of the pixel-portfolio reference,
+   just above the film (whose height is min(72vw, 92vh * 16/9) * 9/16), near the character's head */
+.menu__intro {
   position: absolute; left: var(--gutter);
   bottom: calc(min(40.5vw, 92vh) + clamp(4px, 1vw, 16px));
-  font: 600 clamp(30px, 4.2vw, 80px) / 1 'IBM Plex Mono', ui-monospace, Menlo, monospace;
-  letter-spacing: -0.04em; word-spacing: -0.3em;
-  color: #eee;
+  display: flex; flex-direction: column; gap: clamp(8px, 1vw, 16px);
+  max-width: calc(100% - 2 * var(--gutter));
+  color: var(--ink);
   opacity: 0; transform: translateY(16px);
   transition: opacity 0.46s var(--ease), transform 0.63s var(--ease);
   pointer-events: none;
+}
+.menu__headline {
+  font: 600 clamp(26px, min(3.4vw, 6vh), 64px) / 1.05 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  letter-spacing: -0.04em; word-spacing: -0.25em;
+}
+.menu__headline span { display: inline-block; } /* breaks, if it must, only between the two sentences */
+.menu__tagline {
+  max-width: 34em;
+  font: 400 clamp(13px, min(1.1vw, 2.1vh), 19px) / 1.45 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  letter-spacing: -0.01em;
+  color: var(--ink-soft);
 }
 
 .menu__film {
@@ -480,11 +500,11 @@ div.card { cursor: inherit; }
 .menu.is-open .menu__list li:nth-child(3) a { transition-delay: 0.23s, 0.23s, 0s, 0s; }
 .menu.is-open .menu__list li:nth-child(4) a { transition-delay: 0.29s, 0.29s, 0s, 0s; }
 .menu.is-open .menu__socials { opacity: 1; transition-delay: 0.35s; }
-.menu.is-open .menu__name { opacity: 1; transform: none; transition-delay: 0.14s; }
+.menu.is-open .menu__intro { opacity: 1; transform: none; transition-delay: 0.14s; }
 /* Closing is quicker than opening and runs everything at once */
 .menu.is-closing .menu__scrim,
 .menu.is-closing .menu__socials,
-.menu.is-closing .menu__name,
+.menu.is-closing .menu__intro,
 .menu.is-closing .menu__list a { transition-duration: 0.23s; transition-delay: 0s; }
 .menu.is-closing .menu__list { transition: clip-path 0.34s var(--ease-in-out); }
 
@@ -548,7 +568,9 @@ div.card { cursor: inherit; }
   .menu__film { width: 100%; aspect-ratio: 7 / 5; } /* cropped at the sides, so the character is bigger on a narrow screen */
   /* on phones the film fills the bottom, and the menu sits above it */
   .menu__panel { bottom: calc(100vw * 5 / 7 + 16px); }
-  .menu__name { top: calc(var(--gutter) + 6px); bottom: auto; font-size: clamp(26px, 8vw, 40px); } /* at the top, above the menu */
+  .menu__intro { top: calc(var(--gutter) + 6px); bottom: auto; } /* at the top, above the menu */
+  .menu__headline { font-size: clamp(22px, 6.4vw, 34px); } /* ends short of the logo at the top right */
+  .menu__tagline { font-size: 13px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

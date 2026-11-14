@@ -11,5 +11,6 @@ For faster loading, `.woff2` versions of these three files can replace the `.otf
 
 # IBM Plex Mono
 
-- `IBMPlexMono-SemiBold-latin.woff2` (600, Latin) — the name "SARATH BHASKAR" in the menu.
+- `IBMPlexMono-SemiBold-latin.woff2` (600, Latin) — the menu's headline, "Pixel soul. Bold ideas."
+- `IBMPlexMono-Regular-latin.woff2` (400, Latin) — the line under it.
   Free under the SIL Open Font License (`IBMPlexMono-LICENSE.txt`), from the Fontsource package.

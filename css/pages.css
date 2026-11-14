@@ -474,7 +474,8 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
 }
 
 /* ── Logofolio: a white wall of marks, four to a row, in grey until one is pointed at ── */
-.page--info.is-white { background-color: #fff; color: var(--ink); }
+/* Scrolling settles on whole rows, three to a screen, so no mark is ever left cut in half */
+.page--info.is-white { background-color: #fff; color: var(--ink); scroll-snap-type: y mandatory; scroll-padding-top: var(--band); }
 .page--info.is-white::before { background: #fff; } /* the band behind the back link */
 /* The page's name, large and barely there, held in the middle of the screen while the marks scroll
    over it. The holder takes no room (its height is pulled back by the negative margin). */
@@ -496,14 +497,33 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
   --lf-k: 1; /* how much larger the marks are drawn than on desktop */
   position: relative; z-index: 1;
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
-  padding: calc(var(--band) + clamp(8px, 4vh, 64px)) var(--gutter) clamp(40px, 8vh, 120px);
+  padding: var(--band) var(--gutter) clamp(40px, 8vh, 120px);
 }
 .lf__cell {
-  /* every cell the same size, so every mark has the same space around it.
-     (flex, not grid: Safari doesn't stretch a grid row to a height that comes from aspect-ratio) */
+  /* every cell the same size, so every mark has the same space around it. Three rows exactly fill
+     the screen below the top band, so the fourth starts at the bottom edge, out of sight */
   display: flex; align-items: center; justify-content: center;
-  aspect-ratio: 19 / 10;
+  height: calc((100vh - var(--band)) / 3);
+  height: calc((100dvh - var(--band)) / 3);
 }
+.lf__cell:nth-child(4n + 1) { scroll-snap-align: start; } /* the first of each row */
+.page--info.is-white .page__next { scroll-snap-align: end; }
+
+/* The arrow: thin, at the foot of the first screen, gently bobbing; gone once the page scrolls */
+.lf__more {
+  position: fixed; left: 50%; bottom: calc(var(--gutter) + 4px); z-index: 3;
+  display: grid; place-items: center;
+  width: 44px; height: 44px; margin-left: -22px;
+  color: var(--ink); opacity: 0.55;
+  transition: opacity 0.5s var(--ease), transform 0.6s var(--ease);
+  animation: lf-more-in 0.8s var(--ease) 0.9s both;
+}
+.lf__more svg { width: 16px; height: 24px; animation: lf-bob 1.8s cubic-bezier(0.45, 0, 0.55, 1) 1.7s infinite; }
+.lf__more:hover { opacity: 1; }
+.lf__more:focus-visible { opacity: 1; outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 50%; }
+.lf__more.is-gone { opacity: 0; transform: translateY(10px); pointer-events: none; }
+@keyframes lf-more-in { from { opacity: 0; transform: translateY(-8px); } }
+@keyframes lf-bob { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(5px); } }
 /* Each mark's width is worked out in js/pages.js so all of them carry the same visual weight.
    (Specific enough to beat the page's placeholder for pictures still loading: 30vh tall, beige.) */
 .page .lf__cell img.lf__logo {
@@ -524,11 +544,13 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
 }
 @media (max-width: 699px) {
   .lf__grid { --lf-k: 1.7; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .lf__cell { aspect-ratio: 4 / 3; }
+  .lf__cell:nth-child(4n + 1) { scroll-snap-align: none; }
+  .lf__cell:nth-child(2n + 1) { scroll-snap-align: start; } /* two to a row here */
 }
 @media (prefers-reduced-motion: reduce) {
   .page .lf__cell img.lf__logo { transition: filter 0.3s; }
   .page .lf__cell:hover img.lf__logo, .page .lf__cell.is-lit img.lf__logo { transform: none; }
+  .lf__more, .lf__more svg { animation: none; }
 }
 
 /* ── Project (a Behance-style case study) ────────────────── */
