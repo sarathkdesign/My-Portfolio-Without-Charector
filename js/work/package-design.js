@@ -45,7 +45,7 @@ export default {
     {
       slug: 'mothers-kitchen',
       title: 'Mothers Kitchen',
-      subtitle: 'Pure ghee jar label, vegan pancake sleeve and batter range poster',
+      subtitle: 'Pure ghee jar label, vegan pancake sleeve, flatbread pouches and batter range poster',
       client: 'Mothers Kitchen Almere',
       year: '',
       services: ['Package design'],
@@ -59,6 +59,10 @@ export default {
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/vegan-pancake-top.jpg', w: 2000, h: 1500, title: 'Vegan Pancake', note: 'Tub sleeve, front', alt: 'Mothers Kitchen Vegan Pancake sleeve seen from above: a stack of pancakes with berries on a dark blue background' },
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/vegan-pancake-stack.jpg', w: 2000, h: 1500, title: 'Vegan Pancake', note: 'Tub sleeve, back with instructions', alt: 'Two stacked tubs wrapped in the Mothers Kitchen Vegan Pancake sleeve, showing the orange back panel with instructions' },
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/protein-batters.jpg', w: 1414, h: 2000, title: 'Protein Batters', note: 'Poster', alt: 'Mothers Kitchen Almere poster on green: Healthiest high protein batters from MKA, with the range of idly, dosa, ragi, carrot, adai and appam batter tubs' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/methi-thepla.jpg', w: 1254, h: 1254, title: 'Methi Thepla', note: 'Pouch', alt: 'Mothers Kitchen Methi Thepla pouch in blue and orange beside a plate of thepla, green chutney and fenugreek leaves' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/multigrain-chapati.jpg', w: 1199, h: 1312, title: 'Multigrain Chapati', note: 'Pouch', alt: 'Two Mothers Kitchen Multigrain Chapati pouches on a kitchen table with a stack of chapatis and a bowl of curry' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/multigrain-chapati-ad.jpg', w: 1254, h: 1254, title: 'Multigrain Chapati', note: 'Advertisement', alt: 'Mothers Kitchen Multigrain Chapati pouch with chapatis floating above it: nutritious, healthy, tasty, wholesome' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/multigrain-poori.jpg', w: 1254, h: 1254, title: 'Multigrain Poori', note: 'Pouch', alt: 'Mothers Kitchen Multigrain Poori pouch in orange beside puffed pooris and a bowl of chana masala' },
       ],
     },
     {
