@@ -447,7 +447,8 @@ function renderCategory(page, category) {
     el('ul', { class: 'cat__grid' }, category.projects.map((p, i) =>
       el('li', { 'data-reveal': true, style: `--d:${i % 3}` }, [
         el('a', { class: 'thumb', href: hrefOf(category, p), 'data-route': true, 'data-project': p.slug }, [
-          el('span', { class: 'thumb__media' }, [
+          // --thumb: the tile's own picture, for pages that show it whole on a soft blur of itself
+          el('span', { class: 'thumb__media', style: `--thumb:url("${new URL(light((p.thumb || p.cover).src), document.baseURI).href}")` }, [
             picture({ ...(p.thumb || p.cover), src: light((p.thumb || p.cover).src) }, { loading: i < 6 ? 'eager' : 'lazy' }),
             // posters: each cover is one of a set, so a quiet hint that there's more inside
             category.slug === 'poster-design' && el('span', { class: 'thumb__hint', 'aria-hidden': 'true' }, [el('span', { text: 'View collection' }), el('i', { text: '→' })]),
