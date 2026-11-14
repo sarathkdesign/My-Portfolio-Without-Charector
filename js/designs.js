@@ -275,113 +275,207 @@ const DESIGNS = {
 // switches between its liveries like doors swung open, and the applications stack as cargo,
 // each tagged with a container code.
 DESIGNS.freight = (p, h) => {
-  const im = (name, alt, attrs = {}) => h.picture({ src: `assets/work/branding/bet/${name}.jpg`, alt }, { loading: 'lazy', ...attrs });
-  const door = (code, title) => h.el('header', { class: 'fr-door', 'data-reveal': true }, [
-    h.el('span', { class: 'fr-door__code', text: code }),
-    h.el('h2', { class: 'fr-door__title', text: title }),
-    h.el('span', { class: 'fr-door__bars', 'aria-hidden': 'true' }, [h.el('i'), h.el('i'), h.el('i')]),
+  // BET is told as a case study: the brief, the problem, how the idea was found, the mark, its system,
+  // the brand at work, and a closing thank-you. Every chapter has a number and a one-line title; pictures
+  // wipe up into place, a few drift at their own speed, and the two container views dock twice.
+  const im = (name, alt, attrs = {}) => h.picture({ src: `assets/work/branding/bet/${name}.jpg`, alt }, { loading: 'lazy', draggable: 'false', ...attrs });
+  // a heading whose words rise one after another out of a mask
+  const words = (text, cls, tag = 'h2') => h.el(tag, { class: `bt-words ${cls}`, 'data-reveal': true, 'aria-label': text },
+    text.split(' ').map((w, i) => h.el('span', { class: 'bt-w', 'aria-hidden': 'true', style: `--i:${i}` }, [h.el('span', { text: w })])));
+  const label = (n, text) => h.el('p', { class: 'bt-label', 'data-reveal': true }, [h.el('b', { text: n }), h.el('span', { text })]);
+  // a picture that wipes up into its frame; `drift` moves it a little against the scroll
+  const shot = (name, alt, cls = '', drift) => h.el('figure', { class: `bt-shot ${cls}`.trim(), 'data-reveal': true }, [
+    h.el('div', { class: 'bt-shot__in', ...(drift ? { 'data-parallax': drift } : {}) }, [im(name, alt)]),
   ]);
-  const half = (cls, path, w = 100) => {
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', `0 0 ${w} 100`);
-    svg.setAttribute('class', cls);
-    svg.setAttribute('aria-hidden', 'true');
-    svg.innerHTML = path;
-    return svg;
+  const svg = (cls, w, path) => {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', `0 0 ${w} 100`);
+    s.setAttribute('class', cls);
+    s.setAttribute('aria-hidden', 'true');
+    s.innerHTML = path;
+    return s;
   };
   // the two container views, traced from the mark in the brand guidelines (bars 15.6 units thick)
-  const side = half('fr-half is-side', '<path d="M0 0h100v100H0zM15.6 15.6v26.6h68.8V15.6zM15.6 57.8v26.6h68.8V57.8z" fill-rule="evenodd"/>');
-  const front = half('fr-half is-front', '<path d="M0 0h104.6v15.6H0zM43.6 15.6h15.4v68.8H43.6zM0 29.6h15.6v54.8H0zM89 29.6h15.6v54.8H89zM0 84.4h104.6V100H0z"/>', 104.6);
-  const swatch = (name, hex, rgb, cmyk, pms, cls) => h.el('div', { class: `fr-swatch ${cls}`, 'data-reveal': true }, [
+  const sideView = () => svg('bt-half is-side', 100, '<path d="M0 0h100v100H0zM15.6 15.6v26.6h68.8V15.6zM15.6 57.8v26.6h68.8V57.8z" fill-rule="evenodd"/>');
+  const frontView = () => svg('bt-half is-front', 104.6, '<path d="M0 0h104.6v15.6H0zM43.6 15.6h15.4v68.8H43.6zM0 29.6h15.6v54.8H0zM89 29.6h15.6v54.8H89zM0 84.4h104.6V100H0z"/>');
+  const swatch = (name, hex, rgb, cmyk, pms, cls, i) => h.el('div', { class: `bt-swatch ${cls}`, 'data-reveal': true, style: `--d:${i}` }, [
     h.el('b', { text: name }),
     h.el('dl', {}, [['HEX', hex], ['RGB', rgb], ['CMYK', cmyk], pms && ['PANTONE', pms]].filter(Boolean).flatMap(([k, v]) => [h.el('dt', { text: k }), h.el('dd', { text: v })])),
   ]);
-  const liveries = [
-    ['mark-white', 'On white'], ['mark-blue', 'On BET blue'], ['mark-red', 'On BET orange'], ['mark-mono', 'Black and white'], ['mark-gradient', 'On the brand gradient'],
-  ];
-  const yard = (m, i) => h.el('figure', { class: `fr-box${m.wide ? ' is-wide' : ''}`, 'data-reveal': true, style: `--d:${i % 3}` }, [
-    im(m.src, m.alt),
-    h.el('figcaption', {}, [h.el('b', { text: `BETU ${String(240100 + i * 37).padStart(6, '0')} ${(i * 7) % 10}` }), h.el('span', { text: m.label })]),
+  const group = (n, title, note, cls, items) => h.el('section', { class: `bt-group ${cls}` }, [
+    h.el('header', { class: 'bt-group__head', 'data-reveal': true }, [h.el('span', { text: n }), h.el('h3', { text: title }), h.el('p', { text: note })]),
+    h.el('div', { class: 'bt-group__grid' }, items.map(([name, alt, c, drift]) => shot(name, alt, c, drift))),
   ]);
-  const apps = [
-    { src: 'container', label: 'Shipping container', alt: 'A BET shipping container lifted by a crane', wide: true },
-    { src: 'business-card', label: 'Business cards', alt: 'BET business cards on black' },
-    { src: 'folder', label: 'Folder', alt: 'BET presentation folder' },
-    { src: 'id-card', label: 'ID card', alt: 'BET ID card on a lanyard' },
-    { src: 'loyalty-card', label: 'Loyalty card', alt: 'BET Luminary loyalty cards' },
-    { src: 'laptop', label: 'Website', alt: 'BET website on a laptop: Expand your global footprint', wide: true },
-    { src: 'phone', label: 'Mobile', alt: 'BET website on a phone held in a city street' },
-    { src: 'app-icon', label: 'App icon', alt: 'BET app icons on a phone' },
-    { src: 'instagram', label: 'Instagram carousel', alt: 'Three BET Instagram carousel posts' },
-    { src: 'billboard', label: 'Digital billboard', alt: 'A BET digital billboard above a crowd', wide: true },
-    { src: 'hoarding', label: 'Hoarding', alt: 'BET roadside hoarding: Expanding Horizons, Connecting Opportunities' },
-    { src: 'street-ad', label: 'Bus shelter', alt: 'BET poster in a bus shelter at night' },
-    { src: 'event', label: 'Event backdrop', alt: 'BET event backdrop on a stage' },
-    { src: 'signage', label: 'Direction signage', alt: 'Lit BET direction sign in a corridor', wide: true },
-    { src: 't-shirt', label: 'T-shirt', alt: 'A model in a black BET T-shirt' },
-    { src: 'jacket', label: 'Jacket', alt: 'BET blue and orange jacket' },
-    { src: 'cap', label: 'Cap', alt: 'BET blue cap' },
-    { src: 'tape', label: 'Packing tape', alt: 'Rolls of BET packing tape' },
-    { src: 'mug', label: 'Mugs', alt: 'Two BET mugs, white and blue', wide: true },
-  ];
-  const tabs = h.el('div', { class: 'fr-livery__tabs', role: 'tablist', 'aria-label': 'Mark versions' },
-    liveries.map(([, label], i) => h.el('button', { class: 'fr-livery__tab', type: 'button', role: 'tab', 'aria-selected': i ? 'false' : 'true', 'data-i': i, text: label })));
-  const panes = h.el('div', { class: 'fr-livery__panes' }, liveries.map(([src, label], i) =>
-    h.el('figure', { class: `fr-livery__pane${i ? '' : ' is-on'}`, 'data-i': i }, [im(src, `BET mark ${label.toLowerCase()}`, i ? {} : { loading: 'eager' })])));
-  tabs.addEventListener('click', (e) => {
-    const b = e.target.closest('.fr-livery__tab');
-    if (!b) return;
-    tabs.querySelectorAll('.fr-livery__tab').forEach((t) => t.setAttribute('aria-selected', String(t === b)));
-    panes.querySelectorAll('.fr-livery__pane').forEach((x) => x.classList.toggle('is-on', x.dataset.i === b.dataset.i));
-  });
+  const fact = (k, v) => [h.el('dt', { text: k }), h.el('dd', { text: v })];
 
   return [
-    // 01: the brand, beside a ship carrying the mark
-    h.el('section', { class: 'fr-hero' }, [
-      h.el('figure', { class: 'fr-hero__img' }, [im('hero', 'A container ship at sea with the BET mark', { 'data-zoom': true, loading: 'eager' })]),
-      h.el('div', { class: 'fr-hero__text', 'data-reveal': true }, [
-        h.el('p', { class: 'fr-kicker', text: 'Bestway Environmental Technologies · Brand identity · 2024' }),
-        h.el('p', { class: 'fr-lede', text: 'A provider of premium, globally sourced products for mining and construction, built on integrity, transparency and accountability. The brief: an identity that feels as dependable as the cargo it moves, and as global as its reach.' }),
+    // ── Hero: the ship, full-bleed, easing out of a slow zoom; one line over its lower edge
+    h.el('section', { class: 'bt-hero' }, [
+      h.el('figure', { class: 'bt-hero__img' }, [im('hero', 'A container ship at sea carrying the BET mark', { 'data-zoom': true, loading: 'eager' })]),
+      h.el('div', { class: 'bt-hero__text' }, [
+        h.el('p', { class: 'bt-hero__kicker', 'data-reveal': true, text: 'Case study · Brand identity · 2024' }),
+        words('An identity as dependable as the cargo it moves.', 'bt-hero__line', 'p'),
       ]),
     ]),
-    // 02: the mark, docking together from its two container views
-    h.el('section', { class: 'fr-dock', 'data-dock': true }, [
-      door('BET 01', 'Two views of one container'),
-      h.el('div', { class: 'fr-dock__stage' }, [
-        h.el('div', { class: 'fr-dock__part is-side' }, [side, h.el('p', { class: 'fr-dock__label' }, [h.el('b', { text: 'Side view' }), h.el('span', { text: 'Capacity and stability: two containers, stacked.' })])]),
-        h.el('div', { class: 'fr-dock__part is-front' }, [front, h.el('p', { class: 'fr-dock__label' }, [h.el('b', { text: 'Front view' }), h.el('span', { text: 'Its doors: openness, security, what lies within is protected.' })])]),
-      ]),
-      h.el('p', { class: 'fr-dock__word', 'aria-hidden': 'true', text: 'BET' }),
-    ]),
-    h.el('section', { class: 'fr-proof' }, [
-      h.el('figure', { class: 'fr-proof__img is-a', 'data-reveal': true }, [im('concept-side', 'Container side view: two stacked containers form the first half of the mark')]),
-      h.el('figure', { class: 'fr-proof__img is-b', 'data-reveal': true }, [im('concept-front', 'Container front view: the doors form the second half of the mark')]),
-      h.el('div', { class: 'fr-proof__text', 'data-reveal': true }, [
-        h.el('p', { class: 'fr-proof__big', text: 'B · E · T' }),
-        h.el('p', { text: 'Read again, the two views spell the name: the side view is a B, the front view an E, and its centre bar stands as a T. One mark carries the company’s initials and the thing it moves.' }),
-        h.el('figure', {}, [im('concept-bet', 'The letters B, E and T traced inside the BET mark: Bestway Environmental Technologies')]),
+
+    // ── 01 Overview
+    h.el('section', { class: 'bt-intro' }, [
+      label('01', 'Overview'),
+      h.el('div', { class: 'bt-intro__grid' }, [
+        h.el('p', { class: 'bt-intro__lede', 'data-reveal': true, text: 'Bestway Environmental Technologies sources premium products for mining and construction and ships them around the world. Its business runs on integrity, transparency and accountability, but its name was three letters that said none of it.' }),
+        h.el('dl', { class: 'bt-facts', 'data-reveal': true, style: '--d:2' }, [
+          ...fact('Client', 'Bestway Environmental Technologies'),
+          ...fact('Sector', 'Global sourcing and logistics'),
+          ...fact('Scope', 'Strategy, logo, identity system, guidelines, applications'),
+          ...fact('Year', '2024'),
+        ]),
       ]),
     ]),
-    // 03: the colours, painted on as container panels
-    h.el('section', { class: 'fr-paint' }, [
-      door('BET 02', 'Painted in orange and blue'),
-      h.el('div', { class: 'fr-paint__panels' }, [
-        swatch('BET Orange', '#EF4136', '239 65 54', '0 90 85 0', '179 C', 'is-red'),
-        swatch('BET Blue', '#0C2DAE', '12 45 174', '99 89 0 0', '2736 C', 'is-blue'),
-        swatch('Black', '#000000', '0 0 0', '100 100 100 100', '', 'is-black'),
-        swatch('White', '#FFFFFF', '255 255 255', '0 0 0 0', '', 'is-white'),
+
+    // ── 02 The challenge
+    h.el('section', { class: 'bt-challenge' }, [
+      label('02', 'The challenge'),
+      words('Make three letters stand for trust, worldwide.', 'bt-title'),
+      h.el('div', { class: 'bt-cards' }, [
+        ['A name without a picture', 'BET is an acronym. On its own it carries no image, and in this trade it sits beside hundreds of similar initials.'],
+        ['Trust before the first order', 'Buyers commit large sums to goods they will not see until they arrive. The brand has to feel reliable at first glance.'],
+        ['One mark, every surface', 'It must hold up on a 40-foot container, a business card and a 16-pixel app icon, in two colours or one.'],
+      ].map(([t, b], i) => h.el('article', { class: 'bt-card', 'data-reveal': true, style: `--d:${i}` }, [
+        h.el('span', { class: 'bt-card__n', text: `0${i + 1}` }), h.el('h3', { text: t }), h.el('p', { text: b }),
+      ]))),
+    ]),
+
+    // ── 03 The process: four steps along a route line that draws itself as you scroll
+    h.el('section', { class: 'bt-process', 'data-dock': true }, [
+      label('03', 'How I found it'),
+      words('From the brief to the shape that was already there.', 'bt-title'),
+      h.el('div', { class: 'bt-route', 'aria-hidden': 'true' }, [h.el('i')]),
+      h.el('ol', { class: 'bt-steps' }, [
+        ['Listen', 'The brief and the company’s values: integrity, transparency, accountability. The brand had to feel solid, open and global.'],
+        ['Observe', 'Ports, cranes, ships and containers. Of everything in the trade, the container is the one object every shipment shares.'],
+        ['Sketch', 'I drew the container from every side. Two views, the side and the doors, began to read as letters.'],
+        ['Build', 'The views were set on one grid, with bars 15.6 units thick, and tested from a container wall down to an app icon.'],
+      ].map(([t, b], i) => h.el('li', { class: 'bt-step', 'data-reveal': true, style: `--d:${i}` }, [
+        h.el('span', { class: 'bt-step__dot' }), h.el('span', { class: 'bt-step__n', text: `Step 0${i + 1}` }), h.el('h3', { text: t }), h.el('p', { text: b }),
+      ]))),
+    ]),
+
+    // ── 04 The insight: the two views slide together into the mark (on BET blue)
+    h.el('section', { class: 'bt-insight' }, [
+      h.el('div', { class: 'bt-insight__in' }, [
+        label('04', 'The insight'),
+        words('Two views of one container.', 'bt-title'),
+        h.el('div', { class: 'bt-dock', 'data-dock': true }, [
+          h.el('div', { class: 'bt-dock__part is-side' }, [sideView(), h.el('p', {}, [h.el('b', { text: 'Side view' }), h.el('span', { text: 'Two containers stacked: capacity and stability.' })])]),
+          h.el('div', { class: 'bt-dock__part is-front' }, [frontView(), h.el('p', {}, [h.el('b', { text: 'Front view' }), h.el('span', { text: 'The doors: openness, and cargo kept safe.' })])]),
+        ]),
+        h.el('div', { class: 'bt-proof' }, [
+          shot('concept-side', 'Container side view: two stacked containers form the first half of the mark', 'is-a', '0.06'),
+          shot('concept-front', 'Container front view: the doors form the second half of the mark', 'is-b', '-0.06'),
+          h.el('div', { class: 'bt-proof__text' }, [
+            h.el('p', { class: 'bt-proof__big', 'data-reveal': true }, ['B', 'E', 'T'].map((c, i) => h.el('span', { text: c, style: `--i:${i}` }))),
+            h.el('p', { 'data-reveal': true, style: '--d:2', text: 'Read again, the two views spell the name. The side view is a B, the front view an E, and its centre bar stands as a T. One mark carries both the company’s initials and the thing it moves.' }),
+          ]),
+        ]),
+        shot('concept-bet', 'The letters B, E and T traced inside the BET mark: Bestway Environmental Technologies', 'bt-proof__key'),
       ]),
-      h.el('p', { class: 'fr-paint__note', 'data-reveal': true, text: 'Orange for energy and urgency, the speed of a shipment on time; blue for trust and stability. Set in Archivo, from Thin to Black, for a voice that is plain and modern.' }),
     ]),
-    // 04: the mark in its liveries, switched like container doors
-    h.el('section', { class: 'fr-livery' }, [door('BET 03', 'One mark, five liveries'), tabs, panes]),
-    h.el('figure', { class: 'fr-port', 'data-reveal': true }, [im('port', 'The BET secondary mark with its Chinese name over a container port at dusk', { 'data-parallax': '0.05' })]),
-    // 05: the applications, stacked as cargo
-    h.el('section', { class: 'fr-yard' }, [
-      door('BET 04', 'Loaded onto everything'),
-      h.el('div', { class: 'fr-yard__stack' }, apps.map((m, i) => yard(m, i))),
+
+    // ── 05 The mark and its versions
+    h.el('section', { class: 'bt-mark' }, [
+      label('05', 'The solution'),
+      words('A mark you can ship anywhere.', 'bt-title'),
+      h.el('p', { class: 'bt-body', 'data-reveal': true, text: 'Squared like a container and built only from straight bars, the mark stays sharp at any size. It works in BET orange, BET blue, on the brand gradient, and in plain black and white.' }),
+      h.el('div', { class: 'bt-versions' }, [
+        shot('mark-white', 'The BET mark in orange and blue on white', 'is-lead'),
+        shot('mark-blue', 'The BET mark in white on BET blue', '', '0.04'),
+        shot('mark-red', 'The BET mark in white on BET orange', '', '-0.04'),
+        shot('mark-gradient', 'The BET mark on the orange-to-blue brand gradient', 'is-wide'),
+        shot('mark-mono', 'The BET mark in black and white', 'is-wide is-mono'),
+      ]),
     ]),
-    h.el('p', { class: 'fr-credit', 'data-reveal': true, text: 'Brand identity and guidelines by Sarath Bhaskar at .taras design studio, for Think Dot. 2024.' }),
+
+    // ── 06 Colour and type
+    h.el('section', { class: 'bt-system' }, [
+      label('06', 'Colour and type'),
+      words('Orange for momentum, blue for trust.', 'bt-title'),
+      h.el('div', { class: 'bt-swatches' }, [
+        swatch('BET Orange', '#EF4136', '239 65 54', '0 90 85 0', '179 C', 'is-red', 0),
+        swatch('BET Blue', '#0C2DAE', '12 45 174', '99 89 0 0', '2736 C', 'is-blue', 1),
+        swatch('Black', '#000000', '0 0 0', '100 100 100 100', '', 'is-black', 2),
+        swatch('White', '#FFFFFF', '255 255 255', '0 0 0 0', '', 'is-white', 3),
+      ]),
+      h.el('div', { class: 'bt-type', 'data-reveal': true }, [
+        h.el('p', { class: 'bt-type__aa', text: 'Aa' }),
+        h.el('div', { class: 'bt-type__info' }, [
+          h.el('b', { text: 'Archivo' }),
+          h.el('p', { text: 'A plain, modern grotesque from Thin to Black: confident in headlines, calm in body text, and close in spirit to the mark’s straight bars.' }),
+          h.el('p', { class: 'bt-type__set', text: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 0123456789' }),
+        ]),
+      ]),
+    ]),
+
+    // ── the port: a full-bleed pause, drifting slower than the page
+    h.el('figure', { class: 'bt-port', 'data-reveal': true }, [
+      h.el('div', { class: 'bt-port__in', 'data-parallax': '0.12' }, [im('port', 'The BET secondary lockup with its Chinese name over a container port at dusk')]),
+      h.el('figcaption', { text: 'A secondary lockup carries the company’s Chinese name.' }),
+    ]),
+
+    // ── 07 Applications: out in the world (a pinned run that slides sideways), then in hand, on screen, and worn
+    h.el('section', { class: 'bt-apps' }, [
+      label('07', 'In the world'),
+      words('Loaded onto everything it touches.', 'bt-title'),
+    ]),
+    h.el('section', { class: 'dz-hs bt-run', 'data-hs': true }, [
+      h.el('div', { class: 'dz-hs__pin' }, [
+        h.el('div', { class: 'dz-hs__track' }, [
+          ['container', 'A BET shipping container lifted by a crane', 'Shipping container'],
+          ['billboard', 'A BET digital billboard above a crowd', 'Digital billboard'],
+          ['hoarding', 'BET roadside hoarding: Expanding Horizons, Connecting Opportunities', 'Hoarding'],
+          ['street-ad', 'BET poster in a bus shelter at night', 'Bus shelter'],
+          ['event', 'BET event backdrop on a stage', 'Event backdrop'],
+          ['signage', 'Lit BET direction sign in a corridor', 'Direction signage'],
+        ].map(([n, alt, cap], i) => h.el('figure', { class: 'dz-hs__item bt-run__item' }, [
+          im(n, alt), h.el('figcaption', {}, [h.el('b', { text: String(i + 1).padStart(2, '0') }), h.el('span', { text: cap })]),
+        ]))),
+      ]),
+    ]),
+    group('A', 'In hand', 'Stationery that travels with every shipment.', 'is-hand', [
+      ['business-card', 'BET business cards on black', 'is-wide'],
+      ['folder', 'BET presentation folder', '', '0.05'],
+      ['id-card', 'BET ID card on a lanyard', '', '-0.05'],
+      ['loyalty-card', 'BET Luminary loyalty cards', 'is-wide'],
+    ]),
+    group('B', 'On screen', 'A website, an app icon and social posts in the same voice.', 'is-screen', [
+      ['laptop', 'BET website on a laptop: Expand your global footprint', 'is-wide'],
+      ['phone', 'BET website on a phone held in a city street', '', '0.05'],
+      ['app-icon', 'BET app icons on a phone', '', '-0.05'],
+      ['instagram', 'Three BET Instagram carousel posts', 'is-wide'],
+    ]),
+    group('C', 'Worn and used', 'Merchandise for the team, down to the packing tape.', 'is-worn', [
+      ['jacket', 'BET blue and orange jacket', 'is-wide'],
+      ['t-shirt', 'A model in a black BET T-shirt', '', '0.05'],
+      ['cap', 'BET blue cap', '', '-0.05'],
+      ['tape', 'Rolls of BET packing tape'],
+      ['mug', 'Two BET mugs, white and blue'],
+    ]),
+
+    // ── 08 Outcome
+    h.el('section', { class: 'bt-outcome' }, [
+      label('08', 'The outcome'),
+      h.el('ul', { class: 'bt-results' }, [
+        ['One idea', 'Every piece of the identity comes back to the container: the mark, its straight bars and its two colours.'],
+        ['Every scale', 'The mark reads on a container across a port yard and as a 16-pixel icon on a phone.'],
+        ['Easy to apply', 'Brand guidelines set out the mark, colours and type, so the team and its partners can apply the brand the same way everywhere.'],
+      ].map(([t, b], i) => h.el('li', { 'data-reveal': true, style: `--d:${i}` }, [h.el('b', { text: t }), h.el('p', { text: b })]))),
+    ]),
+
+    // ── The end: the halves dock one last time over a thank-you
+    h.el('section', { class: 'bt-end', 'data-dock': true }, [
+      h.el('div', { class: 'bt-end__mark', 'aria-hidden': 'true' }, [sideView(), frontView()]),
+      words('Thank you.', 'bt-end__thanks', 'p'),
+      h.el('p', { class: 'bt-end__note', 'data-reveal': true, style: '--d:3', text: 'Thanks for scrolling through BET. Brand identity and guidelines by Sarath Bhaskar at .taras design studio, for Think Dot, 2024.' }),
+    ]),
   ];
 };
 
