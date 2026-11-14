@@ -4,6 +4,8 @@ export const small = new Set([
   'assets/work/package-design/mothers-kitchen/vegan-pancake-top.jpg',
   'assets/work/package-design/mothers-kitchen/vegan-pancake-stack.jpg',
   'assets/work/package-design/mothers-kitchen/protein-batters.jpg',
+  'assets/work/package-design/mothers-kitchen/methi-thepla.jpg',
+  'assets/work/package-design/mothers-kitchen/mixture-snack-bag.jpg',
   'assets/work/brochure-design/wall/01.jpg',
   'assets/work/brochure-design/wall/02.jpg',
   'assets/work/brochure-design/wall/03.jpg',
