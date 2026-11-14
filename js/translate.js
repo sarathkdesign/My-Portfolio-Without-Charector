@@ -26,6 +26,9 @@ const sync = (b) => {
   b.setAttribute('aria-pressed', String(on));
   b.classList.toggle('is-on', on);
   b.querySelector('.tr-btn__label').textContent = on ? 'Translation on' : `Translate ${b.dataset.lang}`;
+  b.querySelector('.tr-btn__tip').textContent = on
+    ? 'Switch the English translations off.'
+    : `See what these posters say: switch on, then hover over (or tap) any outlined ${b.dataset.lang} text to read it in English.`;
   b.setAttribute('aria-label', on ? 'Switch translation off' : `Translate the ${b.dataset.lang} text into English`);
 };
 
@@ -47,7 +50,11 @@ export function toggleButton(lang = 'Malayalam', cls = '') {
   x.className = 'tr-btn__x';
   x.setAttribute('aria-hidden', 'true');
   x.textContent = '×';
-  b.append(icon(), label, x);
+  // a short explanation that appears on hover, before anyone clicks
+  const tip = document.createElement('span');
+  tip.className = 'tr-btn__tip';
+  tip.setAttribute('aria-hidden', 'true');
+  b.append(icon(), label, x, tip);
   b.addEventListener('click', (e) => { e.stopPropagation(); setOn(!isOn()); });
   buttons.add(b);
   sync(b);

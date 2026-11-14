@@ -1284,19 +1284,46 @@ img[data-lightbox] { cursor: zoom-in; }
 /* ── Poster translations (js/translate.js) ───────────────────────
    A pill switch above the posters; with it on (html.tr-on), each piece of foreign text shows a
    dotted outline, and hovering or tapping it shows the English in a dark tooltip. */
-.tr-bar { display: flex; justify-content: flex-end; margin: clamp(8px, 1vw, 20px) 0 clamp(-56px, -3vw, -24px); position: relative; z-index: 3; }
+.tr-bar {
+  display: flex; justify-content: flex-end; z-index: 6; pointer-events: none;
+  /* it stays on screen while the posters scroll: held just under the .taras logo */
+  position: sticky; top: calc(var(--gutter) + clamp(36px, 2.6vw, 48px) + 18px);
+  margin: clamp(28px, 3.2vw, 60px) calc(100% + 2 * var(--gutter) - 100vw) clamp(-60px, -3.4vw, -28px) 0; /* its right edge lines up with the .taras logo above */
+}
 .tr-btn {
-  display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px 11px 14px; border-radius: 999px;
-  background: var(--th-ink, #222); color: var(--th-bg, #fff); font: 600 13px / 1 var(--display); letter-spacing: 0.04em;
-  box-shadow: 0 12px 30px -14px rgb(0 0 0 / 0.5); transition: background-color 0.25s, color 0.25s, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: auto;
+  --tr-hi: #ffb21e; /* a warm, bright amber: easy to spot on the cream page, calm to look at */
+  position: relative; display: inline-flex; align-items: center; gap: 10px; padding: 12px 20px 12px 16px; border-radius: 999px;
+  background: var(--tr-hi); color: #2b211d; font: 700 13px / 1 var(--display); letter-spacing: 0.04em;
+  box-shadow: 0 14px 30px -14px rgb(150 90 0 / 0.55), inset 0 0 0 1px rgb(255 255 255 / 0.35);
+  transition: background-color 0.25s, color 0.25s, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s;
 }
 .tr-btn svg { width: 18px; height: 18px; flex: none; }
-.tr-btn:hover { transform: translateY(-1px); }
+.tr-btn:hover { transform: translateY(-1px); box-shadow: 0 18px 34px -14px rgb(150 90 0 / 0.65), inset 0 0 0 1px rgb(255 255 255 / 0.45); }
 .tr-btn:active { transform: scale(0.97); }
-.tr-btn:focus-visible { outline: 2px solid var(--th-accent, #f2a51e); outline-offset: 3px; }
+.tr-btn:focus-visible { outline: 2px solid #2b211d; outline-offset: 3px; }
 .tr-btn__x { display: none; margin-left: 2px; font-size: 18px; line-height: 0.6; opacity: 0.8; }
-.tr-btn.is-on { background: var(--th-accent, #f2a51e); color: var(--th-ink, #222); }
+.tr-btn.is-on { background: #2b211d; color: var(--tr-hi); box-shadow: 0 14px 30px -14px rgb(0 0 0 / 0.55); }
 .tr-btn.is-on .tr-btn__x { display: inline; }
+/* on arrival, soft rings ripple out of the switch a few times to point it out */
+.tr-btn::before, .tr-btn::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: 0 0 0 0 rgb(255 178 30 / 0.55); animation: tr-ripple 2.4s cubic-bezier(0.2, 0.6, 0.35, 1) 0.8s 3 both;
+}
+.tr-btn::after { animation-delay: 2s; }
+.tr-btn.is-on::before, .tr-btn.is-on::after, .tr-btn.lb__tr::before, .tr-btn.lb__tr::after { animation: none; }
+@keyframes tr-ripple { 0% { box-shadow: 0 0 0 0 rgb(255 178 30 / 0.55); } 100% { box-shadow: 0 0 0 22px rgb(255 178 30 / 0); } }
+/* the hover explanation */
+.tr-btn__tip {
+  position: absolute; top: calc(100% + 12px); right: 0; width: max-content; max-width: 280px; padding: 11px 13px; border-radius: 12px;
+  background: #15110e; color: #fff; font: 500 13px / 1.45 var(--display); letter-spacing: 0; text-align: left; white-space: normal;
+  box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.5); pointer-events: none;
+  opacity: 0; transform: translate3d(0, -4px, 0); transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tr-btn__tip::before { content: ''; position: absolute; bottom: 100%; right: 26px; border: 7px solid transparent; border-bottom-color: #15110e; }
+.tr-btn:hover .tr-btn__tip, .tr-btn:focus-visible .tr-btn__tip { opacity: 1; transform: none; transition-delay: 0.15s; }
+.lb__tr .tr-btn__tip { right: auto; left: 0; }
+.lb__tr .tr-btn__tip::before { right: auto; left: 26px; }
 
 /* the poster and its boxes share one frame */
 .kc-card .tr-wrap { position: relative; flex: none; height: calc(100% - 64px); max-width: 100%; border-radius: 18px; }
@@ -1318,12 +1345,13 @@ html.tr-on .tr-spot:hover, html.tr-on .tr-spot:focus-visible { background: rgb(2
 
 /* in the poster viewer: the boxes over the large poster, and the switch top left */
 .lb__frame .tr-layer { border-radius: 18px; }
-.lb__tr { position: absolute; top: clamp(16px, 3vh, 32px); left: clamp(16px, 3vw, 40px); background: rgb(255 255 255 / 0.12); color: #fff; box-shadow: none; }
-.lb__tr.is-on { background: #f2a51e; color: #15110e; }
+.lb__tr { position: absolute; top: clamp(16px, 3vh, 32px); left: clamp(16px, 3vw, 40px); }
 .lb__tr[hidden] { display: none; }
 
 @media (max-width: 720px) {
-  .tr-bar { justify-content: flex-start; margin-bottom: 16px; }
+  .tr-bar { justify-content: flex-start; margin: 20px 0 16px; }
+  .tr-btn__tip { right: auto; left: 0; }
+  .tr-btn__tip::before { right: auto; left: 26px; }
   .kc-card .tr-wrap { height: auto; width: 100%; }
   .page .kc-card .tr-wrap img { height: auto; }
 }

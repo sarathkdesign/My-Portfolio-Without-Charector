@@ -862,3 +862,6 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
 }
 /* Taras Racing: the film with softly rounded corners */
 .page[data-slug='taras-racing'] .mod--video video { border-radius: clamp(12px, 1.4vw, 22px); }
+
+/* Adaminde Chayakada: no small category label above its name */
+.page--project[data-slug='adaminde-chayakada'] .proj__kicker { display: none; }
