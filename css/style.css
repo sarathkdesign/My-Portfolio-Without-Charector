@@ -435,6 +435,7 @@ div.card { cursor: inherit; }
   pointer-events: none;
 }
 .menu__film-fade {
+  position: relative;
   width: 100%; height: 100%;
   -webkit-mask-image: linear-gradient(to left, transparent, #000 8%);
   mask-image: linear-gradient(to left, transparent, #000 8%);
@@ -442,6 +443,12 @@ div.card { cursor: inherit; }
   background: var(--film-bg) url('../assets/menu/portrait-poster.webp') center / cover no-repeat;
 }
 .menu__film video { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* With WebGL the film is redrawn on a canvas without its cream (js/film-key.js): only the character
+   is drawn, straight onto the blurred background, so there is no box, edge or fade to hide.
+   The video keeps playing underneath, unseen, to feed the canvas. */
+.menu__film.is-keyed, .menu__film.is-keyed .menu__film-fade { background: none; -webkit-mask-image: none; mask-image: none; }
+.menu__film.is-keyed video { opacity: 0; }
+.menu__film-canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .menu.is-open .menu__film { opacity: 1; transform: none; transition-delay: 0.08s; }
 .menu.is-closing .menu__film { transition-duration: 0.23s; transition-delay: 0s; }
 .menu.is-open .menu__scrim { opacity: 1; }

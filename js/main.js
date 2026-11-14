@@ -4,6 +4,7 @@ import { categories } from './work/index.js';
 import { createPages, countLabel } from './pages.js';
 import { createCursor } from './cursor.js';
 import { variants } from './work/variants.js';
+import { keyFilm } from './film-key.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
@@ -736,6 +737,7 @@ function setupMenu() {
   const links = $$('[data-menu-link]', menu);
   const film = $('[data-menu-film]', menu);
   if (film) film.muted = true;
+  let keyed; // the film drawn without its cream background (js/film-key.js); set up on first open
   // Everything behind the menu is taken out of reach while it is open
   const behind = [$('#main'), $('.mark-link')];
   let closeTimer;
@@ -749,7 +751,11 @@ function setupMenu() {
     label.textContent = 'Close menu';
     requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('is-open')));
     // the portrait film: fetched the first time the menu opens, playing only while it is open
-    if (film) { if (!film.src) film.src = film.dataset.src; film.play?.().catch(() => {}); }
+    if (film) {
+      if (!film.src) film.src = film.dataset.src;
+      if (keyed === undefined) keyed = keyFilm(film);
+      film.play?.().catch(() => {});
+    }
     links[0].focus({ preventScroll: true });
     sound.play('menuOpen');
   };

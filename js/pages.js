@@ -16,6 +16,7 @@ import { layout, restyled, startMotion, splitWords, headArt } from './designs.js
 import { createLightbox } from './lightbox.js';
 import { small } from './work/small.js';
 import { variants } from './work/variants.js';
+import { logofolio } from './work/logofolio.js';
 
 // The light copy of a picture (longest side 1400px) where one exists: walls and thumbnails never show more
 const light = (src) => (small.has(src) ? `${src}.sm.jpg` : src);
@@ -65,7 +66,7 @@ const BASE = pathOf('./');
 function resolve(pathname) {
   const route = pathname.startsWith(BASE) ? pathname.slice(BASE.length) : '';
   const page = route.replace(/\/+$/, '');
-  if (page === 'experience' || page === 'contact') return { depth: 1, info: page };
+  if (page === 'experience' || page === 'contact' || page === 'logofolio') return { depth: 1, info: page };
   const [, a, b] = route.replace(/\/+$/, '').match(/^work\/([^/]+)(?:\/([^/]+))?$/) || [];
   const category = categories.find((c) => c.slug === a);
   if (!category) return { depth: 0 };
@@ -480,11 +481,49 @@ const durationOf = (months) => {
   return [y && `${y} yr${y > 1 ? 's' : ''}`, m && `${m} mo${m > 1 ? 's' : ''}`].filter(Boolean).join(' ');
 };
 
-// The curtain page shows Experience or Contact
-const INFO_TITLES = { experience: 'Experience', contact: 'Contact' };
+// The curtain page shows Experience, Contact or the Logofolio
+const INFO_TITLES = { experience: 'Experience', contact: 'Contact', logofolio: 'Logofolio' };
 function renderInfo(page, kind) {
   page.dataset.page = kind;
+  if (kind === 'logofolio') return renderLogofolio(page);
   return kind === 'contact' ? renderContact(page) : renderExperience(page);
+}
+
+/* Logofolio: every mark on its own white tile, all tiles the same size and evenly spaced.
+   Marks come in every shape, so each is sized to the same visual weight rather than the same
+   width: equal area (a long wordmark doesn't tower, a tall badge isn't tiny), nudged for how
+   solid the mark is, and always kept inside its tile. Returns the width as % of the tile. */
+const LOGO = { side: 44, maxW: 68, maxH: 52 }; // in tile units: the tile is 100 wide and 75 tall
+const logoWidth = ({ w, h, ink }) => {
+  const aspect = w / h;
+  const weight = Math.min(1.15, Math.max(0.8, (0.22 / ink) ** 0.15)); // solid marks a little smaller, fine ones a little larger
+  return Math.min(LOGO.maxW, LOGO.maxH * aspect, LOGO.side * weight * Math.sqrt(aspect));
+};
+function renderLogofolio(page) {
+  page.classList.remove('is-dark', 'is-accent');
+  page.setAttribute('aria-labelledby', 'page-logofolio-title');
+  const branding = categories.find((c) => c.slug === 'branding');
+  const tile = (logo, i) => {
+    const pct = logoWidth(logo);
+    const src = `assets/logofolio/${logo.file}`;
+    // the grid is 5 columns wide, 3 on tablets and 2 on phones
+    const sizes = `(max-width: 599px) ${(pct / 2).toFixed(1)}vw, (max-width: 1099px) ${(pct / 3).toFixed(1)}vw, ${(pct / 5).toFixed(1)}vw`;
+    return el('li', { class: 'lf__tile', 'data-reveal': true, style: `--d:${i % 5}` }, [
+      el('img', {
+        class: 'lf__logo', src: `${src}.webp`, srcset: `${src}.sm.webp ${logo.smw}w, ${src}.webp ${logo.w}w`, sizes,
+        width: logo.w, height: logo.h, alt: `${logo.name} logo`, loading: 'lazy', decoding: 'async', style: `--lw:${pct.toFixed(1)}%`,
+      }),
+    ]);
+  };
+  page.replaceChildren(
+    backLink('./', 'Index'),
+    el('header', { class: 'lf__head' }, [
+      el('h1', { class: 'lf__title', id: 'page-logofolio-title', tabindex: '-1', 'data-reveal': true, text: 'Logofolio' }),
+      el('p', { class: 'lf__count', 'data-reveal': true, style: '--d:1', text: `${logofolio.length} logos` }),
+    ]),
+    el('ul', { class: 'lf__grid', 'aria-label': 'Logos' }, logofolio.map(tile)),
+    branding && nextLink(hrefOf(branding), 'More identity work', 'Branding')
+  );
 }
 
 /* Contact: a bold green page with each way to reach Sarath as a large row */

@@ -23,35 +23,37 @@
   <link rel="preload" href="public/fonts/NeueMontreal-Bold.otf" as="font" type="font/otf" crossorigin>
   <!-- Inter Tight is only the fallback face: loaded without holding up the first paint -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
-  <link rel="stylesheet" href="css/style.css?v=182">
-  <link rel="stylesheet" href="css/pages.css?v=182">
-  <link rel="stylesheet" href="css/designs.css?v=182">
+  <link rel="stylesheet" href="css/style.css?v=187">
+  <link rel="stylesheet" href="css/pages.css?v=187">
+  <link rel="stylesheet" href="css/designs.css?v=187">
   <script>document.documentElement.classList.add('js');</script>
   <!-- Every module carries the site version, so a new push is never hidden behind a cached data file -->
   <script type="importmap">
   {
     "imports": {
-      "./js/content.js": "./js/content.js?v=182",
-      "./js/cursor.js": "./js/cursor.js?v=182",
-      "./js/designs.js": "./js/designs.js?v=182",
-      "./js/lightbox.js": "./js/lightbox.js?v=182",
-      "./js/pages.js": "./js/pages.js?v=182",
-      "./js/surface.js": "./js/surface.js?v=182",
-      "./js/work/branding.js": "./js/work/branding.js?v=182",
-      "./js/work/brochure-design.js": "./js/work/brochure-design.js?v=182",
-      "./js/work/iconography.js": "./js/work/iconography.js?v=182",
-      "./js/work/index.js": "./js/work/index.js?v=182",
-      "./js/work/motion-design.js": "./js/work/motion-design.js?v=182",
-      "./js/work/package-design.js": "./js/work/package-design.js?v=182",
-      "./js/work/placeholders.js": "./js/work/placeholders.js?v=182",
-      "./js/work/poster-design.js": "./js/work/poster-design.js?v=182",
-      "./js/work/small.js": "./js/work/small.js?v=182",
-      "./js/work/variants.js": "./js/work/variants.js?v=182",
-      "./js/work/video.js": "./js/work/video.js?v=182"
+      "./js/content.js": "./js/content.js?v=187",
+      "./js/cursor.js": "./js/cursor.js?v=187",
+      "./js/designs.js": "./js/designs.js?v=187",
+      "./js/film-key.js": "./js/film-key.js?v=187",
+      "./js/lightbox.js": "./js/lightbox.js?v=187",
+      "./js/pages.js": "./js/pages.js?v=187",
+      "./js/surface.js": "./js/surface.js?v=187",
+      "./js/work/branding.js": "./js/work/branding.js?v=187",
+      "./js/work/brochure-design.js": "./js/work/brochure-design.js?v=187",
+      "./js/work/iconography.js": "./js/work/iconography.js?v=187",
+      "./js/work/logofolio.js": "./js/work/logofolio.js?v=187",
+      "./js/work/index.js": "./js/work/index.js?v=187",
+      "./js/work/motion-design.js": "./js/work/motion-design.js?v=187",
+      "./js/work/package-design.js": "./js/work/package-design.js?v=187",
+      "./js/work/placeholders.js": "./js/work/placeholders.js?v=187",
+      "./js/work/poster-design.js": "./js/work/poster-design.js?v=187",
+      "./js/work/small.js": "./js/work/small.js?v=187",
+      "./js/work/variants.js": "./js/work/variants.js?v=187",
+      "./js/work/video.js": "./js/work/video.js?v=187"
     }
   }
   </script>
-  <script type="module" src="js/main.js?v=182"></script>
+  <script type="module" src="js/main.js?v=187"></script>
 </head>
 <body>
   <style>
@@ -151,16 +153,19 @@
 
   <!-- ── Menu ──────────────────────────────────────────────── -->
   <div class="menu" id="menu" data-menu hidden>
-    <div class="menu__scrim" data-menu-close></div>
-    <!-- A looping pixel-art portrait beside the menu; its file loads on first open (js/main.js) -->
-    <div class="menu__film" aria-hidden="true">
-      <div class="menu__film-fade">
-        <video data-menu-film data-src="assets/menu/portrait-loop-2.mp4" poster="assets/menu/portrait-poster.webp" muted loop playsinline preload="none" disablepictureinpicture></video>
+    <div class="menu__scrim" data-menu-close>
+      <!-- A looping pixel-art portrait beside the menu; its file loads on first open (js/main.js).
+           It sits inside the blurred layer so its cream can blend into that blur with no joining line -->
+      <div class="menu__film" aria-hidden="true">
+        <div class="menu__film-fade">
+          <video data-menu-film data-src="assets/menu/portrait-loop-2.mp4" poster="assets/menu/portrait-poster.webp" muted loop playsinline preload="none" disablepictureinpicture></video>
+        </div>
       </div>
     </div>
     <nav class="menu__panel" aria-label="Main">
       <ul class="menu__list">
         <li><a href="#work" data-menu-link="work">Work</a></li>
+        <li><a href="logofolio" data-route data-menu-link>Logofolio</a></li>
         <li><a href="experience" data-route data-menu-link>Experience</a></li>
         <li><a href="contact" data-route data-menu-link class="is-accent">Contact</a></li>
       </ul>
