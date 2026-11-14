@@ -8,6 +8,12 @@
 
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 const pad = (n) => String(n).padStart(2, '0');
+// Sideways poster rows: how much further an up/down wheel moves them, how far the mouse must
+// travel before a press becomes a drag, and how far a flung row carries on (ms of its speed)
+const WHEEL_BOOST = 2.2;
+const DRAG_START = 6;
+const DRAG_THROW = 260;
+const DRAG_MAX_SPEED = 4; // px per ms
 const tall = (m) => m.w && m.h / m.w > 1.25;
 
 // Splits a project's modules into chapters: an optional text, then the pictures after it.
@@ -1020,13 +1026,53 @@ export function startMotion(page, reduced) {
     if (st.own) {
       if (!e.target.closest('.dz-hs__track')) return; // beside the row (e.g. its arrows): the page scrolls
       e.preventDefault();
-      moveTo(st, st.to + px);
+      // an up/down wheel goes further, so a long row doesn't take endless turns; sideways swipes stay 1:1
+      moveTo(st, st.to + (Math.abs(e.deltaX) > Math.abs(e.deltaY) ? px : px * WHEEL_BOOST));
     } else if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
       e.preventDefault(); // a sideways swipe on a pinned row moves it too
       page.scrollTop += e.deltaX;
     }
   };
   page.addEventListener('wheel', wheel, { passive: false });
+  // Click and drag an "own" row with the mouse; it carries on a little after letting go
+  let drag = null;
+  const down = (e) => {
+    if (!wide.matches || e.pointerType !== 'mouse' || e.button !== 0) return;
+    const st = stripOf(e.target);
+    if (!st?.own || !e.target.closest('.dz-hs__track')) return;
+    drag = { st, x: e.clientX, from: st.to, last: e.clientX, t: e.timeStamp, v: 0, moved: false };
+  };
+  const move = (e) => {
+    if (!drag) return;
+    const dx = e.clientX - drag.x;
+    if (!drag.moved && Math.abs(dx) < DRAG_START) return;
+    if (!drag.moved) { drag.moved = true; drag.st.s.classList.add('is-dragging'); }
+    const dt = Math.max(1, e.timeStamp - drag.t);
+    drag.v = 0.8 * ((drag.last - e.clientX) / dt) + 0.2 * drag.v; // px per ms, smoothed
+    drag.last = e.clientX; drag.t = e.timeStamp;
+    drag.st.to = Math.min(maxOf(drag.st), Math.max(0, drag.from - dx));
+    drag.st.x = drag.st.to; // follow the hand exactly while held
+    queue();
+  };
+  const up = (e) => {
+    if (!drag) return;
+    const { st, moved, v, t } = drag;
+    drag = null;
+    if (!moved) return;
+    st.s.classList.remove('is-dragging');
+    // a row held still before letting go stays put; a fling carries on, never more than a few posters
+    const speed = e.timeStamp - t > 80 ? 0 : Math.max(-DRAG_MAX_SPEED, Math.min(DRAG_MAX_SPEED, v));
+    moveTo(st, st.to + speed * DRAG_THROW);
+    // the click that ends a drag doesn't open the poster
+    const stop = (c) => { c.stopPropagation(); c.preventDefault(); };
+    window.addEventListener('click', stop, { capture: true, once: true });
+    setTimeout(() => window.removeEventListener('click', stop, { capture: true }), 0);
+  };
+  const noGhost = (e) => { if (stripOf(e.target)?.own && e.target.closest('.dz-hs__track')) e.preventDefault(); };
+  page.addEventListener('pointerdown', down);
+  window.addEventListener('pointermove', move);
+  window.addEventListener('pointerup', up);
+  page.addEventListener('dragstart', noGhost);
   // Arrow buttons: one poster at a time
   const stepBy = (st, dir) => {
     const card = st.track.firstElementChild;
@@ -1052,6 +1098,10 @@ export function startMotion(page, reduced) {
     ro.disconnect();
     strips.forEach(({ track }) => track.removeEventListener('load', loaded, true));
     page.removeEventListener('wheel', wheel);
+    page.removeEventListener('pointerdown', down);
+    window.removeEventListener('pointermove', move);
+    window.removeEventListener('pointerup', up);
+    page.removeEventListener('dragstart', noGhost);
     page.removeEventListener('click', clicks);
     page.removeEventListener('scroll', ends);
     page.removeEventListener('scroll', queue);

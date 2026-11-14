@@ -77,7 +77,7 @@ export default {
     {
       slug: 'adaminde-chayakada',
       title: 'Adaminde Chayakada (Adam\u2019s Tea Shop)',
-      subtitle: 'Launch, menu and festival posters for Adaminde Chayakada',
+      subtitle: 'Every dish has its own character, hand-drawn in Illustrator from what’s on the plate. The illustrations made the restaurant stand out, got people curious and talking, and helped grow the business.',
       client: 'Adaminde Chayakada',
       year: '',
       location: 'Calicut & Kottayam, Kerala',
@@ -90,7 +90,6 @@ export default {
       whole: true,
       modules: [
         { type: 'poster', src: 'assets/work/poster-design/adaminde-chayakada/opening-soon-kottayam.jpg', w: 1414, h: 2000, title: 'Opening soon in Kottayam', alt: 'Adaminde Chayakada poster on dark brown: a rooster in a T-shirt calls a rooster in a mundu and sunglasses, with Malayalam speech bubbles, announcing the opening in Kottayam', note: 'Launch' },
-        { type: 'poster', src: 'assets/work/poster-design/adaminde-chayakada/somalian-parotta.jpg', w: 1414, h: 2000, title: '‘Somalian’', alt: 'Adaminde Chayakada poster: Pencil sketch of a cook spinning parotta dough, announcing ‘Somalian’ dishes and the new shop on Beach Road, Calicut', note: 'Opening soon' },
         { type: 'poster', src: 'assets/work/poster-design/adaminde-chayakada/home-delivery.jpg', w: 1414, h: 2000, title: 'Home Delivery', alt: 'Adaminde Chayakada poster: A rooster on a yellow scooter with a delivery box: if you’re hungry, call us, with the home delivery numbers', note: 'Home delivery' },
         { type: 'poster', src: 'assets/work/poster-design/adaminde-chayakada/all-day-menu.jpg', w: 1000, h: 2000, title: 'All-Day Menu', alt: 'Adaminde Chayakada poster: Tall menu board of roosters through the day, from the 6 am breakfast to the late-night meals', note: '8 × 4 ft board' },
         { type: 'poster', src: 'assets/work/poster-design/adaminde-chayakada/biriyani-varieties.jpg', w: 1414, h: 2000, title: '15 Varieties of Biriyani', alt: 'Adaminde Chayakada poster: A copper biriyani pot over a wood fire: 15 varieties of biriyani from 20th July 2016', note: 'Menu launch' },
@@ -122,6 +121,7 @@ export default {
         { type: 'poster', src: 'assets/work/poster-design/adaminde-chayakada/chickens-tour.jpg', w: 2000, h: 1414, title: 'Chickens’ Tour', alt: 'Adaminde Chayakada poster: Roosters leaving on a yellow bus: we will be back at our Chayakada on 20th July 2016', note: 'Break notice' },
         { type: 'poster', src: 'assets/work/poster-design/adaminde-chayakada/thanks-dubai.jpg', w: 1500, h: 1060, title: 'Thanks, Dubai', alt: 'Adaminde Chayakada poster: Roosters and a cartoon egg in front of the Dubai skyline: thanks, see you again', note: 'Event' },
         { type: 'poster', src: 'assets/work/poster-design/adaminde-chayakada/facebook-10k-likes.jpg', w: 1414, h: 2000, title: '10K+ Likes', alt: 'Adaminde Chayakada poster: A rooster giving a thumbs up with a sign reading 10K+ Likes, Thank You', note: 'Social media' },
+        { type: 'poster', src: 'assets/work/poster-design/adaminde-chayakada/somalian-parotta.jpg', w: 1414, h: 2000, title: '‘Somalian’', alt: 'Adaminde Chayakada poster: Pencil sketch of a cook spinning parotta dough, announcing ‘Somalian’ dishes and the new shop on Beach Road, Calicut', note: 'Opening soon' },
       ],
     },
     {

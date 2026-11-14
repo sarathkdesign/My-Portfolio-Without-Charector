@@ -684,6 +684,16 @@ function projectModules(project) {
   return nodes;
 }
 
+// A bracketed end to a name, e.g. 'Adaminde Chayakada (Adam’s Tea Shop)', sits small beside the last word
+const titleParts = (title) => {
+  const m = title.match(/^(?:(.*)\s+)?(\S+)\s+(\([^()]+\))$/);
+  if (!m) return [title];
+  const [, before, last, aside] = m;
+  // the last word and the bracket never part across lines
+  const tail = el('span', { class: 'proj__title-tail' }, [last, ' ', el('span', { class: 'proj__title-aside', text: aside })]);
+  return before ? [before, ' ', tail] : [tail];
+};
+
 function renderProject(page, category, project) {
   loadFont(project.theme?.fontHref);
   const t = project.theme || {};
@@ -709,7 +719,7 @@ function renderProject(page, category, project) {
     el('header', { class: 'proj__head' }, [
       el('div', { class: 'proj__lead' }, [
         el('p', { class: 'proj__kicker', 'data-reveal': true, text: category.name }),
-        el('h1', { class: 'proj__title', id: 'page-project-title', tabindex: '-1', 'data-reveal': true, style: '--d:1', text: project.title }),
+        el('h1', { class: 'proj__title', id: 'page-project-title', tabindex: '-1', 'data-reveal': true, style: '--d:1' }, titleParts(project.title)),
         project.subtitle && el('p', { class: 'proj__subtitle', 'data-reveal': true, style: '--d:2', text: project.subtitle }),
       ]),
       el('div', { class: 'proj__side', 'data-reveal': true, style: '--d:3' }, [
