@@ -1,7 +1,7 @@
 /*
   POSTER DESIGN — one entry per project, shown in this order.
   The format is explained at the top of branding.js; copy the Aakara entry there as a starting point.
-  Posters live in three collections: TCSL, Kadalas Cafe and Other Posters.
+  Posters live in four collections: TCSL, Kadalas Cafe, Adaminde Chayakada and Other Posters.
 */
 
 
@@ -25,12 +25,13 @@ export default {
     { src: 'assets/work/poster-design/kadalas-cafe/chicken-tales.jpg', w: 904, h: 1280 },
     { src: 'assets/work/poster-design/other-posters/vishu-2026.jpg', w: 1600, h: 2000 },
     { src: 'assets/work/poster-design/tcsl/diwali.jpg', w: 1600, h: 2000 },
+    { src: 'assets/work/poster-design/adaminde-chayakada/opening-soon-kottayam.jpg', w: 1414, h: 2000 },
     { src: 'assets/work/poster-design/kadalas-cafe/key-to-tasty-tales.jpg', w: 1066, h: 1280 },
     { src: 'assets/work/poster-design/other-posters/new-year-celebration.jpg', w: 1414, h: 2000 },
     { src: 'assets/work/poster-design/tcsl/worldwide.jpg', w: 1600, h: 2000 },
     { src: 'assets/work/poster-design/other-posters/earthi-face-wash.jpg', w: 904, h: 1280 },
   ],
-  // Three collections, each a tile on the category page with a gallery page of its own (js/designs.js)
+  // Four collections, each a tile on the category page with a gallery page of its own (js/designs.js)
   projects: [
     {
       slug: 'tcsl',
@@ -71,6 +72,24 @@ export default {
         { type: 'poster', src: 'assets/work/poster-design/kadalas-cafe/landing-soon.jpg', w: 1066, h: 1280, title: 'Landing soon at Kozhikode', alt: 'Kadalas Cafe poster: a chef’s hat as a hot-air balloon', note: 'Teaser' },
         { type: 'poster', src: 'assets/work/poster-design/kadalas-cafe/meaty-tales.jpg', w: 904, h: 1280, title: 'Meaty Tales to Remember', alt: 'Kadalas Cafe poster: a burger topped with an origami bull', note: 'Menu' },
         { type: 'poster', src: 'assets/work/poster-design/kadalas-cafe/chicken-tales.jpg', w: 904, h: 1280, title: 'Chicken Tales to Remember', alt: 'Kadalas Cafe poster: a burger topped with an origami rooster', note: 'Menu' },
+      ],
+    },
+    {
+      slug: 'adaminde-chayakada',
+      title: 'Adaminde Chayakada (Adam\u2019s Tea Shop)',
+      subtitle: 'Launch poster for Adaminde Chayakada',
+      client: 'Adaminde Chayakada',
+      year: '',
+      location: 'Kottayam, Kerala',
+      services: ['Poster design'],
+      design: 'carousel', // same interface as every poster page, in the poster's mustard and cocoa
+      hideCover: true,
+      theme: { bg: '#f6e2b3', ink: '#2b211d', accent: '#f2a51e', soft: 'rgba(43,33,29,0.7)', line: 'rgba(43,33,29,0.14)' },
+      thumb: { src: 'assets/work/poster-design/adaminde-chayakada/opening-soon-kottayam.jpg', alt: 'Adaminde Chayakada poster: two cartoon roosters on the phone, opening soon in Kottayam' },
+      cover: { src: 'assets/work/poster-design/adaminde-chayakada/opening-soon-kottayam.jpg', alt: 'Adaminde Chayakada poster: two cartoon roosters on the phone, opening soon in Kottayam' },
+      whole: true,
+      modules: [
+        { type: 'poster', src: 'assets/work/poster-design/adaminde-chayakada/opening-soon-kottayam.jpg', w: 1414, h: 2000, title: 'Opening soon in Kottayam', alt: 'Adaminde Chayakada poster on dark brown: a rooster in a T-shirt calls a rooster in a mundu and sunglasses, with Malayalam speech bubbles, announcing the opening in Kottayam', note: 'Launch' },
       ],
     },
     {

@@ -45,7 +45,7 @@ export default {
     {
       slug: 'mothers-kitchen',
       title: 'Mothers Kitchen',
-      subtitle: 'Pure ghee jar label and vegan pancake sleeve',
+      subtitle: 'Pure ghee jar label, vegan pancake sleeve and batter range poster',
       client: 'Mothers Kitchen Almere',
       year: '',
       services: ['Package design'],
@@ -58,6 +58,7 @@ export default {
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/pure-ghee.jpg', w: 2000, h: 1424, title: 'Pure Ghee', note: 'Jar label', alt: 'Mothers Kitchen Pure Ghee jar with a purple label on a white table' },
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/vegan-pancake-top.jpg', w: 2000, h: 1500, title: 'Vegan Pancake', note: 'Tub sleeve, front', alt: 'Mothers Kitchen Vegan Pancake sleeve seen from above: a stack of pancakes with berries on a dark blue background' },
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/vegan-pancake-stack.jpg', w: 2000, h: 1500, title: 'Vegan Pancake', note: 'Tub sleeve, back with instructions', alt: 'Two stacked tubs wrapped in the Mothers Kitchen Vegan Pancake sleeve, showing the orange back panel with instructions' },
+        { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/protein-batters.jpg', w: 1414, h: 2000, title: 'Protein Batters', note: 'Poster', alt: 'Mothers Kitchen Almere poster on green: Healthiest high protein batters from MKA, with the range of idly, dosa, ragi, carrot, adai and appam batter tubs' },
       ],
     },
     {

@@ -3,6 +3,7 @@
 export const small = new Set([
   'assets/work/package-design/mothers-kitchen/vegan-pancake-top.jpg',
   'assets/work/package-design/mothers-kitchen/vegan-pancake-stack.jpg',
+  'assets/work/package-design/mothers-kitchen/protein-batters.jpg',
   'assets/work/brochure-design/wall/01.jpg',
   'assets/work/brochure-design/wall/02.jpg',
   'assets/work/brochure-design/wall/03.jpg',
@@ -61,6 +62,7 @@ export const small = new Set([
   'assets/work/branding/initium-world/05.webp',
   'assets/work/branding/debarro-interiors/07.webp',
   'assets/work/branding/sidhi/thumb-aloe-vera.jpg',
+  'assets/work/poster-design/adaminde-chayakada/opening-soon-kottayam.jpg',
   'assets/work/poster-design/tcsl-gandhi-jayanti/poster.jpg',
   'assets/work/poster-design/other-posters/native-touch.jpg',
   'assets/work/poster-design/tcsl/international-courier.jpg',
