@@ -708,6 +708,8 @@ figure:has(> img[data-zoom]), .ar-plate { overflow: hidden; }
 .kc-card figcaption b { font: 700 clamp(15px, 1.2vw, 22px) / 1.15 var(--display); color: var(--th-ink); }
 /* Arrows to step along the row (scrolling down, or a sideways swipe, moves it too) */
 .kc-nav { position: absolute; left: 50%; transform: translateX(calc(-50% + clamp(80px, 8vw, 160px))); bottom: clamp(8px, 1.5vh, 20px); /* beneath the posters, a little right of centre */ display: flex; gap: 10px; z-index: 2; }
+/* tablets (iPad and the like): the arrows sit in the exact centre beneath the posters */
+@media (min-width: 721px) and (max-width: 1366px) and (hover: none), (min-width: 721px) and (max-width: 1366px) and (pointer: coarse) { .kc-nav { transform: translateX(-50%); } }
 .kc-nav__btn {
   width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
   border: 1px solid var(--th-line); background: var(--th-bg, #fff); color: var(--th-ink);

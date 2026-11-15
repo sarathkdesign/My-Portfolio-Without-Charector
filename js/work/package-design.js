@@ -105,7 +105,7 @@ export default {
       design: 'carousel', // same gallery interface, in the range's signature blue and orange
       hideCover: true,
       theme: { bg: '#e3e8f3', ink: '#14234d', accent: '#f26a1b', soft: 'rgba(20,35,77,0.7)', line: 'rgba(20,35,77,0.14)' },
-      thumb: { src: 'assets/work/package-design/mothers-kitchen/tile-batters.jpg', alt: 'Two blue Mothers Kitchen Adai Idly & Dosa Batter family-pack pouches on blue' },
+      thumb: { src: 'assets/work/package-design/mothers-kitchen/tile-batters-2.jpg', alt: 'The six Mothers Kitchen batter pouches laid out on beige: Pesarattu, Adai, Appam, Carrot, Spinach and Ragi' },
       cover: { src: 'assets/work/package-design/mothers-kitchen/batter-adai.jpg', alt: 'Two blue Mothers Kitchen Adai Idly & Dosa Batter family-pack pouches on blue' },
       modules: [
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/batter-adai.jpg', w: 1199, h: 1312, title: 'Adai Idly & Dosa Batter', note: 'Family pack', alt: 'Mothers Kitchen batter packaging: two blue Adai Idly & Dosa Batter pouches with a crispy adai dosa and chutneys on the front' },
@@ -125,7 +125,7 @@ export default {
       services: ['Package design'],
       design: 'carousel', // the bag’s chilli red and yellow
       hideCover: true,
-      theme: { bg: '#f8dcd6', ink: '#4a0d0a', accent: '#f6b21a', soft: 'rgba(74,13,10,0.7)', line: 'rgba(74,13,10,0.14)' },
+      theme: { bg: '#000000', ink: '#ff3324', accent: '#f6b21a', soft: 'rgba(255,51,36,0.78)', line: 'rgba(255,51,36,0.22)' }, // black, with every word in the bag's chilli red
       thumb: { src: 'assets/work/package-design/mothers-kitchen/mixture-display.jpg', alt: 'Mothers Kitchen Hot & Spicy Mixture snack bag in red, with a bowl of mixture inside a flame' },
       cover: { src: 'assets/work/package-design/mothers-kitchen/mixture-snack-bag.jpg', alt: 'Mothers Kitchen Hot & Spicy Mixture snack bag in red, with a bowl of mixture inside a flame' },
       modules: [

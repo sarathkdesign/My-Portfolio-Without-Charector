@@ -546,7 +546,8 @@ function renderLogofolio(page) {
     return el('li', { class: 'lf__cell', 'data-reveal': true, style: `--d:${i % 4}` }, [
       el('img', {
         class: 'lf__logo', src: `${src}.webp`, srcset: `${src}.sm.webp ${logo.smw}w, ${src}.webp ${logo.w}w`, sizes,
-        width: logo.w, height: logo.h, alt: `${logo.name} logo`, loading: 'lazy', decoding: 'async', style: `--lw:${pct.toFixed(1)}%`,
+        width: logo.w, height: logo.h, alt: `${logo.name} logo`, loading: i >= logofolio.length - 4 ? 'eager' : 'lazy', decoding: 'async', style: `--lw:${pct.toFixed(1)}%`,
+        // (the last row loads up front: iPad Safari can miss lazy pictures at the very end of a snapping page)
       }),
     ]);
   };
@@ -556,7 +557,11 @@ function renderLogofolio(page) {
   const more = el('button', { class: 'lf__more', type: 'button', 'aria-label': 'Scroll down to more logos' });
   more.innerHTML = '<svg viewBox="0 0 16 24" aria-hidden="true"><path d="M8 2v19m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   more.addEventListener('click', () => page.scrollBy({ top: grid.firstElementChild.offsetHeight * 3, behavior: reducedQuery.matches ? 'auto' : 'smooth' }));
-  const onScroll = () => more.classList.toggle('is-gone', page.scrollTop > 8);
+  const onScroll = () => {
+    more.classList.toggle('is-gone', page.scrollTop > 8);
+    // at the foot of the page every mark shows, even if the reveal never noticed the last row (seen on iPad)
+    if (page.scrollTop + page.clientHeight >= page.scrollHeight - 4) grid.querySelectorAll('.lf__cell:not(.is-in)').forEach((c) => c.classList.add('is-in'));
+  };
   page.addEventListener('scroll', onScroll, { passive: true });
   page._lfScroll = onScroll;
   page.replaceChildren(
