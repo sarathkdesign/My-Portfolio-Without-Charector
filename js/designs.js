@@ -732,7 +732,7 @@ DESIGNS.foundation = (p, h) => {
 
 // ── Poster collections ─────────────────────────────────────
 // Every poster opens big in the poster viewer when clicked (js/lightbox.js)
-const posterImg = (h, m, attrs = {}) => h.picture(m, { loading: 'lazy', style: `aspect-ratio:${m.w} / ${m.h}`, 'data-lightbox': '', 'data-title': m.title, ...attrs });
+const posterImg = (h, m, attrs = {}) => h.picture(m, { loading: 'lazy', style: `aspect-ratio:${m.w} / ${m.h};--ar:${(m.w / m.h).toFixed(4)}`, 'data-lightbox': '', 'data-title': m.title, ...attrs });
 const posterCount = (p) => p.modules.filter((m) => m.type === 'poster').length;
 
 // TCSL — a red-and-white wall: two staggered columns drifting at different speeds, each poster numbered in red
@@ -770,7 +770,7 @@ DESIGNS.carousel = (p, h) => {
           ...posters.map((m, i) => h.el('figure', { class: 'kc-card', tabindex: '0', style: `--tilt:${i % 2 ? 1.6 : -1.6}deg` }, [
             // a poster with translations sits in a frame that also holds its translation boxes
             m.tr && p.translate
-              ? h.el('div', { class: 'tr-wrap', style: `aspect-ratio:${m.w} / ${m.h}` }, [posterImg(h, m, { 'data-tr': JSON.stringify(m.tr) }), spots(m.tr)])
+              ? h.el('div', { class: 'tr-wrap', style: `--ar:${(m.w / m.h).toFixed(4)}` }, [posterImg(h, m, { 'data-tr': JSON.stringify(m.tr) }), spots(m.tr)])
               : posterImg(h, m),
             h.el('figcaption', {}, [h.el('b', { text: m.title }), m.note && h.el('span', { text: m.note })]),
           ])),
