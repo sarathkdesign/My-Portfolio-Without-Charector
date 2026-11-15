@@ -718,6 +718,11 @@ const titleParts = (title) => {
   const m = title.match(/^(.*\S)\s+(\([^()]+\))$/);
   return m ? [m[1], ' ', el('span', { class: 'proj__title-aside', text: m[2] })] : [title];
 };
+// A project can colour the start of its title on its own page: `titleLead: { text, color }`
+const leadParts = (title, lead) => {
+  if (!lead?.text || !title.startsWith(lead.text)) return titleParts(title);
+  return [el('span', { class: 'proj__title-lead', style: `color:${lead.color}`, text: lead.text }), ...titleParts(title.slice(lead.text.length))];
+};
 
 function renderProject(page, category, project) {
   loadFont(project.theme?.fontHref);
@@ -744,7 +749,7 @@ function renderProject(page, category, project) {
     el('header', { class: 'proj__head' }, [
       el('div', { class: 'proj__lead' }, [
         el('p', { class: 'proj__kicker', 'data-reveal': true, text: category.name }),
-        el('h1', { class: 'proj__title', id: 'page-project-title', tabindex: '-1', 'data-reveal': true, style: '--d:1' }, titleParts(project.title)),
+        el('h1', { class: 'proj__title', id: 'page-project-title', tabindex: '-1', 'data-reveal': true, style: '--d:1' }, leadParts(project.title, project.titleLead)),
         project.subtitle && el('p', { class: 'proj__subtitle', 'data-reveal': true, style: '--d:2', text: project.subtitle }),
       ]),
       el('div', { class: 'proj__side', 'data-reveal': true, style: '--d:3' }, [

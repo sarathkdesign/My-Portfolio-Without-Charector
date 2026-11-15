@@ -501,7 +501,7 @@ export const variants = {
   'assets/work/package-design/mothers-kitchen/batter-appam.jpg': [1199, 1199, 640],
   'assets/work/package-design/mothers-kitchen/tile-batters-2.jpg': [1365, 1365, 640, 1280],
   'assets/work/package-design/mezzcla/tile.jpg': [1600, 1600, 640, 1280],
-  'assets/work/package-design/mothers-kitchen/tile-instant-foods.jpg': [1600, 1600, 640, 1280],
+  'assets/work/package-design/mothers-kitchen/tile-instant-foods-2.jpg': [1254, 1254, 640],
   'assets/work/package-design/awa/tile.jpg': [1600, 1600, 640, 1280],
   'assets/work/package-design/mothers-kitchen/mixture-snack-bag.jpg': [1123, 1123, 640],
   'assets/work/package-design/mothers-kitchen/mixture-family-pack.jpg': [1123, 1123, 640],

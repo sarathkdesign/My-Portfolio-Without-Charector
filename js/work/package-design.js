@@ -85,7 +85,7 @@ export default {
       design: 'carousel', // the pouches’ warm wheat and orange
       hideCover: true,
       theme: { bg: '#f7ead6', ink: '#3a2410', accent: '#f2b31b', soft: 'rgba(58,36,16,0.7)', line: 'rgba(58,36,16,0.14)' },
-      thumb: { src: 'assets/work/package-design/mothers-kitchen/tile-instant-foods.jpg', alt: 'Mothers Kitchen Methi Thepla pouch in blue and orange beside a plate of thepla' },
+      thumb: { src: 'assets/work/package-design/mothers-kitchen/tile-instant-foods-2.jpg', alt: 'Mothers Kitchen Multigrain Chapati pouch with chapatis flying out of it, on a wooden table with grains and flour' },
       cover: { src: 'assets/work/package-design/mothers-kitchen/methi-thepla.jpg', alt: 'Mothers Kitchen Methi Thepla pouch in blue and orange beside a plate of thepla' },
       modules: [
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/methi-thepla.jpg', w: 1254, h: 1254, title: 'Methi Thepla', note: 'Pouch', alt: 'Mothers Kitchen Methi Thepla pouch in blue and orange beside a plate of thepla, green chutney and fenugreek leaves' },
@@ -119,6 +119,7 @@ export default {
     {
       slug: 'mothers-kitchen-hot-spicy-mixture',
       title: 'Mothers Kitchen Hot & Spicy Mixture',
+      titleLead: { text: 'Mothers Kitchen', color: '#fcba04' }, // the bag's yellow
       subtitle: 'Snack bag design',
       client: 'Mothers Kitchen Almere',
       year: '',
