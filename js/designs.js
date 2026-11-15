@@ -732,7 +732,8 @@ DESIGNS.foundation = (p, h) => {
 
 // ── Poster collections ─────────────────────────────────────
 // Every poster opens big in the poster viewer when clicked (js/lightbox.js)
-const posterImg = (h, m, attrs = {}) => h.picture(m, { loading: 'lazy', style: `aspect-ratio:${m.w} / ${m.h};--ar:${(m.w / m.h).toFixed(4)}`, 'data-lightbox': '', 'data-title': m.title, ...attrs });
+// sizes: a poster card is at most 656px tall, so it never needs a copy wider than that times its shape
+const posterImg = (h, m, attrs = {}) => h.picture(m, { loading: 'lazy', sizes: `(max-width: 720px) 100vw, ${Math.round(656 * m.w / m.h)}px`, style: `aspect-ratio:${m.w} / ${m.h};--ar:${(m.w / m.h).toFixed(4)}`, 'data-lightbox': '', 'data-title': m.title, ...attrs });
 const posterCount = (p) => p.modules.filter((m) => m.type === 'poster').length;
 
 // TCSL — a red-and-white wall: two staggered columns drifting at different speeds, each poster numbered in red
@@ -759,19 +760,44 @@ DESIGNS.redwall = (p, h) => {
 };
 
 // Kadalas Cafe — aqua: the posters glide past sideways like a menu board, each with its line
+// A poster card past the first few starts empty (its addresses kept in data-src / data-srcset);
+// the strip loads it as it slides near, so a long row isn't fetched all at once
+const EAGER_CARDS = 4;
+const fill = (img) => {
+  if (!img.dataset.src) return;
+  if (img.dataset.srcset) img.setAttribute('srcset', img.dataset.srcset);
+  img.setAttribute('src', img.dataset.src);
+  delete img.dataset.src; delete img.dataset.srcset;
+};
+// Desktop: the row is pinned and slides sideways, so a picture loads when it is within one screen
+// width of the row's window. Phones: the posters stack, so a picture loads as the page nears it.
+const fillAsNeeded = (strip) => {
+  const imgs = [...strip.querySelectorAll('img[data-src]')];
+  if (!imgs.length) return;
+  if (!('IntersectionObserver' in window)) return imgs.forEach(fill);
+  const wide = window.matchMedia('(min-width: 721px)');
+  const pin = strip.querySelector('.dz-hs__pin');
+  const watch = (root, margin, when) => {
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting && when()) { fill(e.target); io.unobserve(e.target); }
+    }), { root, rootMargin: margin });
+    imgs.forEach((img) => io.observe(img));
+  };
+  watch(pin, '0px 100% 0px 100%', () => wide.matches);
+  watch(null, '1200px 0px 1200px 0px', () => !wide.matches);
+};
+
 DESIGNS.carousel = (p, h) => {
   const posters = p.modules.filter((m) => m.type === 'poster');
-  return [
-    // posters in another language get a Translate switch above them
-    p.translate && h.el('div', { class: 'tr-bar' }, [toggleButton(p.translate)]),
-    h.el('section', { class: 'dz-hs kc-strip', 'data-hs': true, 'data-hs-lead': true }, [
+  const cardImg = (m, i, attrs) => posterImg(h, m, i < EAGER_CARDS ? { loading: 'eager', fetchpriority: 'high', ...attrs } : { defer: true, ...attrs }); // the first posters on screen come first
+  const strip = h.el('section', { class: 'dz-hs kc-strip', 'data-hs': true, 'data-hs-lead': true }, [
       h.el('div', { class: 'dz-hs__pin' }, [
         h.el('div', { class: 'dz-hs__track' }, [
           ...posters.map((m, i) => h.el('figure', { class: 'kc-card', tabindex: '0', style: `--tilt:${i % 2 ? 1.6 : -1.6}deg` }, [
             // a poster with translations sits in a frame that also holds its translation boxes
             m.tr && p.translate
-              ? h.el('div', { class: 'tr-wrap', style: `--ar:${(m.w / m.h).toFixed(4)}` }, [posterImg(h, m, { 'data-tr': JSON.stringify(m.tr) }), spots(m.tr)])
-              : posterImg(h, m),
+              ? h.el('div', { class: 'tr-wrap', style: `--ar:${(m.w / m.h).toFixed(4)}` }, [cardImg(m, i, { 'data-tr': JSON.stringify(m.tr) }), spots(m.tr)])
+              : cardImg(m, i),
             h.el('figcaption', {}, [h.el('b', { text: m.title }), m.note && h.el('span', { text: m.note })]),
           ])),
         ]),
@@ -780,7 +806,12 @@ DESIGNS.carousel = (p, h) => {
           h.el('button', { class: 'kc-nav__btn', type: 'button', 'data-hs-step': '1', 'aria-label': 'More posters' }, [arrowSvg('M6 3l5 5-5 5')]),
         ]),
       ]),
-    ]),
+    ]);
+  setTimeout(() => fillAsNeeded(strip), 0); // once the strip is on the page
+  return [
+    // posters in another language get a Translate switch above them
+    p.translate && h.el('div', { class: 'tr-bar' }, [toggleButton(p.translate)]),
+    strip,
   ];
 };
 
@@ -1145,8 +1176,9 @@ export function startMotion(page, reduced) {
   const loaded = (e) => { if (e.target.tagName === 'IMG') resize(); };
   strips.forEach(({ track }) => {
     track.addEventListener('load', loaded, true);
-    // the row's pictures are all needed for its width: fetch them now rather than as they slide in
-    track.querySelectorAll('img[loading="lazy"]').forEach((img) => (img.loading = 'eager'));
+    // the row's pictures are all needed for its width: fetch them now rather than as they slide in.
+    // Poster cards (.kc-card) know their size from their shape, so they load as they come near instead.
+    if (!track.querySelector('.kc-card')) track.querySelectorAll('img[loading="lazy"]').forEach((img) => (img.loading = 'eager'));
   });
   const stripOf = (node) => strips.find((st) => st.s === node?.closest?.('[data-hs]'));
   // Arrows grey out at either end

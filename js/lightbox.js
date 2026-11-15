@@ -45,8 +45,9 @@ export function createLightbox() {
     img.classList.remove('is-in');
     img.style.setProperty('--from', `${dir * 40}px`);
     // the largest size on offer: the page may be showing a small one
-    const largest = item.getAttribute('srcset')?.split(',').pop().trim().split(' ')[0];
-    img.src = item.dataset.full || largest || item.currentSrc || item.src;
+    // (a poster not yet loaded keeps its addresses in data-srcset / data-src)
+    const largest = (item.getAttribute('srcset') || item.dataset.srcset)?.split(',').pop().trim().split(' ')[0];
+    img.src = item.dataset.full || largest || item.dataset.src || item.currentSrc || item.src;
     img.alt = item.alt || '';
     caption.textContent = item.dataset.title || item.alt || '';
     layer?.remove();

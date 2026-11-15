@@ -443,6 +443,12 @@ function setupStrip() {
       if (isIntersecting) {
         const start = () => {
           if (!v.onScreen || reduced) return;
+          // a page covers the homepage (e.g. someone arrived on a project link): load the clip only once they come back
+          if (!v.getAttribute('src') && document.documentElement.classList.contains('is-away')) {
+            const mo = new MutationObserver(() => { if (!document.documentElement.classList.contains('is-away')) { mo.disconnect(); start(); } });
+            mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+            return;
+          }
           if (!v.getAttribute('src')) { v.muted = true; v.src = v.dataset.src; } // first time on screen: load it now
           if (v.paused) v.play?.().catch(() => {});
         };

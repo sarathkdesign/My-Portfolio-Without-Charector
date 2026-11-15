@@ -98,10 +98,17 @@ const srcFor = (img) => {
   const list = set.split(',').map((s) => s.trim().split(' ')).map(([u, w]) => [u, parseInt(w, 10)]);
   return (list.find(([, w]) => w >= need) || list[list.length - 1])[0];
 };
-const picture = (image, attrs = {}) => {
+// A 1×1 clear GIF: the stand-in for a picture that is not fetched yet
+const BLANK_IMG = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+const picture = (image, { defer, ...attrs } = {}) => {
   const srcset = srcsetOf(image.src);
-  // the original stays as src, for any browser that can't use srcset
-  const img = el('img', { src: image.src, alt: image.alt ?? '', decoding: 'async', ...(srcset && { srcset, sizes: '100vw' }), ...attrs });
+  // `defer`: nothing is fetched yet; the addresses wait in data-src / data-srcset for the page to fill in
+  if (defer) return el('img', { src: BLANK_IMG, 'data-src': image.src, alt: image.alt ?? '', decoding: 'async', ...(srcset && { 'data-srcset': srcset, sizes: '100vw' }), ...attrs });
+  // srcset, sizes and loading are set before src: Safari starts fetching the moment src is set, so with
+  // src first it downloads the original as well as the WebP copy. The original stays as src for any
+  // browser that can't use srcset.
+  const { src = image.src, ...rest } = attrs;
+  const img = el('img', { alt: image.alt ?? '', decoding: 'async', ...(srcset && { srcset, sizes: '100vw' }), ...rest, src });
   // Holds a little room until the image arrives, so lazy images below don't all load at once
   if (!img.complete) img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
   else img.classList.add('is-loaded');
@@ -374,7 +381,12 @@ function mountWall(page, hero, category) {
     const ratio = (img) => (img.w && img.h ? img.w / img.h : 4 / 3);
     const span = row.reduce((sum, img) => sum + ratio(img), 0); // the set's width, in row heights
     const set = () => row.map((img) =>
-      el('img', { src: light(img.src), alt: '', decoding: 'async', 'data-src': img.src, style: `aspect-ratio:${ratio(img)}` }));
+      el('img', {
+        alt: '', decoding: 'async', fetchpriority: 'low', 'data-src': img.src, style: `aspect-ratio:${ratio(img)}`, // the moving wall waits behind the work
+        // each tile is about a third of the screen's height tall: fetch a WebP that size, not the 1400px copy
+        ...(srcsetOf(img.src) && { srcset: srcsetOf(img.src), sizes: `${(ratio(img) * 34).toFixed(1)}vh` }),
+        src: light(img.src), // last, so Safari reads srcset first
+      }));
     // Three copies: the row moves by one copy and starts again, with no seam
     return el('div', { class: 'cat__wall-row' }, [
       el('div', { class: 'cat__wall-track', style: `--dur:${(span * MOTION.wallPace * (r ? 1.15 : 1)).toFixed(1)}s` },
@@ -448,7 +460,7 @@ function renderCategory(page, category) {
       el('li', { 'data-reveal': true, style: `--d:${i % 3}` }, [
         el('a', { class: 'thumb', href: hrefOf(category, p), 'data-route': true, 'data-project': p.slug }, [
           el('span', { class: 'thumb__media' }, [
-            picture({ ...(p.thumb || p.cover), src: light((p.thumb || p.cover).src) }, { loading: i < 6 ? 'eager' : 'lazy' }),
+            picture({ ...(p.thumb || p.cover), src: light((p.thumb || p.cover).src) }, { loading: i < 6 ? 'eager' : 'lazy', sizes: '(max-width: 720px) 100vw, 34vw' }), // a tile is about a third of the screen wide
             // posters: each cover is one of a set, so a quiet hint that there's more inside
             category.slug === 'poster-design' && el('span', { class: 'thumb__hint', 'aria-hidden': 'true' }, [el('span', { text: 'View collection' }), el('i', { text: '→' })]),
           ]),
