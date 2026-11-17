@@ -523,6 +523,8 @@ function renderInfo(page, kind) {
   page.dataset.page = kind;
   page.classList.remove('is-white');
   page._lit?.disconnect(); // the Logofolio's touch-screen colour watcher
+  page._lfSeen?.forEach((o) => o.disconnect()); // and its entrance and early-loading watchers
+  page._lfSeen = null;
   if (page._lfScroll) page.removeEventListener('scroll', page._lfScroll); // and its scroll-down arrow
   page._lfScroll = null;
   if (kind === 'logofolio') return renderLogofolio(page);
@@ -551,15 +553,49 @@ function renderLogofolio(page) {
     const src = `assets/logofolio/${logo.file}`;
     // 4 columns (marks drawn 1.3x larger on tablets), 2 on phones (1.7x larger); see css/pages.css
     const sizes = `(max-width: 699px) ${((pct * 1.7) / 2).toFixed(1)}vw, (max-width: 1099px) ${((pct * 1.3) / 4).toFixed(1)}vw, ${(pct / 4).toFixed(1)}vw`;
-    return el('li', { class: 'lf__cell', 'data-reveal': true, style: `--d:${i % 4}` }, [
-      el('img', {
-        class: 'lf__logo', width: logo.w, height: logo.h, alt: `${logo.name} logo`, loading: i >= logofolio.length - 4 ? 'eager' : 'lazy', decoding: 'async', style: `--lw:${pct.toFixed(1)}%`,
-        sizes, srcset: `${src}.sm.webp ${logo.smw}w, ${src}.webp ${logo.w}w`, src: `${src}.webp`, // in this order: Safari fetches as soon as srcset or src is set
-        // (the last row loads up front: iPad Safari can miss lazy pictures at the very end of a snapping page)
-      }),
-    ]);
+    // The first three rows (one screen) and the last row load straight away; the rest start loading well
+    // before they scroll near (see `early` below). The last row: iPad Safari can miss lazy pictures at
+    // the very end of a snapping page.
+    const now = i < 12 || i >= logofolio.length - 4;
+    const img = el('img', {
+      class: 'lf__logo', width: logo.w, height: logo.h, alt: `${logo.name} logo`, loading: now ? 'eager' : 'lazy', decoding: 'async',
+      fetchpriority: i < 12 ? 'high' : null, style: `--lw:${pct.toFixed(1)}%`,
+      sizes, srcset: `${src}.sm.webp ${logo.smw}w, ${src}.webp ${logo.w}w`, src: `${src}.webp`, // in this order: Safari fetches as soon as srcset or src is set
+    });
+    const li = el('li', { class: 'lf__cell' }, [img]);
+    // A mark only comes in once its picture is decoded, so nothing pops in half-loaded
+    const ready = () => (img.decode ? img.decode().catch(() => {}) : Promise.resolve()).then(() => { li.classList.add('is-ready'); show(li); });
+    if (img.complete && img.naturalWidth) ready();
+    else { img.addEventListener('load', ready, { once: true }); img.addEventListener('error', () => { li.classList.add('is-ready'); show(li); }, { once: true }); }
+    return li;
+  };
+  // Entrance: a mark rises out of a soft blur once it is both on screen and ready. Marks arriving
+  // together come in one after another; the short delay is dropped once a mark has landed, so hover stays instant.
+  let queued = 0, flush = 0;
+  const show = (li) => {
+    if (!li.classList.contains('is-ready') || !li.classList.contains('is-near') || li.classList.contains('is-shown')) return;
+    li.style.setProperty('--sd', `${Math.min(queued++, 7) * 70}ms`);
+    cancelAnimationFrame(flush);
+    flush = requestAnimationFrame(() => { queued = 0; });
+    li.classList.add('is-shown');
+    setTimeout(() => li.classList.add('is-settled'), 1500);
   };
   const grid = el('ul', { class: 'lf__grid', 'aria-label': `${logofolio.length} logos` }, logofolio.map(cell));
+  const seen = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    seen.unobserve(e.target);
+    e.target.classList.add('is-near');
+    show(e.target);
+  }), { root: page, rootMargin: '0px 0px -6% 0px' });
+  // a screen and a half ahead, lazy marks are told to load now
+  const early = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    early.unobserve(e.target);
+    const img = e.target.querySelector('img');
+    if (img.loading === 'lazy') img.loading = 'eager';
+  }), { root: page, rootMargin: '150% 0px 150% 0px' });
+  grid.querySelectorAll('.lf__cell').forEach((c) => { seen.observe(c); early.observe(c); });
+  page._lfSeen = [seen, early];
   // A small arrow at the foot of the first screen: there are more marks below. It takes you to
   // the next three rows, and fades away once the page is scrolled (back again at the very top).
   const more = el('button', { class: 'lf__more', type: 'button', 'aria-label': 'Scroll down to more logos' });
@@ -568,7 +604,7 @@ function renderLogofolio(page) {
   const onScroll = () => {
     more.classList.toggle('is-gone', page.scrollTop > 8);
     // at the foot of the page every mark shows, even if the reveal never noticed the last row (seen on iPad)
-    if (page.scrollTop + page.clientHeight >= page.scrollHeight - 4) grid.querySelectorAll('.lf__cell:not(.is-in)').forEach((c) => c.classList.add('is-in'));
+    if (page.scrollTop + page.clientHeight >= page.scrollHeight - 4) grid.querySelectorAll('.lf__cell:not(.is-near)').forEach((c) => { c.classList.add('is-near'); show(c); });
   };
   page.addEventListener('scroll', onScroll, { passive: true });
   page._lfScroll = onScroll;

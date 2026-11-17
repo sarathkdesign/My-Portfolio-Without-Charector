@@ -539,7 +539,26 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
 }
 /* Touch screens: the mark crossing the middle of the screen shows its colours */
 .page .lf__cell.is-lit img.lf__logo { filter: grayscale(0); transform: scale(1.08); }
+/* Entrance (js/pages.js): a mark waits unseen until its picture is decoded and it is on screen, then rises
+   out of a soft blur into place; marks arriving together follow one another (--sd). The page's own
+   opening wipe holds them back. Once landed (.is-settled) the delay is gone, so hover reacts at once. */
+.page .lf__cell img.lf__logo {
+  transition: opacity 0.9s var(--ease) var(--sd, 0s), filter 1s var(--ease) var(--sd, 0s), transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) var(--sd, 0s);
+}
+.page .lf__cell:not(.is-shown) img.lf__logo,
+.page.is-before .lf__cell img.lf__logo, .page.is-entering .lf__cell img.lf__logo {
+  opacity: 0; transform: translate3d(0, 22px, 0) scale(0.9); filter: grayscale(1) blur(10px);
+}
+.page .lf__cell.is-settled img.lf__logo { transition: filter 0.7s var(--ease), transform 0.9s var(--ease); }
 .page--info.is-white .page__next { position: relative; z-index: 1; margin-top: 0; background: #fff; border-top-color: rgb(15 15 13 / 0.08); }
+/* Four to a row (tablets and up): the marks sit closer together and a little smaller. The columns take
+   86% of the width, and the rows are 86% as tall, so three rows (centred under the top band) still make
+   one screen and the fourth stays out of sight; scrolling snaps to the same centred position. */
+@media (min-width: 700px) {
+  .page--info.is-white:has(.lf__grid) { scroll-padding-top: calc(var(--band) + (100vh - var(--band)) * 0.07); scroll-padding-top: calc(var(--band) + (100dvh - var(--band)) * 0.07); }
+  .lf__grid { padding-top: calc(var(--band) + (100vh - var(--band)) * 0.07); padding-top: calc(var(--band) + (100dvh - var(--band)) * 0.07); padding-inline: 7vw; }
+  .lf__cell { height: calc((100vh - var(--band)) * 0.86 / 3); height: calc((100dvh - var(--band)) * 0.86 / 3); }
+}
 @media (max-width: 1099px) {
   .lf__grid { --lf-k: 1.3; }
 }
@@ -549,8 +568,9 @@ html:has(.page--info.is-dark:not([hidden])) .menu-btn { box-shadow: 0 0 0 1px rg
   .lf__cell:nth-child(2n + 1) { scroll-snap-align: start; } /* two to a row here */
 }
 @media (prefers-reduced-motion: reduce) {
-  .page .lf__cell img.lf__logo { transition: filter 0.3s; }
-  .page .lf__cell:hover img.lf__logo, .page .lf__cell.is-lit img.lf__logo { transform: none; }
+  .page .lf__cell img.lf__logo, .page .lf__cell.is-settled img.lf__logo { transition: filter 0.3s, opacity 0.5s; }
+  .page .lf__cell:hover img.lf__logo, .page .lf__cell.is-lit img.lf__logo,
+  .page .lf__cell:not(.is-shown) img.lf__logo { transform: none; filter: grayscale(1); } /* a plain fade */
   .lf__more, .lf__more svg { animation: none; }
 }
 
