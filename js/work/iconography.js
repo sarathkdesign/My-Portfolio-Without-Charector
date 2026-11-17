@@ -6,6 +6,7 @@
 export default {
   slug: 'iconography',
   name: 'Iconography',
+  hidden: true, // hidden from the whole site for now (2026-11-17); delete this line to show it again, exactly as it was
   intro: '', // add a line about this category here
   cover: { src: 'assets/work/iconography/cover.jpg', alt: 'Iconography: metal app-icon tiles with an orange glow' },
   iconField: true, // the page's cover: the icon set drifting past on navy (from the first project with `icons`), not a wall of pictures
