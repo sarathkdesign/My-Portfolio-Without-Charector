@@ -85,5 +85,5 @@ export const small = new Set([
   'assets/work/brochure-design/live-grand-hotels/page-01.jpg',
   'assets/work/motion-design/cover.jpg',
   'assets/work/iconography/cover.jpg',
-  'assets/work/iconography/netradyne/tile.jpg',
+  'assets/work/iconography/fleet-icons/tile.jpg',
 ]);

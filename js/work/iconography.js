@@ -14,19 +14,18 @@ export default {
       // ── From public/workd for website 2/iconography/icons: 316 UI icons, drawn on one 24 px grid.
       //    Its own page design ('glyph'): keyline anatomy, the rules, sizes 16–48, how an icon is built,
       //    and the whole library to filter, search and inspect. The icons live in one sprite,
-      //    assets/work/iconography/netradyne/icons.svg (made from the source folder; rebuild it when icons change).
-      slug: 'netradyne-icons',
-      title: 'Netradyne Icons',
+      //    assets/work/iconography/fleet-icons/icons.svg (made from the source folder; rebuild it when icons change).
+      slug: 'fleet-safety-icons',
+      title: 'Fleet Safety Icons',
       subtitle: 'A 316-icon interface set for fleet safety, every icon drawn on the same 24 px grid',
-      client: 'Netradyne',
       year: '',
       services: ['Iconography', 'UI design'],
       design: 'glyph',
       hideCover: true,
       theme: { bg: '#0b1120', ink: '#eef2ff', accent: '#3d7bff', soft: 'rgba(238,242,255,0.66)', line: 'rgba(238,242,255,0.12)' },
-      thumb: { src: 'assets/work/iconography/netradyne/tile.jpg', alt: 'Netradyne icons in white on deep navy, one drawn large on its blue keyline grid' },
-      cover: { src: 'assets/work/iconography/netradyne/tile.jpg', alt: 'Netradyne icons in white on deep navy, one drawn large on its blue keyline grid' },
-      sprite: 'assets/work/iconography/netradyne/icons.svg',
+      thumb: { src: 'assets/work/iconography/fleet-icons/tile.jpg', alt: 'Fleet-safety icons in white on deep navy, one drawn large on its blue keyline grid' },
+      cover: { src: 'assets/work/iconography/fleet-icons/tile.jpg', alt: 'Fleet-safety icons in white on deep navy, one drawn large on its blue keyline grid' },
+      sprite: 'assets/work/iconography/fleet-icons/icons.svg',
       // [id (file name and sprite symbol n-<id>), label, family]
       icons: [
       ["360-degree-and-export-file-icon","360° and export file","data"],
@@ -211,7 +210,7 @@ export default {
       ["monitured-minutes","Monitored minutes","status"],
       ["movement-outside-business-hours","Movement outside business hours","maps"],
       ["movement-without-pairing","Movement without pairing","maps"],
-      ["netradyne-imagery-points","Netradyne imagery points","maps"],
+      ["imagery-points","Imagery points","maps"],
       ["never-added","Never added","devices"],
       ["new-face-detected","New face detected","events"],
       ["new-features","New features","status"],

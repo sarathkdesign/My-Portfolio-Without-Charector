@@ -996,7 +996,7 @@ const arrowSvg = (d) => {
   return svg;
 };
 
-// Netradyne Icons — glyph: an icon-system presentation. The icons come from one SVG sprite (fetched once
+// Fleet Safety Icons — glyph: an icon-system presentation. The icons come from one SVG sprite (fetched once
 // and kept in the page), so every icon on the page — hero, keyline anatomy, size scale, library — is the
 // real artwork, coloured by the text colour around it. Diagrams are drawn live on the same 24-unit grid.
 const GLYPH_FAMILIES = {
@@ -1054,8 +1054,7 @@ DESIGNS.glyph = (p, h) => {
   loadGlyphSprite(p.sprite);
   const out = [];
 
-  /* 1 · Hero: the set streams past in four rows; one icon at a time sits large on its keyline grid */
-  const heroPicks = ['weaving', 'hard-braking', 'collision-warning', 'drowsy-camera', 'following-distance', 'seat-belt', 'truck-tractor', 'snow'].filter(has);
+  /* 1 · Hero: the title over the whole set streaming past in rows */
   const rowsOf = (n) => Array.from({ length: n }, (_, r) => icons.filter((_, i) => i % n === r).map((x) => x[0]));
   const hero = hn(h, 'section', 'ng-hero full-bleed', `
     <div class="ng-hero__field" aria-hidden="true">${rowsOf(5).map((row, r) => `
@@ -1067,41 +1066,17 @@ DESIGNS.glyph = (p, h) => {
         <h2 class="ng-hero__title">One grid.<br><em>${icons.length} icons.</em></h2>
         <ul class="ng-chips">${['24 × 24 px canvas', '1.5 px stroke', '1.5 px corner radius', '0.1 px on sharp joins', '16 – 48 px'].map((t) => `<li>${t}</li>`).join('')}</ul>
       </div>
-      <figure class="ng-hero__plate">
-        <div class="ng-hero__stage">${gridSVG({ keys: 'circle', cls: 'ng-hero__grid' })}${gi(heroPicks[0], 'ng-i ng-hero__icon')}</div>
-        <figcaption><span class="ng-hero__name">${byId[heroPicks[0]]?.[1] || ''}</span><span>24 px · keyline grid</span></figcaption>
-      </figure>
     </div>`);
-  // the featured icon changes every few seconds while the hero is on screen
-  {
-    let i = 0, timer = null;
-    const name = hero.querySelector('.ng-hero__name');
-    const stage = hero.querySelector('.ng-hero__stage');
-    // the next icon is a new layer over the grid that fades in, then the old one goes
-    // (fading the <use> inside the grid leaves it half-transparent in Safari)
-    const step = () => {
-      i = (i + 1) % heroPicks.length;
-      const old = stage.querySelectorAll('.ng-hero__icon');
-      stage.insertAdjacentHTML('beforeend', gi(heroPicks[i], 'ng-i ng-hero__icon is-new'));
-      old.forEach((n) => n.classList.add('is-old'));
-      setTimeout(() => old.forEach((n) => n.remove()), 600);
-      name.textContent = byId[heroPicks[i]][1];
-    };
-    new IntersectionObserver(([e]) => {
-      clearInterval(timer);
-      if (e.isIntersecting && !matchMedia('(prefers-reduced-motion: reduce)').matches) timer = setInterval(step, 2600);
-    }).observe(hero);
-  }
   out.push(hero);
 
   /* 2 · Intro and numbers */
   const fams = Object.keys(GLYPH_FAMILIES);
   out.push(hn(h, 'section', 'ng-intro', `
-    <p class="ng-intro__text" data-reveal>A complete interface icon language for Netradyne's fleet-safety platform: the driving events its cameras detect, the vehicles and devices in a fleet, the weather on the road, and every everyday action in the dashboard. Each icon starts on the same 24 px grid, with the same stroke, the same corners and the same breathing room, so a screen full of them reads as one voice.</p>
+    <p class="ng-intro__text" data-reveal>A complete interface icon language for a fleet-safety platform: the driving events its cameras detect, the vehicles and devices in a fleet, the weather on the road, and every everyday action in the dashboard. Each icon starts on the same 24 px grid, with the same stroke, the same corners and the same breathing room, so a screen full of them reads as one voice.</p>
     <dl class="ng-stats">${[[icons.length, 'icons'], [fams.length, 'families'], [GLYPH_SIZES.length, 'sizes, 16–48 px'], ['1.5', 'px stroke & radius']].map(([n, t], i) => `<div data-reveal style="--d:${i}"><dt>${n}</dt><dd>${t}</dd></div>`).join('')}</dl>`));
 
   /* 3 · Anatomy: the grid, its padding and keylines, with an icon that fits each keyline shape */
-  const fits = [['circle', 'Circle', 'tick', 'Ø 20 px'], ['square', 'Square', 'calender', '18 × 18 px'], ['portrait', 'Portrait', 'fuel', '16 × 20 px'], ['landscape', 'Landscape', 'truck-tractor', '20 × 16 px']].filter((f) => has(f[2]));
+  const fits = [['circle', 'Circle', 'speeding-violation', 'Ø 20 px'], ['square', 'Square', 'calender', '18 × 18 px'], ['portrait', 'Portrait', 'fuel', '16 × 20 px'], ['landscape', 'Landscape', 'truck-tractor', '20 × 16 px']].filter((f) => has(f[2]));
   const anatomy = h.el('section', { class: 'ng-anatomy ng-paper full-bleed' }, [
     h.el('div', { class: 'ng-wrap' }, [
       glyphHead(h, '01', 'Anatomy', 'Every icon sits on the same 24 px grid.', 'A 2 px padding keeps a 20 × 20 px live area. Four keyline shapes give every icon the same optical size, whether it is round, square, tall or wide.'),
@@ -1149,23 +1124,59 @@ DESIGNS.glyph = (p, h) => {
       </li>`).join('')),
   ]));
 
-  /* 5 · Sizes: the same rules at 16, 24, 32, 42 and 48 px */
+  /* 5 · Sizes: one plate redraws its pixel grid for the chosen size (16 squares at 16 px, 48 at 48),
+     its numbers change beside it, and a ruler below shows every size at its true pixel size.
+     It steps through the sizes by itself until someone picks one. */
   const sizeIcon = has('alerts') ? 'alerts' : icons[0]?.[0];
   const fmt = (n) => String(Math.round(n * 100) / 100);
-  const sizes = h.el('section', { class: 'ng-sizes ng-paper full-bleed' }, [
-    h.el('div', { class: 'ng-wrap' }, [
-      glyphHead(h, '03', 'Sizes', 'Drawn at 24, built to scale.', 'Every value grows with the canvas: padding is 1/12 of it, stroke and corner radius 1/16. At 16 px the details are simplified so the 1 px lines stay crisp.'),
-      hn(h, 'div', 'ng-sizes__row', GLYPH_SIZES.map((s, i) => `
-        <figure class="ng-size${s === 24 ? ' is-master' : ''}" data-reveal style="--d:${i}">
-          <div class="ng-size__plate">${gridSVG({ size: s, icon: sizeIcon, keys: 'circle' })}</div>
-          <div class="ng-size__real" style="--s:${s}px">${gi(sizeIcon)}</div>
-          <figcaption>
-            <b>${s} × ${s}</b>${s === 24 ? '<em>master</em>' : ''}
-            <dl><div><dt>Padding</dt><dd>${fmt(s / 12)} px</dd></div><div><dt>Stroke</dt><dd>${fmt(s / 16)} px</dd></div><div><dt>Radius</dt><dd>${fmt(s / 16)} px</dd></div><div><dt>Live area</dt><dd>${fmt(s - s / 6)} px</dd></div></dl>
-          </figcaption>
-        </figure>`).join('')),
-    ]),
-  ]);
+  const useOf = { 16: 'Dense tables, inline with small text and tags.', 24: 'The default: navigation, buttons, lists and forms.', 32: 'Toolbars, larger touch targets and map markers.', 42: 'Event cards, tiles and dashboard highlights.', 48: 'Empty states, onboarding and feature callouts.' };
+  const specOf = (s) => [['Padding', s / 12, 'size ÷ 12'], ['Stroke', s / 16, 'size ÷ 16'], ['Corner radius', s / 16, 'size ÷ 16'], ['Live area', s - s / 6, 'size − 2 × padding']];
+  const sizes = h.el('section', { class: 'ng-sizes ng-paper full-bleed' });
+  sizes.innerHTML = `
+    <div class="ng-wrap">
+      <header class="ng-head" data-reveal><p class="ng-kicker"><span>03</span><span>Sizes</span></p><h2 class="ng-title">Drawn at 24, built to scale.</h2>
+        <p class="ng-lede">Every value grows with the canvas: padding is a twelfth of it, stroke and corner radius a sixteenth. At 16 px the details are simplified so 1 px lines stay crisp.</p></header>
+      <div class="ng-sz" data-reveal>
+        <div class="ng-sz__tabs" role="tablist" aria-label="Icon size">${GLYPH_SIZES.map((s) => `<button type="button" role="tab" data-size="${s}" aria-selected="${s === 24}" class="${s === 24 ? 'is-on' : ''}">${s}<small>px</small></button>`).join('')}<span class="ng-sz__glide" aria-hidden="true"></span></div>
+        <div class="ng-sz__body">
+          <figure class="ng-sz__plate"><div class="ng-sz__grid"></div><figcaption><b class="ng-sz__dim"></b><span class="ng-sz__cells"></span></figcaption></figure>
+          <div class="ng-sz__info">
+            <div><p class="ng-sz__name"><b></b><em class="ng-sz__badge">Master</em></p><p class="ng-sz__use"></p></div>
+            <dl class="ng-sz__spec">${specOf(24).map(([k]) => `<div><dt>${k}</dt><dd><b></b><span>px</span></dd><p></p></div>`).join('')}</dl>
+          </div>
+        </div>
+        <div class="ng-sz__rail" aria-label="Actual sizes">${GLYPH_SIZES.map((s) => `<button type="button" data-size="${s}" class="${s === 24 ? 'is-on' : ''}" style="--s:${s}px"><span class="ng-sz__real">${gi(sizeIcon)}</span><em>${s}</em></button>`).join('')}<p>Actual size</p></div>
+      </div>
+    </div>`;
+  {
+    const tabs = [...sizes.querySelectorAll('.ng-sz__tabs button')];
+    const rail = [...sizes.querySelectorAll('.ng-sz__rail button')];
+    const glide = sizes.querySelector('.ng-sz__glide');
+    let current = 24, timer = null;
+    const show = (sz) => {
+      current = sz;
+      tabs.forEach((b) => { const on = +b.dataset.size === sz; b.classList.toggle('is-on', on); b.setAttribute('aria-selected', String(on)); if (on) glide.style.cssText = `left:${b.offsetLeft}px;width:${b.offsetWidth}px`; });
+      rail.forEach((b) => b.classList.toggle('is-on', +b.dataset.size === sz));
+      sizes.querySelector('.ng-sz__grid').innerHTML = gridSVG({ size: sz, icon: sizeIcon, keys: 'circle' });
+      sizes.querySelector('.ng-sz__dim').textContent = `${sz} × ${sz} px`;
+      sizes.querySelector('.ng-sz__cells').textContent = `${sz * sz} pixels`;
+      sizes.querySelector('.ng-sz__name b').textContent = `${sz} px`;
+      sizes.querySelector('.ng-sz__badge').hidden = sz !== 24;
+      sizes.querySelector('.ng-sz__use').textContent = useOf[sz];
+      sizes.querySelectorAll('.ng-sz__spec > div').forEach((row, i) => { const [, v, rule] = specOf(sz)[i]; row.querySelector('b').textContent = fmt(v); row.querySelector('p').textContent = rule; });
+      sizes.querySelector('.ng-sz__body').classList.remove('is-flip'); void sizes.offsetWidth; sizes.querySelector('.ng-sz__body').classList.add('is-flip');
+    };
+    const pick = (e) => { const b = e.target.closest('[data-size]'); if (!b) return; clearInterval(timer); timer = 'stopped'; show(+b.dataset.size); };
+    sizes.querySelector('.ng-sz__tabs').addEventListener('click', pick);
+    sizes.querySelector('.ng-sz__rail').addEventListener('click', pick);
+    new IntersectionObserver(([e]) => {
+      if (timer === 'stopped') return;
+      clearInterval(timer);
+      if (e.isIntersecting && !matchMedia('(prefers-reduced-motion: reduce)').matches) timer = setInterval(() => show(GLYPH_SIZES[(GLYPH_SIZES.indexOf(current) + 1) % GLYPH_SIZES.length]), 2800);
+    }, { threshold: 0.4 }).observe(sizes);
+    setTimeout(() => show(24), 0);
+    window.addEventListener('resize', () => show(current));
+  }
   out.push(sizes);
 
   /* 6 · How an icon is made: five steps, one triangle alert */
