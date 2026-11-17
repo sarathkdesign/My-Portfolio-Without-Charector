@@ -996,6 +996,356 @@ const arrowSvg = (d) => {
   return svg;
 };
 
+// Netradyne Icons — glyph: an icon-system presentation. The icons come from one SVG sprite (fetched once
+// and kept in the page), so every icon on the page — hero, keyline anatomy, size scale, library — is the
+// real artwork, coloured by the text colour around it. Diagrams are drawn live on the same 24-unit grid.
+const GLYPH_FAMILIES = {
+  events: 'Driving events', maps: 'Maps & tracking', fleet: 'Fleet & vehicle', devices: 'Devices & video',
+  weather: 'Weather & road', status: 'Status & alerts', data: 'Interface & reports',
+};
+const GLYPH_SIZES = [16, 24, 32, 42, 48];
+let glyphSprite = null;
+const loadGlyphSprite = (src) => {
+  if (glyphSprite) return glyphSprite;
+  glyphSprite = fetch(src).then((r) => r.text()).then((text) => {
+    const box = document.createElement('div');
+    box.setAttribute('aria-hidden', 'true');
+    box.style.cssText = 'position:absolute;width:0;height:0;overflow:hidden';
+    box.innerHTML = text;
+    document.body.append(box);
+  }).catch(() => { glyphSprite = null; });
+  return glyphSprite;
+};
+// one icon from the sprite
+const gi = (id, cls = 'ng-i') => `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true"><use href="#n-${id}"/></svg>`;
+// the 24-unit pixel grid with its padding and keylines; `keys` picks which keyline shapes show
+const gridSVG = ({ size = 24, icon, keys = 'all', cls = '' } = {}) => {
+  const u = 24 / size; // one pixel of this size, in grid units
+  const lines = [];
+  for (let i = 0; i <= size; i++) lines.push(`<path d="M${i * u} 0V24M0 ${i * u}H24"/>`);
+  const pad = 2;
+  const shapes = {
+    circle: '<circle cx="12" cy="12" r="10"/>',
+    square: '<rect x="3" y="3" width="18" height="18" rx="1.5"/>',
+    portrait: '<rect x="4" y="2" width="16" height="20" rx="1.5"/>',
+    landscape: '<rect x="2" y="4" width="20" height="16" rx="1.5"/>',
+  };
+  const show = keys === 'all' ? Object.keys(shapes) : [].concat(keys || []);
+  return `<svg class="ng-grid ${cls}" viewBox="-0.6 -0.6 25.2 25.2" aria-hidden="true">
+    <path class="ng-grid__pad" fill-rule="evenodd" d="M0 0H24V24H0Z M${pad} ${pad}V${24 - pad}H${24 - pad}V${pad}Z"/>
+    <g class="ng-grid__px">${lines.join('')}</g>
+    <g class="ng-grid__axes"><path d="M12 0V24M0 12H24M0 0L24 24M24 0L0 24"/></g>
+    <g class="ng-grid__keys">${Object.entries(shapes).map(([k, s]) => `<g data-key="${k}" class="${show.includes(k) ? 'is-on' : ''}">${s}</g>`).join('')}</g>
+    <rect class="ng-grid__edge" x="0" y="0" width="24" height="24"/>
+    ${icon ? `<use class="ng-grid__icon" href="#n-${icon}" x="0" y="0" width="24" height="24"/>` : ''}
+  </svg>`;
+};
+const hn = (h, tag, cls, html, attrs = {}) => { const n = h.el(tag, { class: cls, ...attrs }); n.innerHTML = html; return n; };
+const glyphHead = (h, n, label, title, body) => h.el('header', { class: 'ng-head', 'data-reveal': true }, [
+  h.el('p', { class: 'ng-kicker' }, [h.el('span', { text: n }), h.el('span', { text: label })]),
+  h.el('h2', { class: 'ng-title', text: title }),
+  body && h.el('p', { class: 'ng-lede', text: body }),
+]);
+
+DESIGNS.glyph = (p, h) => {
+  const icons = p.icons || [];
+  const byId = Object.fromEntries(icons.map((x) => [x[0], x]));
+  const has = (id) => !!byId[id];
+  loadGlyphSprite(p.sprite);
+  const out = [];
+
+  /* 1 · Hero: the set streams past in four rows; one icon at a time sits large on its keyline grid */
+  const heroPicks = ['weaving', 'hard-braking', 'collision-warning', 'drowsy-camera', 'following-distance', 'seat-belt', 'truck-tractor', 'snow'].filter(has);
+  const rowsOf = (n) => Array.from({ length: n }, (_, r) => icons.filter((_, i) => i % n === r).map((x) => x[0]));
+  const hero = hn(h, 'section', 'ng-hero full-bleed', `
+    <div class="ng-hero__field" aria-hidden="true">${rowsOf(5).map((row, r) => `
+      <div class="ng-hero__row" style="--dur:${110 + r * 18}s;--dir:${r % 2 ? 'reverse' : 'normal'}"><div class="ng-hero__track">${[...row, ...row].map((id) => gi(id)).join('')}</div></div>`).join('')}
+    </div>
+    <div class="ng-hero__in">
+      <div class="ng-hero__text">
+        <p class="ng-kicker"><span>00</span><span>Icon system</span></p>
+        <h2 class="ng-hero__title">One grid.<br><em>${icons.length} icons.</em></h2>
+        <ul class="ng-chips">${['24 × 24 px canvas', '1.5 px stroke', '1.5 px corner radius', '0.1 px on sharp joins', '16 – 48 px'].map((t) => `<li>${t}</li>`).join('')}</ul>
+      </div>
+      <figure class="ng-hero__plate">
+        <div class="ng-hero__stage">${gridSVG({ keys: 'circle', cls: 'ng-hero__grid' })}${gi(heroPicks[0], 'ng-i ng-hero__icon')}</div>
+        <figcaption><span class="ng-hero__name">${byId[heroPicks[0]]?.[1] || ''}</span><span>24 px · keyline grid</span></figcaption>
+      </figure>
+    </div>`);
+  // the featured icon changes every few seconds while the hero is on screen
+  {
+    let i = 0, timer = null;
+    const name = hero.querySelector('.ng-hero__name');
+    const stage = hero.querySelector('.ng-hero__stage');
+    // the next icon is a new layer over the grid that fades in, then the old one goes
+    // (fading the <use> inside the grid leaves it half-transparent in Safari)
+    const step = () => {
+      i = (i + 1) % heroPicks.length;
+      const old = stage.querySelectorAll('.ng-hero__icon');
+      stage.insertAdjacentHTML('beforeend', gi(heroPicks[i], 'ng-i ng-hero__icon is-new'));
+      old.forEach((n) => n.classList.add('is-old'));
+      setTimeout(() => old.forEach((n) => n.remove()), 600);
+      name.textContent = byId[heroPicks[i]][1];
+    };
+    new IntersectionObserver(([e]) => {
+      clearInterval(timer);
+      if (e.isIntersecting && !matchMedia('(prefers-reduced-motion: reduce)').matches) timer = setInterval(step, 2600);
+    }).observe(hero);
+  }
+  out.push(hero);
+
+  /* 2 · Intro and numbers */
+  const fams = Object.keys(GLYPH_FAMILIES);
+  out.push(hn(h, 'section', 'ng-intro', `
+    <p class="ng-intro__text" data-reveal>A complete interface icon language for Netradyne's fleet-safety platform: the driving events its cameras detect, the vehicles and devices in a fleet, the weather on the road, and every everyday action in the dashboard. Each icon starts on the same 24 px grid, with the same stroke, the same corners and the same breathing room, so a screen full of them reads as one voice.</p>
+    <dl class="ng-stats">${[[icons.length, 'icons'], [fams.length, 'families'], [GLYPH_SIZES.length, 'sizes, 16–48 px'], ['1.5', 'px stroke & radius']].map(([n, t], i) => `<div data-reveal style="--d:${i}"><dt>${n}</dt><dd>${t}</dd></div>`).join('')}</dl>`));
+
+  /* 3 · Anatomy: the grid, its padding and keylines, with an icon that fits each keyline shape */
+  const fits = [['circle', 'Circle', 'tick', 'Ø 20 px'], ['square', 'Square', 'calender', '18 × 18 px'], ['portrait', 'Portrait', 'fuel', '16 × 20 px'], ['landscape', 'Landscape', 'truck-tractor', '20 × 16 px']].filter((f) => has(f[2]));
+  const anatomy = h.el('section', { class: 'ng-anatomy ng-paper full-bleed' }, [
+    h.el('div', { class: 'ng-wrap' }, [
+      glyphHead(h, '01', 'Anatomy', 'Every icon sits on the same 24 px grid.', 'A 2 px padding keeps a 20 × 20 px live area. Four keyline shapes give every icon the same optical size, whether it is round, square, tall or wide.'),
+      hn(h, 'div', 'ng-anatomy__body', `
+        <figure class="ng-anatomy__plate" data-reveal>${gridSVG({ icon: fits[0]?.[2], keys: fits[0]?.[0] })}
+          <span class="ng-dim ng-dim--top">24 px</span><span class="ng-dim ng-dim--side">24 px</span>
+        </figure>
+        <div class="ng-anatomy__side">
+          <div class="ng-tabs" role="tablist" aria-label="Keyline shapes">${fits.map(([k, name, , dim], i) => `<button type="button" role="tab" class="ng-tab${i ? '' : ' is-on'}" data-key="${k}" aria-selected="${!i}"><b>${name}</b><span>${dim}</span></button>`).join('')}</div>
+          <ol class="ng-legend">
+            <li><b>Canvas</b><span>24 × 24 px, the master size every icon is drawn at</span></li>
+            <li><b>Padding</b><span>2 px on every side, never drawn into</span></li>
+            <li><b>Live area</b><span>20 × 20 px for the artwork</span></li>
+            <li><b>Keylines</b><span>circle, square, portrait and landscape: one optical weight for every shape</span></li>
+            <li><b>Centre & diagonals</b><span>to balance the mass and align details</span></li>
+          </ol>
+        </div>`),
+    ]),
+  ]);
+  anatomy.addEventListener('click', (e) => {
+    const t = e.target.closest('.ng-tab');
+    if (!t) return;
+    const f = fits.find((x) => x[0] === t.dataset.key);
+    anatomy.querySelectorAll('.ng-tab').forEach((b) => { b.classList.toggle('is-on', b === t); b.setAttribute('aria-selected', String(b === t)); });
+    anatomy.querySelectorAll('.ng-anatomy__plate [data-key]').forEach((g) => g.classList.toggle('is-on', g.dataset.key === f[0]));
+    anatomy.querySelector('.ng-anatomy__plate .ng-grid__icon').setAttribute('href', `#n-${f[2]}`);
+  });
+  out.push(anatomy);
+
+  /* 4 · The specification, each rule drawn */
+  const spec = [
+    ['Stroke', '1.5 px', 'One weight for every line, outline and detail.', '<path class="ng-d-line" d="M4 12H20"/><path class="ng-d-dim" d="M21.5 11.25v1.5M20.8 11.25h1.4M20.8 12.75h1.4"/>'],
+    ['Corner radius', '1.5 px', 'Every main corner is rounded by 1.5 px — never a hard 90°.', '<path class="ng-d-line" d="M6 20V9.5A3.5 3.5 0 0 1 9.5 6H20"/><circle class="ng-d-guide" cx="9.5" cy="9.5" r="3.5"/><path class="ng-d-dim" d="M9.5 9.5L7 7"/>'],
+    ['Sharp joins', '0.1 px', 'Tight points (arrow tips, triangles) keep their shape, softened by 0.1 px so no edge is truly sharp.', '<path class="ng-d-line ng-d-miter" d="M5 19L12 5L19 19"/><circle class="ng-d-guide" cx="12" cy="5.9" r="2.6"/>'],
+    ['Caps & joins', 'Round', 'Lines end in round caps and meet in round joins.', '<path class="ng-d-line" d="M5 16L10 8L15 14L19 9"/><circle class="ng-d-dot" cx="5" cy="16" r=".5"/><circle class="ng-d-dot" cx="19" cy="9" r=".5"/>'],
+    ['Padding', '2 px', 'The outer 2 px stay empty, so icons never crowd their container.', '<rect class="ng-d-guide" x="2" y="2" width="20" height="20"/><rect class="ng-d-edge" x="0.4" y="0.4" width="23.2" height="23.2"/><rect class="ng-d-line" x="5" y="5" width="14" height="14" rx="1.5"/>'],
+    ['Delivery', 'Outlined', 'Strokes are expanded to one clean filled shape that takes any colour.', '<rect class="ng-d-line" x="4" y="7" width="7" height="10" rx="1.5"/><path class="ng-d-dim" d="M12.5 12h2.5M14 10.5l1.5 1.5-1.5 1.5"/><rect class="ng-d-fill" x="16.25" y="6.25" width="5.5" height="11.5" rx="2.25"/><rect class="ng-d-hole" x="17.75" y="7.75" width="2.5" height="8.5" rx=".75"/>'],
+  ];
+  out.push(h.el('section', { class: 'ng-spec' }, [
+    glyphHead(h, '02', 'Specification', 'Six numbers make the whole set.'),
+    hn(h, 'ul', 'ng-spec__grid', spec.map(([t, v, d, art], i) => `
+      <li data-reveal style="--d:${i % 3}">
+        <svg class="ng-d" viewBox="0 0 24 24" aria-hidden="true">${art}</svg>
+        <p class="ng-spec__v">${v}</p><h3>${t}</h3><p>${d}</p>
+      </li>`).join('')),
+  ]));
+
+  /* 5 · Sizes: the same rules at 16, 24, 32, 42 and 48 px */
+  const sizeIcon = has('alerts') ? 'alerts' : icons[0]?.[0];
+  const fmt = (n) => String(Math.round(n * 100) / 100);
+  const sizes = h.el('section', { class: 'ng-sizes ng-paper full-bleed' }, [
+    h.el('div', { class: 'ng-wrap' }, [
+      glyphHead(h, '03', 'Sizes', 'Drawn at 24, built to scale.', 'Every value grows with the canvas: padding is 1/12 of it, stroke and corner radius 1/16. At 16 px the details are simplified so the 1 px lines stay crisp.'),
+      hn(h, 'div', 'ng-sizes__row', GLYPH_SIZES.map((s, i) => `
+        <figure class="ng-size${s === 24 ? ' is-master' : ''}" data-reveal style="--d:${i}">
+          <div class="ng-size__plate">${gridSVG({ size: s, icon: sizeIcon, keys: 'circle' })}</div>
+          <div class="ng-size__real" style="--s:${s}px">${gi(sizeIcon)}</div>
+          <figcaption>
+            <b>${s} × ${s}</b>${s === 24 ? '<em>master</em>' : ''}
+            <dl><div><dt>Padding</dt><dd>${fmt(s / 12)} px</dd></div><div><dt>Stroke</dt><dd>${fmt(s / 16)} px</dd></div><div><dt>Radius</dt><dd>${fmt(s / 16)} px</dd></div><div><dt>Live area</dt><dd>${fmt(s - s / 6)} px</dd></div></dl>
+          </figcaption>
+        </figure>`).join('')),
+    ]),
+  ]);
+  out.push(sizes);
+
+  /* 6 · How an icon is made: five steps, one triangle alert */
+  const T = 'M10.7 4.25L3.05 17.5A1.5 1.5 0 0 0 4.35 19.75H19.65A1.5 1.5 0 0 0 20.95 17.5L13.3 4.25A1.5 1.5 0 0 0 10.7 4.25Z';
+  const steps = [
+    ['Find the metaphor', 'Start from what the driver or fleet manager needs to recognise at a glance, and sketch it loosely.', `<path class="ng-s-sketch" d="M12 3.6c-2.6 4.3-5.1 8.9-8.3 15.7 5.2.4 11 .2 16.6-.1C17.6 13 15 8.2 12 3.6z"/><path class="ng-s-sketch" d="M12 9.5c.1 1.6-.1 3.1.1 4.6M12 16.6v.3"/>`],
+    ['Fit a keyline', 'Place it on the 24 px grid inside the keyline that matches its shape.', `<circle class="ng-s-key" cx="12" cy="12" r="10"/><rect class="ng-s-key" x="2" y="4" width="20" height="16" rx="1.5"/><path class="ng-s-sketch" d="M12 4L3 19.75H21Z"/>`],
+    ['Draw at 1.5 px', 'Rebuild it with geometric lines, 1.5 px stroke, snapped to the pixel grid.', `<path class="ng-s-stroke ng-s-sharp" d="M12 4L3 19.75H21Z"/><path class="ng-s-stroke" d="M12 9.5v4.75"/><circle class="ng-s-node" cx="12" cy="4" r=".55"/><circle class="ng-s-node" cx="3" cy="19.75" r=".55"/><circle class="ng-s-node" cx="21" cy="19.75" r=".55"/>`],
+    ['Round the corners', 'Main corners get a 1.5 px radius; any tight point keeps a 0.1 px softening. Caps and joins are round.', `<path class="ng-s-stroke" d="${T}"/><path class="ng-s-stroke" d="M12 9.5v4.75"/><circle class="ng-s-stroke ng-s-dotfill" cx="12" cy="16.9" r=".35"/><circle class="ng-s-r" cx="4.35" cy="18.25" r="1.5"/><circle class="ng-s-r" cx="19.65" cy="18.25" r="1.5"/><circle class="ng-s-r" cx="12" cy="5" r="1.5"/>`],
+    ['Outline and test', 'Expand the strokes into one filled shape, then check it at every size, light and dark.', ''],
+  ];
+  const finalIcon = sizeIcon; // the same triangle alert the steps build
+  out.push(h.el('section', { class: 'ng-build' }, [
+    glyphHead(h, '04', 'Construction', 'From an idea to a finished icon.'),
+    hn(h, 'ol', 'ng-build__steps', steps.map(([t, d, art], i) => `
+      <li class="ng-step" data-reveal style="--d:${i}">
+        <div class="ng-step__art">${art
+          ? `<svg viewBox="-0.6 -0.6 25.2 25.2" aria-hidden="true"><g class="ng-grid__px">${Array.from({ length: 25 }, (_, k) => `<path d="M${k} 0V24M0 ${k}H24"/>`).join('')}</g>${art}</svg>`
+          : `<div class="ng-step__final">${gi(finalIcon)}<div class="ng-step__sizes">${[16, 24, 32, 48].map((s) => `<span style="--s:${s}px">${gi(finalIcon)}</span>`).join('')}</div></div>`}</div>
+        <p class="ng-step__n">${pad(i + 1)}</p><h3>${t}</h3><p>${d}</p>
+      </li>`).join('')),
+  ]));
+
+  /* 7 · Rules: do and don't, drawn */
+  const sq = (extra = '') => `<rect class="ng-r-line" x="5" y="5" width="14" height="14" rx="1.5" ${extra}/>`;
+  const rules = [
+    ['One stroke weight', sq(), `<path class="ng-r-line" d="M6.5 5H17.5A1.5 1.5 0 0 1 19 6.5V17.5A1.5 1.5 0 0 1 17.5 19H6.5A1.5 1.5 0 0 1 5 17.5V6.5A1.5 1.5 0 0 1 6.5 5Z"/><path class="ng-r-line ng-r-heavy" d="M19 6.5V17.5"/>`, 'Mixing weights makes one part shout.'],
+    ['Rounded corners', sq(), '<rect class="ng-r-line ng-r-miter" x="5" y="5" width="14" height="14"/>', 'Hard corners break the soft family look.'],
+    ['Keep the padding', sq(), '<rect class="ng-r-line" x="1.2" y="1.2" width="21.6" height="21.6" rx="1.5"/>', 'Touching the edge crowds the container.'],
+    ['Round caps', '<path class="ng-r-line" d="M5 12H19"/><path class="ng-r-line" d="M5 8H14M5 16H16"/>', '<path class="ng-r-line ng-r-butt" d="M5 12H19"/><path class="ng-r-line ng-r-butt" d="M5 8H14M5 16H16"/>', 'Square ends look cut off at small sizes.'],
+    ['Flat, front-on', sq(), '<path class="ng-r-line" d="M5 9L12 5.5L19 9V16L12 19.5L5 16Z"/><path class="ng-r-line" d="M5 9L12 12.5L19 9M12 12.5V19.5"/>', 'Perspective and 3D fight the flat set.'],
+    ['Open counters', '<rect class="ng-r-line" x="4" y="6" width="16" height="12" rx="1.5"/><path class="ng-r-line" d="M8 10H16M8 14H13"/>', '<rect class="ng-r-line" x="4" y="6" width="16" height="12" rx="1.5"/><path class="ng-r-line" d="M8 9.6H16M8 11.1H16M8 12.6H16M8 14.1H13"/>', 'Gaps under 1.5 px fill in on screen.'],
+  ];
+  out.push(h.el('section', { class: 'ng-rules ng-paper full-bleed' }, [
+    h.el('div', { class: 'ng-wrap' }, [
+      glyphHead(h, '05', 'Rules', 'Small decisions, made once.'),
+      hn(h, 'ul', 'ng-rules__grid', rules.map(([t, ok, bad, why], i) => `
+        <li class="ng-rule" data-reveal style="--d:${i % 3}">
+          <div class="ng-rule__pair">
+            <figure class="is-do"><svg viewBox="0 0 24 24" aria-hidden="true"><rect class="ng-r-pad" x="2" y="2" width="20" height="20"/>${ok}</svg><figcaption>Do</figcaption></figure>
+            <figure class="is-dont"><svg viewBox="0 0 24 24" aria-hidden="true"><rect class="ng-r-pad" x="2" y="2" width="20" height="20"/>${bad}</svg><figcaption>Don't</figcaption></figure>
+          </div>
+          <h3>${t}</h3><p>${why}</p>
+        </li>`).join('')),
+    ]),
+  ]));
+
+  /* 8 · Families: seven groups, a few icons each; a click opens that family in the library */
+  out.push(h.el('section', { class: 'ng-fams' }, [
+    glyphHead(h, '06', 'Families', 'Seven families, one language.'),
+    hn(h, 'ul', 'ng-fams__grid', fams.map((f, i) => {
+      const list = icons.filter((x) => x[2] === f);
+      return `<li data-reveal style="--d:${i % 4}"><button type="button" class="ng-fam" data-fam="${f}">
+        <span class="ng-fam__icons">${list.slice(0, 9).map((x) => gi(x[0])).join('')}</span>
+        <span class="ng-fam__name">${GLYPH_FAMILIES[f]}</span><span class="ng-fam__n">${list.length} icons →</span>
+      </button></li>`;
+    }).join('') + `<li data-reveal style="--d:3"><button type="button" class="ng-fam ng-fam--all" data-fam="">
+        <span class="ng-fam__big">${icons.length}</span><span class="ng-fam__name">The whole set</span><span class="ng-fam__n">Open the library →</span>
+      </button></li>`),
+  ]));
+
+  /* 9 · The library: every icon, to filter, search, resize and inspect */
+  const lib = h.el('section', { class: 'ng-lib full-bleed', id: 'ng-library' });
+  lib.innerHTML = `
+    <div class="ng-wrap">
+      <div class="ng-lib__head" data-reveal>
+        <p class="ng-kicker"><span>07</span><span>Library</span></p>
+        <h2 class="ng-title">All ${icons.length}, in one place.</h2>
+      </div>
+      <div class="ng-lib__bar">
+        <div class="ng-lib__fams" role="group" aria-label="Families">
+          <button type="button" class="ng-pill is-on" data-fam="">All <span>${icons.length}</span></button>
+          ${fams.map((f) => `<button type="button" class="ng-pill" data-fam="${f}">${GLYPH_FAMILIES[f]} <span>${icons.filter((x) => x[2] === f).length}</span></button>`).join('')}
+        </div>
+        <div class="ng-lib__tools">
+          <label class="ng-search"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#n-search"/></svg><input type="search" placeholder="Search icons" aria-label="Search icons"></label>
+          <div class="ng-seg" role="group" aria-label="Icon size">${[16, 24, 32, 48].map((s) => `<button type="button" data-size="${s}" class="${s === 32 ? 'is-on' : ''}">${s}</button>`).join('')}</div>
+          <button type="button" class="ng-mode" aria-pressed="false">Light</button>
+        </div>
+      </div>
+      <p class="ng-lib__count" aria-live="polite"></p>
+      <ul class="ng-lib__grid">${icons.map(([id, label, f]) => `<li data-fam="${f}" data-q="${(label + ' ' + id).toLowerCase()}"><button type="button" class="ng-cell" data-id="${id}" title="${label}">${gi(id)}<span>${label}</span></button></li>`).join('')}</ul>
+      <p class="ng-lib__none" hidden>No icon matches that search.</p>
+    </div>
+    <div class="ng-inspect" hidden role="dialog" aria-modal="true" aria-label="Icon details">
+      <div class="ng-inspect__card">
+        <button type="button" class="ng-inspect__x" aria-label="Close">×</button>
+        <div class="ng-inspect__plate"></div>
+        <div class="ng-inspect__info">
+          <p class="ng-inspect__fam"></p><h3 class="ng-inspect__name"></h3><p class="ng-inspect__file"></p>
+          <div class="ng-inspect__sizes"></div>
+          <div class="ng-inspect__swatches">${['#0b1120', '#3d7bff', '#4dc260', '#e5484d', '#f5a524'].map((c) => `<button type="button" style="--c:${c}" data-c="${c}" aria-label="Colour ${c}"></button>`).join('')}</div>
+        </div>
+      </div>
+    </div>`;
+  {
+    const grid = lib.querySelector('.ng-lib__grid');
+    const items = [...grid.children];
+    const count = lib.querySelector('.ng-lib__count');
+    const none = lib.querySelector('.ng-lib__none');
+    const search = lib.querySelector('input');
+    let fam = '';
+    const apply = () => {
+      const q = search.value.trim().toLowerCase();
+      let n = 0;
+      for (const li of items) { const on = (!fam || li.dataset.fam === fam) && (!q || li.dataset.q.includes(q)); li.hidden = !on; if (on) n++; }
+      count.textContent = `${n} ${n === 1 ? 'icon' : 'icons'}${fam ? ` · ${GLYPH_FAMILIES[fam]}` : ''}${q ? ` · “${search.value.trim()}”` : ''}`;
+      none.hidden = n > 0;
+    };
+    const setFam = (f) => { fam = f; lib.querySelectorAll('.ng-pill').forEach((b) => b.classList.toggle('is-on', b.dataset.fam === f)); apply(); };
+    lib.querySelector('.ng-lib__fams').addEventListener('click', (e) => { const b = e.target.closest('.ng-pill'); if (b) setFam(b.dataset.fam); });
+    search.addEventListener('input', apply);
+    lib.querySelector('.ng-seg').addEventListener('click', (e) => {
+      const b = e.target.closest('button'); if (!b) return;
+      lib.querySelectorAll('.ng-seg button').forEach((x) => x.classList.toggle('is-on', x === b));
+      lib.style.setProperty('--cell-i', `${b.dataset.size}px`);
+    });
+    const mode = lib.querySelector('.ng-mode');
+    mode.addEventListener('click', () => { const light = lib.classList.toggle('is-light'); mode.setAttribute('aria-pressed', String(light)); mode.textContent = light ? 'Dark' : 'Light'; });
+    // the inspector: the icon on its grid, at every size, in a few colours
+    const dlg = lib.querySelector('.ng-inspect');
+    let lastCell = null;
+    const open = (id) => {
+      const [, label, f] = byId[id];
+      dlg.querySelector('.ng-inspect__plate').innerHTML = gridSVG({ icon: id, keys: 'all' });
+      dlg.querySelector('.ng-inspect__fam').textContent = GLYPH_FAMILIES[f];
+      dlg.querySelector('.ng-inspect__name').textContent = label;
+      dlg.querySelector('.ng-inspect__file').textContent = `${id}.svg`;
+      dlg.querySelector('.ng-inspect__sizes').innerHTML = GLYPH_SIZES.map((s) => `<span style="--s:${s}px">${gi(id)}<em>${s}</em></span>`).join('');
+      dlg.hidden = false;
+      document.addEventListener('keydown', onKey, true);
+      requestAnimationFrame(() => dlg.classList.add('is-open'));
+      dlg.querySelector('.ng-inspect__x').focus({ preventScroll: true });
+    };
+    const onKey = (e) => { if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); close(); } };
+    const close = () => { document.removeEventListener('keydown', onKey, true); dlg.classList.remove('is-open'); setTimeout(() => { dlg.hidden = true; }, 250); lastCell?.focus({ preventScroll: true }); };
+    grid.addEventListener('click', (e) => { const c = e.target.closest('.ng-cell'); if (c) { lastCell = c; open(c.dataset.id); } });
+    dlg.addEventListener('click', (e) => {
+      if (e.target === dlg || e.target.closest('.ng-inspect__x')) return close();
+      const sw = e.target.closest('[data-c]');
+      if (sw) dlg.querySelector('.ng-inspect__card').style.setProperty('--ic', sw.dataset.c);
+    });
+    // (Escape is caught first, while the panel is open, so it closes only the panel and not the page)
+    // a family card further up opens the library on that family
+    lib._setFam = setFam;
+    apply();
+  }
+  out.push(lib);
+  out[out.length - 2].addEventListener('click', (e) => {
+    const b = e.target.closest('.ng-fam'); if (!b) return;
+    lib._setFam(b.dataset.fam);
+    lib.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  });
+
+  /* 10 · In use: how the set reads inside a fleet-safety dashboard (an illustration) */
+  const ev = [['hard-braking', 'Hard braking', 'Truck 214 · I-80 W', '08:42', 'high'], ['following-distance', 'Following distance', 'Van 31 · Route 9', '09:15', 'mid'], ['drowsy-camera', 'Drowsiness', 'Truck 118 · NJ Tpke', '10:03', 'high'], ['speeding-violation', 'Speeding', 'Truck 214 · US-1', '11:27', 'mid'], ['seat-belt', 'Seat belt', 'Van 12 · Depot', '12:10', 'low']].filter((x) => has(x[0]));
+  const nav = ['dashboard', 'fleet-tracking', 'alerts', 'coaching-sessions', 'reports-central', 'settings'].filter(has);
+  out.push(hn(h, 'section', 'ng-use', `
+    <header class="ng-head" data-reveal><p class="ng-kicker"><span>08</span><span>In use</span></p><h2 class="ng-title">Built for screens that move fast.</h2>
+      <p class="ng-lede">An illustration of the set in a safety dashboard: the same weight and corners at 16, 20 and 24 px, side by side with type.</p></header>
+    <div class="ng-ui" data-reveal>
+      <nav class="ng-ui__nav" aria-hidden="true">${nav.map((id, i) => `<span class="${i === 2 ? 'is-on' : ''}">${gi(id)}</span>`).join('')}</nav>
+      <div class="ng-ui__main">
+        <div class="ng-ui__top"><b>Today's events</b><span>${has('filter-icon') ? gi('filter-icon') : ''}${has('calender') ? gi('calender') : ''}${has('download') ? gi('download') : ''}</span></div>
+        <ul class="ng-ui__list">${ev.map(([id, t, where, time, lvl]) => `<li><span class="ng-ui__ic is-${lvl}">${gi(id)}</span><span class="ng-ui__t"><b>${t}</b><em>${where}</em></span><span class="ng-ui__time">${has('time') ? gi('time') : ''}${time}</span><span class="ng-ui__acts">${has('video-availability') ? gi('video-availability') : ''}${has('add-to-coaching') ? gi('add-to-coaching') : ''}</span></li>`).join('')}</ul>
+      </div>
+      <aside class="ng-ui__side">
+        <p class="ng-ui__label">Vehicle 214</p>
+        <div class="ng-ui__truck">${gi(has('side-view-truck') ? 'side-view-truck' : 'vehicle')}</div>
+        <ul>${[['engine-status', 'Engine', 'ok'], ['tires', 'Tyres', 'ok'], ['brakes', 'Brakes', 'warn'], ['fuel', 'Fuel 62%', 'ok'], ['synced', 'Device synced', 'ok']].filter((x) => has(x[0])).map(([id, t, s]) => `<li class="is-${s}">${gi(id)}<span>${t}</span></li>`).join('')}</ul>
+      </aside>
+    </div>`));
+
+  /* 11 · Close */
+  out.push(hn(h, 'section', 'ng-end full-bleed', `
+    <div class="ng-end__ring" aria-hidden="true">${icons.filter((_, i) => i % 9 === 0).slice(0, 32).map((x, i, a) => `<span style="--a:${(360 / a.length) * i}deg">${gi(x[0])}</span>`).join('')}</div>
+    <p class="ng-end__text" data-reveal>Thank you.<br><em>${icons.length} icons, one grid.</em></p>`));
+  return out;
+};
+
 // Designs that keep a project's own presentation blocks and restyle them (see css/designs.css);
 // these only add motion to the pictures
 const RESTYLE = {

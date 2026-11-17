@@ -454,6 +454,7 @@ export const variants = {
   'assets/work/brochure-design/wall/05.jpg': [1087, 1087, 640],
   'assets/work/brochure-design/wall/06.jpg': [1087, 1087, 640],
   'assets/work/iconography/cover.jpg': [942, 942, 640],
+  'assets/work/iconography/netradyne/tile.jpg': [1600, 0, 640, 960, 1280],
   'assets/work/motion-design/cover.jpg': [1700, 1700, 640, 960, 1280],
   'assets/work/motion-design/self-taught/frames/01.jpg': [720, 720, 640],
   'assets/work/motion-design/self-taught/frames/03.jpg': [720, 720, 640],
