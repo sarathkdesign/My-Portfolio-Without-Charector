@@ -105,7 +105,7 @@ export default {
       design: 'carousel', // same gallery interface, in the range's signature blue and orange
       hideCover: true,
       theme: { bg: '#e3e8f3', ink: '#14234d', accent: '#f26a1b', soft: 'rgba(20,35,77,0.7)', line: 'rgba(20,35,77,0.14)' },
-      thumb: { src: 'assets/work/package-design/mothers-kitchen/tile-batters-3.jpg', alt: 'Two white Mothers Kitchen Appam Batter family-pack pouches with appam and curry on a banana leaf, on deep green' },
+      thumb: { src: 'assets/work/package-design/mothers-kitchen/tile-batters-4.jpg', alt: 'Two white Mothers Kitchen Appam Batter family-pack pouches with appam and curry on a banana leaf, on deep green' },
       cover: { src: 'assets/work/package-design/mothers-kitchen/batter-adai.jpg', alt: 'Two blue Mothers Kitchen Adai Idly & Dosa Batter family-pack pouches on blue' },
       modules: [
         { type: 'poster', src: 'assets/work/package-design/mothers-kitchen/batter-adai.jpg', w: 1199, h: 1312, title: 'Adai Idly & Dosa Batter', note: 'Family pack', alt: 'Mothers Kitchen batter packaging: two blue Adai Idly & Dosa Batter pouches with a crispy adai dosa and chutneys on the front' },
