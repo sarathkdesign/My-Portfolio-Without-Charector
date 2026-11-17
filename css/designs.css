@@ -1659,3 +1659,8 @@ html.tr-on .tr-spot:hover, html.tr-on .tr-spot:focus-visible { background: rgb(2
   .ng-hero__track, .ng-end__ring, .ng-end__ring .ng-i { animation: none; }
   .ng-step .ng-s-stroke, .ng-step .ng-s-key { stroke-dasharray: none; transition: none; }
 }
+
+/* Iconography category cover: the icon set drifting past in rows on navy, as on the icon page's opening */
+.cat__wall--icons { display: block; background: radial-gradient(90% 80% at 50% 45%, #16224a 0%, #0b1120 72%); color: #eef2ff; }
+.cat__wall--icons .ng-hero__field { opacity: 0.42; }
+.cat__hero:not(.is-playing) .cat__wall--icons .ng-hero__track { animation-play-state: paused; }

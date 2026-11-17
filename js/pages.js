@@ -12,7 +12,7 @@
 
 import { categories } from './work/index.js';
 import { content } from './content.js';
-import { layout, restyled, startMotion, splitWords, headArt } from './designs.js';
+import { layout, restyled, startMotion, splitWords, headArt, iconField } from './designs.js';
 import { createLightbox } from './lightbox.js';
 import { small } from './work/small.js';
 import { variants } from './work/variants.js';
@@ -374,10 +374,17 @@ function heroFilm({ src, poster }) {
 // in view, and holds still while the page is covered, scrolled away or changing
 function mountWall(page, hero, category) {
   if (category.hideWall) return null;
+  let wall;
+  if (category.iconField) {
+    // `iconField`: instead of pictures, the category's icon set drifts past in rows on navy (Iconography)
+    const field = iconField(category.projects.find((p) => p.icons));
+    if (!field) return null;
+    wall = el('div', { class: 'cat__wall cat__wall--icons', 'aria-hidden': 'true' }, [field]);
+  } else {
   const images = wallImages(category);
   if (images.length < 2) return null;
   const rows = wallRows(images);
-  const wall = el('div', { class: 'cat__wall', 'aria-hidden': 'true' }, rows.map((row, r) => {
+  wall = el('div', { class: 'cat__wall', 'aria-hidden': 'true' }, rows.map((row, r) => {
     const ratio = (img) => (img.w && img.h ? img.w / img.h : 4 / 3);
     const span = row.reduce((sum, img) => sum + ratio(img), 0); // the set's width, in row heights
     const set = () => row.map((img) =>
@@ -393,6 +400,7 @@ function mountWall(page, hero, category) {
         [...set(), ...set(), ...set()]),
     ]);
   }));
+  }
   hero.append(wall);
   let inView = true, settledSince = 0, timer = 0;
   const settled = () => !page.hidden && !page.inert && !document.hidden && inView &&

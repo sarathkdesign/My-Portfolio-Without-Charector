@@ -1047,6 +1047,19 @@ const glyphHead = (h, n, label, title, body) => h.el('header', { class: 'ng-head
   body && h.el('p', { class: 'ng-lede', text: body }),
 ]);
 
+// The drifting rows of icons (the glyph page's opening, and the Iconography category's cover)
+export function iconField(p, rows = 5) {
+  if (!p?.icons?.length) return null;
+  loadGlyphSprite(p.sprite);
+  const ids = p.icons.map((x) => x[0]);
+  const box = document.createElement('div');
+  box.className = 'ng-hero__field';
+  box.setAttribute('aria-hidden', 'true');
+  box.innerHTML = Array.from({ length: rows }, (_, r) => ids.filter((_, i) => i % rows === r)).map((row, r) => `
+    <div class="ng-hero__row" style="--dur:${110 + r * 18}s;--dir:${r % 2 ? 'reverse' : 'normal'}"><div class="ng-hero__track">${[...row, ...row].map((id) => gi(id)).join('')}</div></div>`).join('');
+  return box;
+}
+
 DESIGNS.glyph = (p, h) => {
   const icons = p.icons || [];
   const byId = Object.fromEntries(icons.map((x) => [x[0], x]));
