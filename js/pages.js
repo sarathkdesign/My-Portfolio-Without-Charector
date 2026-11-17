@@ -104,11 +104,11 @@ const picture = (image, { defer, ...attrs } = {}) => {
   const srcset = srcsetOf(image.src);
   // `defer`: nothing is fetched yet; the addresses wait in data-src / data-srcset for the page to fill in
   if (defer) return el('img', { src: BLANK_IMG, 'data-src': image.src, alt: image.alt ?? '', decoding: 'async', ...(srcset && { 'data-srcset': srcset, sizes: '100vw' }), ...attrs });
-  // srcset, sizes and loading are set before src: Safari starts fetching the moment src is set, so with
-  // src first it downloads the original as well as the WebP copy. The original stays as src for any
-  // browser that can't use srcset.
-  const { src = image.src, ...rest } = attrs;
-  const img = el('img', { alt: image.alt ?? '', decoding: 'async', ...(srcset && { srcset, sizes: '100vw' }), ...rest, src });
+  // Order matters in Safari, which starts fetching as soon as srcset (or src) is set: loading and sizes
+  // go first (or it downloads a lazy picture at once, at full-screen size), then srcset, then src (or it
+  // downloads the original as well as the WebP copy). The original stays as src for browsers without srcset.
+  const { src = image.src, sizes = '100vw', loading, ...rest } = attrs;
+  const img = el('img', { alt: image.alt ?? '', decoding: 'async', ...(loading && { loading }), ...(srcset && { sizes, srcset }), ...rest, src });
   // Holds a little room until the image arrives, so lazy images below don't all load at once
   if (!img.complete) img.addEventListener('load', () => img.classList.add('is-loaded'), { once: true });
   else img.classList.add('is-loaded');
@@ -384,7 +384,7 @@ function mountWall(page, hero, category) {
       el('img', {
         alt: '', decoding: 'async', fetchpriority: 'low', 'data-src': img.src, style: `aspect-ratio:${ratio(img)}`, // the moving wall waits behind the work
         // each tile is about a third of the screen's height tall: fetch a WebP that size, not the 1400px copy
-        ...(srcsetOf(img.src) && { srcset: srcsetOf(img.src), sizes: `${(ratio(img) * 34).toFixed(1)}vh` }),
+        ...(srcsetOf(img.src) && { sizes: `${(ratio(img) * 34).toFixed(1)}vh`, srcset: srcsetOf(img.src) }), // sizes before srcset (Safari)
         src: light(img.src), // last, so Safari reads srcset first
       }));
     // Three copies: the row moves by one copy and starts again, with no seam
@@ -545,8 +545,8 @@ function renderLogofolio(page) {
     const sizes = `(max-width: 699px) ${((pct * 1.7) / 2).toFixed(1)}vw, (max-width: 1099px) ${((pct * 1.3) / 4).toFixed(1)}vw, ${(pct / 4).toFixed(1)}vw`;
     return el('li', { class: 'lf__cell', 'data-reveal': true, style: `--d:${i % 4}` }, [
       el('img', {
-        class: 'lf__logo', src: `${src}.webp`, srcset: `${src}.sm.webp ${logo.smw}w, ${src}.webp ${logo.w}w`, sizes,
-        width: logo.w, height: logo.h, alt: `${logo.name} logo`, loading: i >= logofolio.length - 4 ? 'eager' : 'lazy', decoding: 'async', style: `--lw:${pct.toFixed(1)}%`,
+        class: 'lf__logo', width: logo.w, height: logo.h, alt: `${logo.name} logo`, loading: i >= logofolio.length - 4 ? 'eager' : 'lazy', decoding: 'async', style: `--lw:${pct.toFixed(1)}%`,
+        sizes, srcset: `${src}.sm.webp ${logo.smw}w, ${src}.webp ${logo.w}w`, src: `${src}.webp`, // in this order: Safari fetches as soon as srcset or src is set
         // (the last row loads up front: iPad Safari can miss lazy pictures at the very end of a snapping page)
       }),
     ]);

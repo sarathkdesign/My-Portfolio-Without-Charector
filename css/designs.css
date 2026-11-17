@@ -1291,7 +1291,7 @@ img[data-lightbox] { cursor: zoom-in; }
   display: flex; justify-content: flex-end; z-index: 6; pointer-events: none;
   /* it stays on screen while the posters scroll: held just under the .taras logo */
   position: -webkit-sticky; position: sticky; top: calc(var(--gutter) + 66px);
-  margin: clamp(28px, 3.2vw, 60px) calc(100% + 2 * var(--gutter) - 100vw) clamp(-60px, -3.4vw, -28px) 0; /* its right edge lines up with the .taras logo above */
+  margin: clamp(28px, 3.2vw, 60px) calc((100% - 100vw) / 2 + var(--gutter)) clamp(-60px, -3.4vw, -28px) 0; /* its right edge lines up with the .taras logo above, also on very wide screens where the column is narrower than the window */
 }
 .tr-btn {
   pointer-events: auto;
