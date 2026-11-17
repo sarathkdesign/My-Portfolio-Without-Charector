@@ -1291,7 +1291,7 @@ img[data-lightbox] { cursor: zoom-in; }
   display: flex; justify-content: flex-end; z-index: 6; pointer-events: none;
   /* it stays on screen while the posters scroll: held just under the .taras logo */
   position: -webkit-sticky; position: sticky; top: calc(var(--gutter) + 66px);
-  margin: clamp(28px, 3.2vw, 60px) calc((100% - 100vw) / 2 + var(--gutter)) clamp(-60px, -3.4vw, -28px) 0; /* its right edge lines up with the .taras logo above, also on very wide screens where the column is narrower than the window */
+  margin: calc(clamp(28px, 3.2vw, 60px) + 40px) calc((100% - 100vw) / 2 + var(--gutter)) calc(clamp(-60px, -3.4vw, -28px) - 40px) 0; /* sits 40px lower, closer to the posters; the posters don't move */ /* its right edge lines up with the .taras logo above, also on very wide screens where the column is narrower than the window */
 }
 .tr-btn {
   pointer-events: auto;
@@ -1308,14 +1308,12 @@ img[data-lightbox] { cursor: zoom-in; }
 .tr-btn__x { display: none; margin-left: 2px; font-size: 18px; line-height: 0.6; opacity: 0.8; }
 .tr-btn.is-on { background: #2b211d; color: var(--tr-hi); box-shadow: 0 14px 30px -14px rgb(0 0 0 / 0.55); }
 .tr-btn.is-on .tr-btn__x { display: inline; }
-/* on arrival, soft rings ripple out of the switch a few times to point it out */
-.tr-btn::before, .tr-btn::after {
-  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  box-shadow: 0 0 0 0 rgb(255 178 30 / 0.55); animation: tr-ripple 2.4s cubic-bezier(0.2, 0.6, 0.35, 1) 0.8s 3 both;
-}
-.tr-btn::after { animation-delay: 2s; }
+/* once the switch is on screen (js/translate.js adds .is-pinging), rings ripple out of it a few times to point it out */
+.tr-btn::before, .tr-btn::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+.tr-btn.is-pinging::before, .tr-btn.is-pinging::after { animation: tr-ripple 2.2s cubic-bezier(0.2, 0.6, 0.35, 1) 0.3s 4 both; }
+.tr-btn.is-pinging::after { animation-delay: 1.4s; }
 .tr-btn.is-on::before, .tr-btn.is-on::after, .tr-btn.lb__tr::before, .tr-btn.lb__tr::after { animation: none; }
-@keyframes tr-ripple { 0% { box-shadow: 0 0 0 0 rgb(255 178 30 / 0.55); } 100% { box-shadow: 0 0 0 22px rgb(255 178 30 / 0); } }
+@keyframes tr-ripple { 0% { box-shadow: 0 0 0 0 rgb(255 170 20 / 0.75); } 100% { box-shadow: 0 0 0 26px rgb(255 170 20 / 0); } }
 /* the hover explanation */
 .tr-btn__tip {
   position: absolute; top: calc(100% + 12px); right: 0; width: max-content; max-width: 280px; padding: 11px 13px; border-radius: 12px;

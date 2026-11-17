@@ -58,6 +58,17 @@ export function toggleButton(lang = 'Malayalam', cls = '') {
   b.addEventListener('click', (e) => { e.stopPropagation(); setOn(!isOn()); });
   buttons.add(b);
   sync(b);
+  // the rings that point the switch out play once it is really on screen (not behind the loader or below the fold)
+  if (!cls.includes('lb__tr') && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting || document.getElementById('loader')) return;
+      io.disconnect();
+      b.classList.add('is-pinging');
+    }, { threshold: 1 });
+    io.observe(b);
+    // the loader may still cover the page when it first shows: look again once the loader has gone
+    const again = setInterval(() => { if (!b.isConnected || b.classList.contains('is-pinging')) return clearInterval(again); if (!document.getElementById('loader')) { clearInterval(again); io.unobserve(b); io.observe(b); } }, 500);
+  }
   return b;
 }
 
