@@ -82,6 +82,7 @@ export const small = new Set([
   'assets/work/package-design/mezzcla/03.jpg',
   'assets/work/brochure-design/initial-hygiene/page-1.jpg',
   'assets/work/brochure-design/yeti-den/page-1.jpg',
+  'assets/work/brochure-design/faze/page-01.jpg',
   'assets/work/brochure-design/live-grand-hotels/page-01.jpg',
   'assets/work/motion-design/cover.jpg',
   'assets/work/iconography/cover.jpg',

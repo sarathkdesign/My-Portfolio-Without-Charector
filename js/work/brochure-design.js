@@ -20,6 +20,7 @@ export default {
     { src: 'assets/work/brochure-design/live-grand-hotels/page-01.jpg', w: 1400, h: 1400, brand: 'live-grand-hotels' },
     { src: 'assets/work/brochure-design/wall/05.jpg', w: 1087, h: 1447, brand: 'cover-5' },
     { src: 'assets/work/brochure-design/yeti-den/page-1.jpg', w: 1414, h: 2000, brand: 'yeti-den' },
+    { src: 'assets/work/brochure-design/faze/page-01.jpg', w: 1414, h: 2000, brand: 'faze' },
   ],
   projects: [
     {
@@ -165,6 +166,35 @@ export default {
         { type: 'booklet', w: 1414, h: 2000, pages: [
           { src: 'assets/work/brochure-design/yeti-den/page-1.jpg', alt: 'Front: Ice Cream Menu, 100% veg, Yeti Den, The Ice Cream Depot, by Truly Herbivore' },
           { src: 'assets/work/brochure-design/yeti-den/page-2.jpg', alt: 'Back: sundaes in single, double and triple scoops, Belgian waffles, lemonades and mojitos, iced teas, ice cream sodas and milkshakes with prices' },
+        ] },
+      ],
+    },
+    {
+      slug: 'faze',
+      title: 'Faze',
+      subtitle: 'Service menu for a hair and beauty salon',
+      client: 'Faze Hair & Beauty Salon',
+      year: '',
+      services: ['Menu design'],
+      design: 'booklet', // leaf through it like the printed salon menu
+      hideCover: true,
+      theme: { bg: '#e9e7e6', ink: '#1d1c1c', accent: '#e2231a', soft: 'rgba(29,28,28,0.7)', line: 'rgba(29,28,28,0.14)' },
+      thumb: { src: 'assets/work/brochure-design/faze/page-01.jpg', alt: 'Faze salon menu cover: Hair design, make-up, beauty salon, a black and white portrait' },
+      cover: { src: 'assets/work/brochure-design/faze/page-01.jpg', alt: 'Faze salon menu cover: Hair design, make-up, beauty salon, a black and white portrait' },
+      modules: [
+        { type: 'booklet', w: 1414, h: 2000, pages: [
+          { src: 'assets/work/brochure-design/faze/page-01.jpg', alt: 'Front cover: Hair design, make-up, beauty salon, Faze Hair & Beauty Salon, fazesalon.com' },
+          { src: 'assets/work/brochure-design/faze/page-02.jpg', alt: 'Let your hair do the talking: a woman with pin curls and red lips' },
+          { src: 'assets/work/brochure-design/faze/page-03.jpg', alt: 'Hair cutting and hair colouring with prices' },
+          { src: 'assets/work/brochure-design/faze/page-04.jpg', alt: 'Hair treatment and hair spa with prices' },
+          { src: 'assets/work/brochure-design/faze/page-05.jpg', alt: 'Straightening and bleach with prices' },
+          { src: 'assets/work/brochure-design/faze/page-06.jpg', alt: 'Body spa and make-up with prices' },
+          { src: 'assets/work/brochure-design/faze/page-07.jpg', alt: 'Facial with prices' },
+          { src: 'assets/work/brochure-design/faze/page-08.jpg', alt: 'Shahnaz facial and face clean-up with prices' },
+          { src: 'assets/work/brochure-design/faze/page-09.jpg', alt: 'Waxing with prices' },
+          { src: 'assets/work/brochure-design/faze/page-10.jpg', alt: 'Rica wax with prices' },
+          { src: 'assets/work/brochure-design/faze/page-11.jpg', alt: 'Other services: pedicure, manicure and nail polish with prices' },
+          { src: 'assets/work/brochure-design/faze/page-12.jpg', alt: 'Back cover: hair care, make-up, skin care, fashion, bridal, with the salon address in Calicut' },
         ] },
       ],
     },
